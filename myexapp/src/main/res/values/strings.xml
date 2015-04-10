@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Myex</string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- main menu -->
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_accounts">Accounts</string>
+    <string name="action_costcenters">Cost centers</string>
+    <string name="action_debtors">Debtors</string>
+    <string name="action_transactions">Transactions</string>
+    <string name="action_new_transaction">New transaction</string>
+
+</resources>
