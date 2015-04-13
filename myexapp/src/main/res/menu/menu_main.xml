@@ -1,5 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
 
@@ -8,8 +7,8 @@
             android:icon="@drawable/ic_action_search"
             android:title="@string/action_search"
             android:orderInCategory="100"
-            app:showAsAction="ifRoom|collapseActionView"
-            app:actionViewClass="android.support.v7.widget.SearchView"
+            android:showAsAction="ifRoom|collapseActionView"
+            android:actionViewClass="android.widget.SearchView"
             />
 
       <item
@@ -17,18 +16,33 @@
             android:icon="@drawable/ic_action_add"
             android:title="@string/action_new_transaction"
             android:orderInCategory="120"
-            app:showAsAction="ifRoom"
+            android:showAsAction="ifRoom"
             />
+    <item
+            android:id="@+id/action_overflow"
+            android:icon="@drawable/ic_action_overflow"
+            android:title="@string/action_overflow"
+            android:showAsAction="always"
+            android:orderInCategory="150">
 
-      <item
-              android:id="@+id/action_accounts"
-              android:title="@string/action_accounts"
-              android:orderInCategory="200"
-              app:showAsAction="never"
-              />
+        <menu>
+            <item
+                    android:id="@+id/action_accounts"
+                    android:title="@string/action_accounts"
+                    android:orderInCategory="200"
+                    android:showAsAction="never"
+                    />
+            <item android:id="@+id/action_settings"
+                  android:title="@string/action_settings"
+                  android:orderInCategory="900"
+                  android:showAsAction="never"/>
+        </menu>
 
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
-          android:orderInCategory="900"
-          app:showAsAction="never"/>
+
+
+    </item>
+
+
+
+
 </menu>

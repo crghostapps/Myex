@@ -1,8 +1,10 @@
 package lu.crghost.myex.models;
 
 import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
+import net.sqlcipher.Cursor;
+import net.sqlcipher.database.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -90,6 +92,14 @@ public class Account extends BaseModel implements BaseModelInterface {
                         "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
                         "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );");
         Log.i(TAG, TABLE_NAME + " created");
+
+        /* Predefined accounts
+        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount) values(1,'"
+                + MyExApp.getContext().getResources().getString(R.string.data_account1) + "',null,1,0,0);");
+        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount) values(2,'"
+                + MyExApp.getContext().getResources().getString(R.string.data_account2) + "',null,2,0,0);");
+                */
+
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

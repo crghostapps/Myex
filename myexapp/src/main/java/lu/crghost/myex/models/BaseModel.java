@@ -1,7 +1,5 @@
 package lu.crghost.myex.models;
 
-import android.content.ContentValues;
-
 /**
  * Base model to be extended by all Models
  * Created by CR on 23/12/2014.

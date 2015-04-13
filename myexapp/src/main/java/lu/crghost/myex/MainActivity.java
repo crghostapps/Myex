@@ -1,48 +1,78 @@
 package lu.crghost.myex;
 
 import android.app.ActionBar;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.app.FragmentTransaction;
+import android.app.SearchManager;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
+import android.view.*;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener,
+        AccountsFragment.OnFragmentInteractionListener,
+        CostcentersFragment.OnFragmentInteractionListener,
+        DebtorsFragment.OnFragmentInteractionListener {
+
+    MyExApp app;
+    SearchManager searchManager = null;
+    SearchView searchView = null;
+    String mSearchFilter;
+
+    AppSectionsPagerAdapter mAppSectionsPagerAdapter;
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
-        setSupportActionBar(toolbar);
+        app = (MyExApp) getApplication();
 
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setIcon(R.drawable.ic_launcher);
-        actionBar.setTitle("Myex");
-        actionBar.setDisplayShowTitleEnabled(true);
+        // Create the adapter that will return a fragment for each of the three primary sections of the app.
+        mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
 
+        // Configure action bar
+        final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.setDisplayShowTitleEnabled(false);
 
-        /*
-        android.support.v7.app.ActionBar.Tab tab = actionBar.newTab()
-                .setText(R.string.action_accounts)
-                .setTabListener(new MenuTabListener<AccountsFragment>(
-                        this, "artist", ArtistFragment.class));
+        // Set up the ViewPager, attaching the adapter and setting up a listener for when the user swipes between sections.
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mAppSectionsPagerAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                // When swiping between different app sections, select the corresponding tab.
+                actionBar.setSelectedNavigationItem(position);
+                actionBar.setTitle(mAppSectionsPagerAdapter.getPageTitle(position));
+            }
+        });
+
+        // Add tabs to action bar
+        ActionBar.Tab tab = actionBar.newTab()
+                .setText(R.string.accounts_title)
+                .setTabListener(this);
         actionBar.addTab(tab);
 
         tab = actionBar.newTab()
-                .setText(R.string.album)
-                .setTabListener(new TabListener<AlbumFragment>(
-                        this, "album", AlbumFragment.class));
+                .setText(R.string.costcenters_title)
+                .setTabListener(this);
         actionBar.addTab(tab);
-        */
+
+        tab = actionBar.newTab()
+                .setText(R.string.debtors_title)
+                .setTabListener(this);
+        actionBar.addTab(tab);
+
     }
 
 
@@ -51,26 +81,135 @@ public class MainActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        // Search handling
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        // Configure the search info and add any event listeners
+        // Get the SearchView and set the searchable configuration
+        searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            public boolean onQueryTextChange(String newText) {
+                // Called when the action bar search text has changed.  Update
+                // the search filter, and restart the loader to do a new query
+                // with this filter.
+                String newFilter = !TextUtils.isEmpty(newText) ? newText : null;
+                // Don't do anything if the filter hasn't actually changed.
+                // Prevents restarting the loader when restoring state.
+                if (mSearchFilter == null && newFilter == null) {
+                    return true;
+                }
+                if (mSearchFilter != null && mSearchFilter.equals(newFilter)) {
+                    return true;
+                }
+                mSearchFilter = newFilter;
+                //getLoaderManager().restartLoader(0, null, PricesActivity.this);
+                return true;
+            }
+        });
+
+        // Back-button on search view
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    searchView.setQuery("", false);
+                }
+            }
+        });
 
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+        // When the given tab is selected, switch to the corresponding page in the ViewPager.
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onFragmentInteraction(String id) {
+
+    }
+
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the primary
+     * sections of the app.
+     */
+    public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public AppSectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
-        return super.onOptionsItemSelected(item);
-    }
+        @Override
+        public Fragment getItem(int i) {
+            switch (i) {
+                case 0:
+                    return new AccountsFragment();
+                case 1:
+                    return new CostcentersFragment();
+                case 2:
+                    return new DebtorsFragment();
+                default:
+                    return new AccountsFragment();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            CharSequence cs = "";
+            switch (position) {
+                case 0:
+                    cs = MyExApp.getContext().getResources().getString(R.string.accounts_title);
+                    break;
+                case 1:
+                    cs = MyExApp.getContext().getResources().getString(R.string.costcenters_title);
+                    break;
+                case 2:
+                    cs = MyExApp.getContext().getResources().getString(R.string.debtors_title);
+                    break;
+                default:
+                    cs = MyExApp.getContext().getResources().getString(R.string.accounts_title);
+            }
+            return cs;
+        }
+    } // class AppSectionsPagerAdapter
+
+
+
 }

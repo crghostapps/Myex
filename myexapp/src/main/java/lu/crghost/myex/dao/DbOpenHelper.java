@@ -1,9 +1,10 @@
 package lu.crghost.myex.dao;
 
+import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import net.sqlcipher.Cursor;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 import android.util.Log;
 
 import lu.crghost.myex.conf.MyExProperties;
@@ -60,7 +61,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(final SQLiteDatabase db) {
-        Log.i(TAG, "DataHelper.OpenHelper onCreate creating database " + MyExProperties.DATABASE_NAME);
+        Log.i(TAG, "DbOpenHelper onCreate creating database " + MyExProperties.DATABASE_NAME);
         Account.onCreate(db);
         Costcenter.onCreate(db);
         Debtor.onCreate(db);
@@ -71,7 +72,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-        Log.i(TAG, "SQLiteOpenHelper onUpgrade - oldVersion:" + oldVersion + " newVersion:"+ newVersion);
+        Log.i(TAG, "DbOpenHelper onUpgrade - oldVersion:" + oldVersion + " newVersion:"+ newVersion);
         Account.onUpgrade(db, oldVersion, newVersion);
         Costcenter.onUpgrade(db, oldVersion, newVersion);
         Debtor.onUpgrade(db, oldVersion, newVersion);
