@@ -73,19 +73,6 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
                         "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );");
         Log.i(TAG, TABLE_NAME + " created");
 
-        /* Predefined cost centers
-        // income
-        db.execSQL("insert into costcenters (_id, name, clevel, sort, hassons, ccttype) values(1,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_costcenter_income) + "',0,30,1,1);");
-        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id,isdefaultcct, ccttype) values(3,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_costcenter_income_misc) + "',1,40,1,1,1);");
-
-        // expense
-        db.execSQL("insert into costcenters (_id, name, clevel, sort, hassons,ccttype) values(2,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_costcenter_expence) + "',0,10,1,2);");
-        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id,isdefaultcct,ccttype) values(4,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_costcenter_expence_misc) + "',1,20,2,1,2);");
-                */
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

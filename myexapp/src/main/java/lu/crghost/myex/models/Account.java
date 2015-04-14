@@ -36,7 +36,7 @@ public class Account extends BaseModel implements BaseModelInterface {
             "created_at",
             "updated_at"
     };
-    public static final String SORT_ORDER = "acname";
+    public static final String SORT_ORDER = "actype, acname";
 
     public static final int TYPE_WALLET = 0;
     public static final int TYPE_BANK   = 1;
@@ -92,13 +92,6 @@ public class Account extends BaseModel implements BaseModelInterface {
                         "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
                         "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );");
         Log.i(TAG, TABLE_NAME + " created");
-
-        /* Predefined accounts
-        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount) values(1,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_account1) + "',null,1,0,0);");
-        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount) values(2,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_account2) + "',null,2,0,0);");
-                */
 
     }
 

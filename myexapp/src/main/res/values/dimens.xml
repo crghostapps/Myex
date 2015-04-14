@@ -3,4 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="toolbar_height">200dp</dimen>
+
+    <dimen name="progressbar_width_main">220dp</dimen>
+    <dimen name="textprogressbar_textsize">15sp</dimen>
+    <dimen name="transadd_margin_titles">10dp</dimen>
 </resources>

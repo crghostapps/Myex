@@ -12,16 +12,33 @@
     <string name="action_costcenters">Cost centers</string>
     <string name="action_debtors">Debtors</string>
     <string name="action_transactions">Transactions</string>
+    <string name="action_basicdata">Basic data</string>
+    <string name="action_import">Imports</string>
     <string name="action_new_transaction">New transaction</string>
+
+    <!-- Preferences -->
+    <string name="pref_username">Your name:</string>
+    <string name="pref_username_long">Your name will only be user for internal proposes</string>
+    <string name="pref_email">Your email:</string>
+    <string name="pref_email_long">For sending your reports</string>
+    <string name="pref_currency">Currency Symbol:</string>
+    <string name="currencydefault">€</string>
 
     <!-- Accounts -->
     <string name="accounts_title">Accounts</string>
+    <string name="accounts_empty">Please create a account</string>
 
     <!-- Debtors -->
     <string name="debtors_title">Debtors</string>
+    <string name="debtors_empty">Please create a debtor</string>
 
     <!-- Costcenters -->
     <string name="costcenters_title">Costcenters</string>
+    <string name="costcenters_empty">Please create a costcenter</string>
+
+    <!-- Transactions -->
+    <string name="transactions_title">Transactions</string>
+    <string name="transactions_empty">Please create a transaction</string>
 
     <!-- Initial data -->
     <string name="data_account1">Wallet</string>
@@ -48,6 +65,8 @@
     <string name="data_costcenter_income_misc">Miscellaneous</string>
 
 <!-- TODO: Remove or change this placeholder text -->
+    <string name="dummytext">Dummy text</string>
+    <string name="dummynumber">0,00€</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -70,26 +70,6 @@ public class Measure extends BaseModel implements BaseModelInterface {
                         " updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );");
         Log.i(TAG, TABLE_NAME + " created");
 
-        /* Predefined measures
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(1,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures1_name) + "','"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures1_short) + "');");
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(1,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures2_name) + "','"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures2_short) + "');");
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(1,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures3_name) + "','"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures3_short) + "');");
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(0,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures4_name) + "','"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures4_short) + "');");
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(0,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures5_name) + "','"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures5_short) + "');");
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(0,'"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures6_name) + "','"
-                + MyExApp.getContext().getResources().getString(R.string.data_measures6_short) + "');");
-                */
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for data-binding items -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="6dip">
+
+    <LinearLayout
+            android:id="@+id/layout_account_col1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="left"
+            >
+
+        <TextView
+                android:id="@+id/item_account_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                />
+
+        <ProgressBar
+                android:id="@+id/item_account_progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:minHeight="30dp"
+                android:maxHeight="30dp"
+                android:layout_width="@dimen/progressbar_width_main"
+                android:layout_height="wrap_content"
+                android:progressDrawable="@drawable/item_progressbar" />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="vertical"
+
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            >
+
+        <TextView
+                android:id="@+id/item_account_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                />
+
+    </LinearLayout>
+
+</RelativeLayout>

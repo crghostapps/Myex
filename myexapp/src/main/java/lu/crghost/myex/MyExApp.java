@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import lu.crghost.myex.dao.DataManager;
+import lu.crghost.cralib.security.StringEncoder;
 import net.sqlcipher.database.SQLiteDatabase;
 
 /**
@@ -13,7 +15,8 @@ import net.sqlcipher.database.SQLiteDatabase;
  */
 public class MyExApp extends Application {
 
-    public static final String PREFS_FILENAME = "plprefs";
+    private static final String TAG = "MyExApp";
+    public static final String PREFS_FILENAME = "myexprefs";
     private ConnectivityManager cMgr;
     private DataManager dataManager;
     private SharedPreferences prefs;
@@ -39,10 +42,31 @@ public class MyExApp extends Application {
         super.onCreate();
         cMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         prefs = getSharedPreferences(PREFS_FILENAME,Context.MODE_MULTI_PROCESS);
+
+        boolean firstlogin = prefs.getBoolean("firstlogin",true);
+        String  dbpassword = null;
+        if (firstlogin) {
+            // @TODO: Add ask dbpass dialog here for first start
+            dbpassword = "gruntz4711";
+        } else {
+            //dbpassword = StringEncoder.decode(this,prefs.getString("dxpassword","gruntz4711"));
+            dbpassword = "gruntz4711";
+        }
+
         // Must call this function before calling any SQLCipher functions
         SQLiteDatabase.loadLibs(getApplicationContext());
-        dataManager = new DataManager(this);
+        dataManager = new DataManager(this,dbpassword);
         myContext = this;
+        if (firstlogin) {
+            Log.i(TAG, "First start --> init basic data");
+            initData();
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("firstlogin", false);
+            editor.putString("dbpassword", StringEncoder.encode(this, dbpassword));
+            editor.apply();
+        }
+
     }
 
     public void reloadPreferences() {
@@ -71,8 +95,58 @@ public class MyExApp extends Application {
         return false;
     }
 
+    /**
+     * Get context from a static function
+     * @return
+     */
     public static Context getContext() {
         return myContext;
+    }
+
+    /***********************************************************************************************
+     * Initital Data
+     ***********************************************************************************************/
+    private void initData() {
+        SQLiteDatabase db = dataManager.getDb();
+
+        // Measures
+        db.execSQL("insert into measures (iscurrency,name,nameshort) values(1,'"
+                + getResources().getString(R.string.data_measures1_name) + "','"
+                + getResources().getString(R.string.data_measures1_short) + "');");
+        db.execSQL("insert into measures (iscurrency,name,nameshort) values(1,'"
+                + getResources().getString(R.string.data_measures2_name) + "','"
+                + getResources().getString(R.string.data_measures2_short) + "');");
+        db.execSQL("insert into measures (iscurrency,name,nameshort) values(1,'"
+                + getResources().getString(R.string.data_measures3_name) + "','"
+                + getResources().getString(R.string.data_measures3_short) + "');");
+        db.execSQL("insert into measures (iscurrency,name,nameshort) values(0,'"
+                + getResources().getString(R.string.data_measures4_name) + "','"
+                + getResources().getString(R.string.data_measures4_short) + "');");
+        db.execSQL("insert into measures (iscurrency,name,nameshort) values(0,'"
+                + getResources().getString(R.string.data_measures5_name) + "','"
+                + getResources().getString(R.string.data_measures5_short) + "');");
+        db.execSQL("insert into measures (iscurrency,name,nameshort) values(0,'"
+                + getResources().getString(R.string.data_measures6_name) + "','"
+                + getResources().getString(R.string.data_measures6_short) + "');");
+
+        // Accounts
+        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount) values(1,'"
+                + getResources().getString(R.string.data_account1) + "',null,1,0,0);");
+        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount) values(2,'"
+                + getResources().getString(R.string.data_account2) + "',null,2,0,0);");
+
+        // Costcenters
+        // income
+        db.execSQL("insert into costcenters (_id, name, clevel, sort, hassons, ccttype) values(1,'"
+                + getResources().getString(R.string.data_costcenter_income) + "',0,30,1,1);");
+        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id,isdefaultcct, ccttype) values(3,'"
+                + getResources().getString(R.string.data_costcenter_income_misc) + "',1,40,1,1,1);");
+
+        // expense
+        db.execSQL("insert into costcenters (_id, name, clevel, sort, hassons,ccttype) values(2,'"
+                + getResources().getString(R.string.data_costcenter_expence) + "',0,10,1,2);");
+        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id,isdefaultcct,ccttype) values(4,'"
+                + getResources().getString(R.string.data_costcenter_expence_misc) + "',1,20,2,1,2);");
     }
 
 

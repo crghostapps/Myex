@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+     Hidden preferences
+     firstlogin         true/false
+     dbpassword         encoded string
+     -->
+
+    <EditTextPreference
+            android:key="username"
+            android:title="@string/pref_username"
+            android:summary="@string/pref_username_long"
+            />
+    <EditTextPreference
+            android:key="usermail"
+            android:title="@string/pref_email"
+            android:summary="@string/pref_email_long"
+            android:inputType="textEmailAddress"
+            />
+    <EditTextPreference
+            android:key="currency"
+            android:title="@string/pref_currency"
+            android:inputType="text"
+            android:defaultValue="@string/currencydefault"
+            />
+
+</PreferenceScreen>

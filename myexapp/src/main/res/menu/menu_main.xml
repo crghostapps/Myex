@@ -27,9 +27,15 @@
 
         <menu>
             <item
-                    android:id="@+id/action_accounts"
-                    android:title="@string/action_accounts"
+                    android:id="@+id/action_basicdata"
+                    android:title="@string/action_basicdata"
                     android:orderInCategory="200"
+                    android:showAsAction="never"
+                    />
+            <item
+                    android:id="@+id/action_import"
+                    android:title="@string/action_import"
+                    android:orderInCategory="250"
                     android:showAsAction="never"
                     />
             <item android:id="@+id/action_settings"

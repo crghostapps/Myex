@@ -74,4 +74,60 @@ public class DaoAccount implements DbDao<Account> {
         if (!c.isClosed()) c.close();
         return types;
     }
+
+    /**
+     * Returns the account balance
+     * @param account_id
+     * @return
+     */
+    public double getAccountBalance(String account_id) {
+        double d = 0;
+        String sql = "select sum(initbalance + amount) as currentbalance from ( "+
+                "	  select  "+
+                "	    0 as initbalance, sum(amount) as amount "+
+                "	  from transactions a "+
+                "	  where a.account_id=? "+
+                "	  union all   "+
+                "	  select   "+
+                "	    initbalance, 0 as amount "+
+                "	  from accounts a   "+
+                "	  where a._id=? "+
+                " ) x";
+        Cursor csr = db.rawQuery(sql, new String[]{account_id,account_id});
+        if (csr.moveToNext()) {
+            d = csr.getDouble(csr.getColumnIndex("currentbalance"));
+        }
+        csr.close();
+
+        return d;
+    }
+
+    /**
+     * Returns the balance at the time of the last credit
+     * @param account_id
+     * @return
+     */
+    public double getAccountMaxBalance(String account_id) {
+        double d = 0;
+        String sql = "select sum(initbalance + amount) as currentbalance from ( "+
+                "	  select  "+
+                "	    0 as initbalance, sum(amount) as amount "+
+                "	  from transactions a "+
+                "	  where a.account_id=? "+
+                "	    and a._id <= (select max(_id) as lastplus from transactions where account_id=? and amount>0) "+
+                "	  union all   "+
+                "	  select   "+
+                "	    initbalance, 0 as amount "+
+                "	  from accounts a   "+
+                "	  where a._id=? "+
+                " ) x";
+
+        Cursor csr = db.rawQuery(sql, new String[]{account_id,account_id,account_id});
+        if (csr.moveToNext()) {
+            d = csr.getDouble(csr.getColumnIndex("currentbalance"));
+        }
+        csr.close();
+
+        return d;
+    }
 }

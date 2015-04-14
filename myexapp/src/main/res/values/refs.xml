@@ -8,5 +8,7 @@
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
     <item name="fragment_accounts" type="layout">@layout/fragment_accounts_list</item>
+    <item name="fragment_debtors" type="layout">@layout/fragment_debtors_list</item>
+    <item name="fragment_transactions" type="layout">@layout/fragment_transactions_list</item>
 
 </resources>

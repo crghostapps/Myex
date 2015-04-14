@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,13 +15,13 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.*;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener,
         AccountsFragment.OnFragmentInteractionListener,
         CostcentersFragment.OnFragmentInteractionListener,
-        DebtorsFragment.OnFragmentInteractionListener {
+        DebtorsFragment.OnFragmentInteractionListener,
+        TransactionsFragment.OnFragmentInteractionListener {
 
     MyExApp app;
     SearchManager searchManager = null;
@@ -70,6 +71,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         tab = actionBar.newTab()
                 .setText(R.string.debtors_title)
+                .setTabListener(this);
+        actionBar.addTab(tab);
+
+        tab = actionBar.newTab()
+                .setText(R.string.transactions_title)
                 .setTabListener(this);
         actionBar.addTab(tab);
 
@@ -123,11 +129,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         return true;
     }
 
+    /**
+     * Menu selections
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.action_settings:
+                Intent settings = new Intent(this,SettingsActivity.class);
+                startActivity(settings);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -139,6 +152,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
         // When the given tab is selected, switch to the corresponding page in the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
+        setTitle(tab.getText());
     }
 
     @Override
@@ -180,6 +194,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     return new CostcentersFragment();
                 case 2:
                     return new DebtorsFragment();
+                case 3:
+                    return new TransactionsFragment();
                 default:
                     return new AccountsFragment();
             }
@@ -187,7 +203,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -202,6 +218,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     break;
                 case 2:
                     cs = MyExApp.getContext().getResources().getString(R.string.debtors_title);
+                    break;
+                case 3:
+                    cs = MyExApp.getContext().getResources().getString(R.string.transactions_title);
                     break;
                 default:
                     cs = MyExApp.getContext().getResources().getString(R.string.accounts_title);
