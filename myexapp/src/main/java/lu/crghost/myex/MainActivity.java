@@ -7,10 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,6 +27,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private static final int TABITEM_COSTCENTERS = 1;
     private static final int TABITEM_DEBTORS = 2;
     private static final int TABITEM_TRANSACTIONS = 3;
+
+
 
     MyExApp app;
     SearchManager searchManager = null;
@@ -65,6 +64,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 actionBar.setTitle(mAppSectionsPagerAdapter.getPageTitle(position));
             }
         });
+
 
         // Add tabs to action bar
         ActionBar.Tab tab = actionBar.newTab()
@@ -156,9 +156,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     case TABITEM_COSTCENTERS:
                     case TABITEM_DEBTORS:
                         Intent debtorsedit = new Intent(this,DebtorsEditActivity.class);
-                        debtorsedit.putExtra("id",0L);
-                        startActivity(debtorsedit);
-                        Log.d(TAG, "------------------------endofADD-----------------------------");
+                        debtorsedit.putExtra("id", 0L);
+                        startActivityForResult(debtorsedit, TABITEM_DEBTORS);
                     case TABITEM_TRANSACTIONS:
                     default:
                 }
@@ -207,19 +206,30 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             case TABITEM_DEBTORS:
                 long lid = Long.parseLong(id);
                 Intent debtorsedit = new Intent(this,DebtorsEditActivity.class);
-                debtorsedit.putExtra("id",lid);
-                startActivity(debtorsedit);
-                Log.d(TAG, "------------------------endofedit-----------------------------");
+                debtorsedit.putExtra("id", lid);
+                startActivityForResult(debtorsedit, TABITEM_DEBTORS);
                 break;
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case TABITEM_DEBTORS:
+                if (resultCode==RESULT_OK) {
+                    Log.d(TAG,"----------------------RELOAD DEBTORS ---------------------");
+                    mViewPager.getAdapter().notifyDataSetChanged();
+                }
+                break;
+        }
     }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the primary
      * sections of the app.
      */
-    public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
+    public static class AppSectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public AppSectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -246,6 +256,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             return 4;
         }
 
+        // Reattachs fragment (and reloads data)
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
         @Override
         public CharSequence getPageTitle(int position) {
             CharSequence cs = "";
@@ -267,6 +283,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             }
             return cs;
         }
+
+
     } // class AppSectionsPagerAdapter
 
 

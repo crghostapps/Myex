@@ -91,6 +91,7 @@ public class DebtorsFragment extends Fragment implements AbsListView.OnItemClick
     }
 
 
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (null != mListener) {

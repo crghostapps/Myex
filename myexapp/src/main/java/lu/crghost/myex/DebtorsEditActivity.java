@@ -19,7 +19,9 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-
+/**
+ * CUD a debtor
+ */
 public class DebtorsEditActivity extends Activity {
 
     private static final String TAG = "DebtorsEditActivity";
@@ -58,9 +60,13 @@ public class DebtorsEditActivity extends Activity {
         } else {
             isupdate = true;
             debtor = app.getDataManager().getDebtortById(id);
-            holder.name.setText(debtor.getName());
-            holder.latitude.setText(formatDecimal(debtor.getLatitude()));
-            holder.longitude.setText(formatDecimal(debtor.getLongitude()));
+            if (debtor==null) { // security
+                isupdate = false;
+            } else {
+                holder.name.setText(debtor.getName());
+                holder.latitude.setText(formatDecimal(debtor.getLatitude()));
+                holder.longitude.setText(formatDecimal(debtor.getLongitude()));
+            }
         }
 
 
@@ -117,9 +123,11 @@ public class DebtorsEditActivity extends Activity {
                 debtor.setAltitude(new BigDecimal(0));
                 if (isupdate)   app.getDataManager().updateDebtor(debtor);
                 else            app.getDataManager().insertDebtor(debtor);
+                setResult(RESULT_OK);
                 finish();
                 return true;
             case R.id.action_cancel:
+                setResult(RESULT_CANCELED);
                 finish();
                 return true;
             case R.id.action_delete:
@@ -130,7 +138,9 @@ public class DebtorsEditActivity extends Activity {
                     builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             app.getDataManager().deleteDebtor(debtor);
-                            Toast.makeText(DebtorsEditActivity.this,R.string.debtors_deleted,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DebtorsEditActivity.this, R.string.debtors_deleted, Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_OK);
+                            finish();
                         }
                     });
                     builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
