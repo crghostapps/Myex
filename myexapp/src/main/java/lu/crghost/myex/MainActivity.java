@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.*;
 import android.widget.SearchView;
 
@@ -22,6 +23,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         CostcentersFragment.OnFragmentInteractionListener,
         DebtorsFragment.OnFragmentInteractionListener,
         TransactionsFragment.OnFragmentInteractionListener {
+
+    private static final String TAG = "MainActivity";
 
     private static final int TABITEM_ACCOUNTS = 0;
     private static final int TABITEM_COSTCENTERS = 1;
@@ -155,6 +158,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                         Intent debtorsedit = new Intent(this,DebtorsEditActivity.class);
                         debtorsedit.putExtra("id",0L);
                         startActivity(debtorsedit);
+                        Log.d(TAG, "------------------------endofADD-----------------------------");
                     case TABITEM_TRANSACTIONS:
                     default:
                 }
@@ -205,6 +209,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 Intent debtorsedit = new Intent(this,DebtorsEditActivity.class);
                 debtorsedit.putExtra("id",lid);
                 startActivity(debtorsedit);
+                Log.d(TAG, "------------------------endofedit-----------------------------");
                 break;
         }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import lu.crghost.myex.models.Debtor;
  */
 public class DebtorsFragment extends Fragment implements AbsListView.OnItemClickListener {
 
+    private static final String TAG = "DebtorsFragment";
     MyExApp app;
     private OnFragmentInteractionListener mListener;
 
@@ -73,6 +75,7 @@ public class DebtorsFragment extends Fragment implements AbsListView.OnItemClick
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        Log.d(TAG, "------------------------onattach-----------------------------");
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {

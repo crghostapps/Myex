@@ -22,7 +22,7 @@ import java.text.ParseException;
 
 public class DebtorsEditActivity extends Activity {
 
-    private static final String TAG = "MyExApp";
+    private static final String TAG = "DebtorsEditActivity";
 
     private MyExApp app;
     private boolean isupdate;
