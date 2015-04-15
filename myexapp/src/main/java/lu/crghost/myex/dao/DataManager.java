@@ -121,6 +121,8 @@ public class DataManager {
         daoDebtor.update(type);
     }
 
+    public void deleteDebtor(Debtor type) { daoDebtor.delete(type);}
+
     /***********************************************************************************************
      * Costcenter
      ***********************************************************************************************/

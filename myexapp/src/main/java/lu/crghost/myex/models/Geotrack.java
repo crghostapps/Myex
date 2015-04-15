@@ -47,7 +47,7 @@ public class Geotrack extends BaseModel implements BaseModelInterface {
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
-                        _ID + " INTEGER PRIMARY KEY," +
+                        _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         "  latitude NUMERIC NULL," +
                         "  longitude NUMERIC NULL,"+
                         "  altitude NUMERIC NULL,"+

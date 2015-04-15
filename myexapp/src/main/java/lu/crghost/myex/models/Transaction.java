@@ -84,7 +84,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
-                        _ID + " INTEGER PRIMARY KEY," +
+                        _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         "  description TEXT NULL ,"+
                         "  transtype INT NULL, " +
                         "  costcenter_id INT NULL ,"+

@@ -80,7 +80,7 @@ public class Account extends BaseModel implements BaseModelInterface {
     public static void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
-                        _ID + " INTEGER PRIMARY KEY," +
+                        _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         "  acname TEXT NULL ,"+
                         "  acnumber TEXT NULL ,"+
                         "  actype INT NULL ,"+

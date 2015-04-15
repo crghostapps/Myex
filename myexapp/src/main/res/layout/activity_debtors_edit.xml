@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:orientation="vertical"
+                tools:context="lu.crghost.myex.DebtorsEditActivity">
+
+    <TextView
+            android:text="@string/debtors_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            />
+
+    <EditText
+            android:id="@+id/debtors_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences"
+            />
+
+    <TextView
+            android:text="@string/debtors_latitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            />
+
+        <EditText
+                android:id="@+id/debtors_latitude"
+                android:inputType="numberDecimal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+
+    <TextView
+            android:text="@string/debtors_longitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            />
+
+        <EditText
+                android:id="@+id/debtors_longitude"
+                android:inputType="numberDecimal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+
+        <ImageButton
+                android:id="@+id/debtors_btngps"
+                android:src="@drawable/ic_action_location_2"
+                android:onClick="btnGps_click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+</LinearLayout>

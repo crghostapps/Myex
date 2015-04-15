@@ -23,6 +23,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         DebtorsFragment.OnFragmentInteractionListener,
         TransactionsFragment.OnFragmentInteractionListener {
 
+    private static final int TABITEM_ACCOUNTS = 0;
+    private static final int TABITEM_COSTCENTERS = 1;
+    private static final int TABITEM_DEBTORS = 2;
+    private static final int TABITEM_TRANSACTIONS = 3;
+
     MyExApp app;
     SearchManager searchManager = null;
     SearchView searchView = null;
@@ -44,7 +49,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Configure action bar
         final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.setDisplayShowTitleEnabled(false);
+        //actionBar.setDisplayShowTitleEnabled(false);
 
         // Set up the ViewPager, attaching the adapter and setting up a listener for when the user swipes between sections.
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -130,17 +135,38 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     /**
-     * Menu selections
+     * Menu/actionbar selections
      * @param item
      * @return
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        int current_item = mViewPager.getCurrentItem();
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent settings = new Intent(this,SettingsActivity.class);
                 startActivity(settings);
+                return true;
+            case R.id.action_add:
+                switch (current_item) {
+                    case TABITEM_ACCOUNTS:
+                    case TABITEM_COSTCENTERS:
+                    case TABITEM_DEBTORS:
+                        Intent debtorsedit = new Intent(this,DebtorsEditActivity.class);
+                        debtorsedit.putExtra("id",0L);
+                        startActivity(debtorsedit);
+                    case TABITEM_TRANSACTIONS:
+                    default:
+                }
+                return true;
+            case R.id.action_search:
+                switch (current_item) {
+                    case TABITEM_ACCOUNTS:
+                    case TABITEM_COSTCENTERS:
+                    case TABITEM_DEBTORS:
+                    case TABITEM_TRANSACTIONS:
+                    default:
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -172,6 +198,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public void onFragmentInteraction(String id) {
+        int current_item = mViewPager.getCurrentItem();
+        switch (current_item) {
+            case TABITEM_DEBTORS:
+                long lid = Long.parseLong(id);
+                Intent debtorsedit = new Intent(this,DebtorsEditActivity.class);
+                debtorsedit.putExtra("id",lid);
+                startActivity(debtorsedit);
+                break;
+        }
 
     }
 
@@ -188,13 +223,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         @Override
         public Fragment getItem(int i) {
             switch (i) {
-                case 0:
+                case TABITEM_ACCOUNTS:
                     return new AccountsFragment();
-                case 1:
+                case TABITEM_COSTCENTERS:
                     return new CostcentersFragment();
-                case 2:
+                case TABITEM_DEBTORS:
                     return new DebtorsFragment();
-                case 3:
+                case TABITEM_TRANSACTIONS:
                     return new TransactionsFragment();
                 default:
                     return new AccountsFragment();
@@ -210,16 +245,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         public CharSequence getPageTitle(int position) {
             CharSequence cs = "";
             switch (position) {
-                case 0:
+                case TABITEM_ACCOUNTS:
                     cs = MyExApp.getContext().getResources().getString(R.string.accounts_title);
                     break;
-                case 1:
+                case TABITEM_COSTCENTERS:
                     cs = MyExApp.getContext().getResources().getString(R.string.costcenters_title);
                     break;
-                case 2:
+                case TABITEM_DEBTORS:
                     cs = MyExApp.getContext().getResources().getString(R.string.debtors_title);
                     break;
-                case 3:
+                case TABITEM_TRANSACTIONS:
                     cs = MyExApp.getContext().getResources().getString(R.string.transactions_title);
                     break;
                 default:

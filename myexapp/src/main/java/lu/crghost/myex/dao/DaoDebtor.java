@@ -22,7 +22,7 @@ public class DaoDebtor implements DbDao<Debtor> {
 
     @Override
     public long save(Debtor type) {
-        return db.insert(Debtor.TABLE_NAME, null, type.getContentValues(true));
+        return db.insert(Debtor.TABLE_NAME, null, type.getContentValues(false));
     }
 
     @Override

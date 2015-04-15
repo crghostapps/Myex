@@ -65,9 +65,7 @@ public class DebtorsFragment extends Fragment implements AbsListView.OnItemClick
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
-        if (mAdapter.getCount() < 1) {
-            setEmptyText(getResources().getString(R.string.debtors_empty));
-        }
+        mListView.setEmptyView(view.findViewById(android.R.id.empty));
 
         return view;
     }
