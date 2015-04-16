@@ -140,9 +140,16 @@ public class Measure extends BaseModel implements BaseModelInterface {
         return int_to_boolean(iscurrency);
     }
 
+    /**
+     * Used in dropdown lists
+     * @return
+     */
     @Override
+    //public String toString() {
+    //    return "Measure [id="+this.getId()+ " " + getName() +"]";
+    //}
     public String toString() {
-        return "Measure [id="+this.getId()+ " " + getName() +"]";
+        return getName();
     }
 
     @Override

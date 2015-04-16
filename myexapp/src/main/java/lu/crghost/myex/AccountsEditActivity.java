@@ -15,6 +15,7 @@ import lu.crghost.myex.models.Debtor;
 import lu.crghost.myex.models.Measure;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 public class AccountsEditActivity extends Activity {
@@ -24,6 +25,7 @@ public class AccountsEditActivity extends Activity {
     private MyExApp app;
     private boolean isupdate;
     private Account account;
+    private List<Measure> measures;
 
     static class ViewHolder {
         public EditText aname;
@@ -86,18 +88,18 @@ public class AccountsEditActivity extends Activity {
         ArrayAdapter<AccountTypes.AccountType> accountTypeArrayAdapter = new ArrayAdapter<AccountTypes.AccountType>(this,android.R.layout.simple_spinner_item, AccountTypes.ACTYPES);
         accountTypeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.atype.setAdapter(accountTypeArrayAdapter);
-        holder.atype.setSelection((int)holder.atype_selected_id);
+        holder.atype.setSelection((int) holder.atype_selected_id);
         holder.atype.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG,"------------AccountTypes selected:"+ AccountTypes.ACTYPES.get(position));
+                Log.d(TAG, "------------AccountTypes selected:" + AccountTypes.ACTYPES.get(position));
                 String sid = AccountTypes.ACTYPES.get(position).id;
                 holder.atype_selected_id = 0;
                 if (sid != null) {
                     try {
                         holder.atype_selected_id = Long.parseLong(sid);
                     } catch (NumberFormatException e) {
-                        Log.e(TAG,"Invalid number " +sid);
+                        Log.e(TAG, "Invalid number " + sid);
                     }
                 }
             }
@@ -109,14 +111,18 @@ public class AccountsEditActivity extends Activity {
         });
 
         // fill measure spinner
-        MeasureAdapter measureArrayAdapter = new MeasureAdapter(this,app.getDataManager().getMeasures(null,null));
+        measures = app.getDataManager().getMeasures(null,null);
+        MeasureAdapter measureArrayAdapter = new MeasureAdapter(this,measures);
         measureArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.ameasure.setAdapter(measureArrayAdapter);
+        int mpos = app.getDataManager().getMeasurePosition(measures,holder.ameasure_selected_id);
+        Log.d(TAG,"------------------Init measure position="+mpos+" id="+holder.ameasure_selected_id);
+        holder.ameasure.setSelection(mpos);
         holder.ameasure.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG,"------------Measure selected:"+ id);
-                holder.ameasure_selected_id = id;
+                holder.ameasure_selected_id = holder.ameasure.getAdapter().getItemId(position);
+                Log.d(TAG,"------------Measure selected position="+ position + " id="+holder.ameasure_selected_id);
             }
 
             @Override

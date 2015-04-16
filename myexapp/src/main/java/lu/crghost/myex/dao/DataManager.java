@@ -7,6 +7,7 @@ import net.sqlcipher.database.SQLiteOpenHelper;
 import android.os.SystemClock;
 import android.util.Log;
 
+import java.security.MessageDigest;
 import java.util.List;
 
 import lu.crghost.myex.conf.MyExProperties;
@@ -180,6 +181,21 @@ public class DataManager {
 
     public void updateMeasure(Measure type) {
         daoMeasure.update(type);
+    }
+
+    public void deleteMeasure(Measure type) { daoMeasure.delete(type); }
+
+    public int getMeasurePosition(List<Measure> mesures, long id) {
+        int cpos = 0;
+        int position = 0;
+        for (Measure m : mesures) {
+            if (m.getId()==id) {
+                position = cpos;
+                break;
+            }
+            cpos++;
+        }
+        return position;
     }
 
     /***********************************************************************************************

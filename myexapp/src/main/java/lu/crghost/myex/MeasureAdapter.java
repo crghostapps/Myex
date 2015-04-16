@@ -14,11 +14,11 @@ import java.util.List;
  */
 public class MeasureAdapter extends ArrayAdapter<Measure> {
 
-    private static final String TAG = "AccountsAdapter";
+    private static final String TAG = "MeasureAdapter";
     Context context;
 
     public MeasureAdapter(Context context, List<Measure> measures) {
-        super(context, R.layout.simple_list_item, measures);
+        super(context, android.R.layout.simple_spinner_item, measures);
         this.context = context;
     }
 
@@ -28,7 +28,7 @@ public class MeasureAdapter extends ArrayAdapter<Measure> {
 
         // get refs to views
         View listItem =  super.getView(position, convertView, parent);
-        final TextView text1 = (TextView) listItem.findViewById(R.id.text1);
+        final TextView text1 = (TextView) listItem.findViewById(android.R.id.text1);
 
         // fill with the data
         final Measure measure = this.getItem(position);
@@ -37,14 +37,4 @@ public class MeasureAdapter extends ArrayAdapter<Measure> {
         return listItem;
     }
 
-    @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        if (convertView != null) {
-            TextView text = (TextView) convertView.findViewById(R.id.text1);
-            text.setText("????????????");
-            text.setHeight(100);
-        }
-
-        return convertView;
-    }
 }
