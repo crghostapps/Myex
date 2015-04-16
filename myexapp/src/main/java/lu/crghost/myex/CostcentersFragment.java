@@ -8,15 +8,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CostcentersFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CostcentersFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Costcenters treelist
  */
 public class CostcentersFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -28,7 +24,7 @@ public class CostcentersFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private MyOnFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -68,18 +64,13 @@ public class CostcentersFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_costcenters, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (MyOnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");

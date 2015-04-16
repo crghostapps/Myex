@@ -20,7 +20,11 @@
             android:label="@string/action_settings" />
         <activity
             android:name=".DebtorsEditActivity"
-            android:label="@string/title_activity_debtors_edit" >
+            android:label="@string/debtors_title" >
+        </activity>
+        <activity
+            android:name=".AccountsEditActivity"
+            android:label="@string/accounts_title" >
         </activity>
     </application>
 

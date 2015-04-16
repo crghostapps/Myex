@@ -94,6 +94,8 @@ public class DataManager {
         daoAccount.update(type);
     }
 
+    public void deleteAccount(Account type) { daoAccount.delete(type); }
+
     public double getAccountBalance(Account type) {
         return daoAccount.getAccountBalance(type.getIdAsString());
     }

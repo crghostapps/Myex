@@ -13,21 +13,17 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import lu.crghost.myex.models.Debtor;
+import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DebtorsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link DebtorsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Debtors fragment
  */
-public class DebtorsFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class DebtorsFragment extends Fragment implements AbsListView.OnItemClickListener, AbsListView.OnItemLongClickListener {
 
     private static final String TAG = "DebtorsFragment";
     MyExApp app;
-    private OnFragmentInteractionListener mListener;
+    private MyOnFragmentInteractionListener mListener;
 
     /**
      * The fragment's ListView/GridView.
@@ -67,6 +63,7 @@ public class DebtorsFragment extends Fragment implements AbsListView.OnItemClick
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
         mListView.setEmptyView(view.findViewById(android.R.id.empty));
 
         return view;
@@ -75,12 +72,11 @@ public class DebtorsFragment extends Fragment implements AbsListView.OnItemClick
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Log.d(TAG, "------------------------onattach-----------------------------");
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (MyOnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement MyOnFragmentInteractionListener");
         }
     }
 
@@ -96,9 +92,19 @@ public class DebtorsFragment extends Fragment implements AbsListView.OnItemClick
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (null != mListener) {
             Debtor debtor = (Debtor) mAdapter.getItem(position);
-            mListener.onFragmentInteraction(debtor.getIdAsString());
+            mListener.onFragmentInteractionNewTransaction(null,null,debtor.getIdAsString());
         }
     }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        if (null != mListener) {
+            Debtor debtor = (Debtor) mAdapter.getItem(position);
+            mListener.onFragmentInteractionEdit(debtor.getIdAsString(),MyOnFragmentInteractionListener.ACTION_EDIT_DEBTOR);
+        }
+        return false;
+    }
+
 
     /**
      * The default content for this Fragment has a TextView that is shown when
@@ -114,8 +120,5 @@ public class DebtorsFragment extends Fragment implements AbsListView.OnItemClick
     }
 
 
-    public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(String id);
-    }
 
 }

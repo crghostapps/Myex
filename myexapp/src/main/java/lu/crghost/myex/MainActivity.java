@@ -13,13 +13,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.*;
 import android.widget.SearchView;
+import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener,
-        AccountsFragment.OnFragmentInteractionListener,
-        CostcentersFragment.OnFragmentInteractionListener,
-        DebtorsFragment.OnFragmentInteractionListener,
-        TransactionsFragment.OnFragmentInteractionListener {
+        MyOnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
 
@@ -153,12 +151,19 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             case R.id.action_add:
                 switch (current_item) {
                     case TABITEM_ACCOUNTS:
+                        Intent accountedit = new Intent(this,AccountsEditActivity.class);
+                        accountedit.putExtra("id", 0L);
+                        startActivityForResult(accountedit, TABITEM_ACCOUNTS);
+                        return true;
                     case TABITEM_COSTCENTERS:
+                        return true;
                     case TABITEM_DEBTORS:
                         Intent debtorsedit = new Intent(this,DebtorsEditActivity.class);
                         debtorsedit.putExtra("id", 0L);
                         startActivityForResult(debtorsedit, TABITEM_DEBTORS);
+                        return true;
                     case TABITEM_TRANSACTIONS:
+                        return true;
                     default:
                 }
                 return true;
@@ -195,34 +200,41 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        if (resultCode==RESULT_OK) {
+            Log.d(TAG,"----------------------RELOAD DATA ---------------------");
+            mViewPager.getAdapter().notifyDataSetChanged();
+        }
+
+        switch (requestCode) {
+            case TABITEM_DEBTORS:
+
+                break;
+        }
     }
 
     @Override
-    public void onFragmentInteraction(String id) {
-        int current_item = mViewPager.getCurrentItem();
-        switch (current_item) {
-            case TABITEM_DEBTORS:
-                long lid = Long.parseLong(id);
+    public void onFragmentInteractionEdit(String id, int action) {
+        switch (action){
+            case MyOnFragmentInteractionListener.ACTION_EDIT_ACCOUNT:
+                long account_id = Long.parseLong(id);
+                Intent accountsedit = new Intent(this,AccountsEditActivity.class);
+                accountsedit.putExtra("id", account_id);
+                startActivityForResult(accountsedit, TABITEM_ACCOUNTS);
+                break;
+            case MyOnFragmentInteractionListener.ACTION_EDIT_DEBTOR:
+                long debtor_id = Long.parseLong(id);
                 Intent debtorsedit = new Intent(this,DebtorsEditActivity.class);
-                debtorsedit.putExtra("id", lid);
+                debtorsedit.putExtra("id", debtor_id);
                 startActivityForResult(debtorsedit, TABITEM_DEBTORS);
                 break;
         }
-
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case TABITEM_DEBTORS:
-                if (resultCode==RESULT_OK) {
-                    Log.d(TAG,"----------------------RELOAD DEBTORS ---------------------");
-                    mViewPager.getAdapter().notifyDataSetChanged();
-                }
-                break;
-        }
+    public void onFragmentInteractionNewTransaction(String account_id, String costcenter_id, String debtor_id) {
+
     }
 
     /**

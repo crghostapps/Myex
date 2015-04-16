@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,9 +14,7 @@ import lu.crghost.cralib.tools.Formats;
 import lu.crghost.myex.models.Debtor;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
 
 /**
  * CUD a debtor
@@ -29,8 +26,6 @@ public class DebtorsEditActivity extends Activity {
     private MyExApp app;
     private boolean isupdate;
     private Debtor debtor;
-
-    NumberFormat numberFormat = NumberFormat.getNumberInstance();
 
     static class ViewHolder {
         public EditText name;
@@ -64,11 +59,16 @@ public class DebtorsEditActivity extends Activity {
                 isupdate = false;
             } else {
                 holder.name.setText(debtor.getName());
-                holder.latitude.setText(formatDecimal(debtor.getLatitude()));
-                holder.longitude.setText(formatDecimal(debtor.getLongitude()));
+                holder.latitude.setText(lu.crghost.cralib.tools.Formats.formatDecimal(debtor.getLatitude()));
+                holder.longitude.setText(lu.crghost.cralib.tools.Formats.formatDecimal(debtor.getLongitude()));
             }
         }
 
+        if (isupdate) {
+            setTitle(getResources().getString(R.string.debtors_title_edit));
+        } else {
+            setTitle(getResources().getString(R.string.debtors_title_new));
+        }
 
     }
 
@@ -88,26 +88,7 @@ public class DebtorsEditActivity extends Activity {
         return true;
     }
 
-    private BigDecimal parseDecimal(String s) {
-        BigDecimal big = BigDecimal.ZERO;
-        if (s!=null && s.length() > 0) {
-            try {
-                Number n = NumberFormat.getInstance().parse(s);
-                big = new BigDecimal(n.doubleValue());
-            } catch (ParseException e) {
-                Log.w(TAG, "Numberformat error for " + s);
-            }
-        }
-        return big;
-    }
 
-    private String formatDecimal(BigDecimal big) {
-        String s = "";
-        if (big!=null && big.compareTo(BigDecimal.ZERO) != 0 ) {
-            s = NumberFormat.getInstance().format(big.doubleValue());
-        }
-        return s;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -118,8 +99,8 @@ public class DebtorsEditActivity extends Activity {
                     holder.name.setError(getResources().getString(R.string.debtors_name_error));
                     return false;
                 }
-                debtor.setLatitude(parseDecimal(holder.latitude.getText().toString()));
-                debtor.setLongitude(parseDecimal(holder.longitude.getText().toString()));
+                debtor.setLatitude(lu.crghost.cralib.tools.Formats.parseDecimal(holder.latitude.getText().toString()));
+                debtor.setLongitude(lu.crghost.cralib.tools.Formats.parseDecimal(holder.longitude.getText().toString()));
                 debtor.setAltitude(new BigDecimal(0));
                 if (isupdate)   app.getDataManager().updateDebtor(debtor);
                 else            app.getDataManager().insertDebtor(debtor);

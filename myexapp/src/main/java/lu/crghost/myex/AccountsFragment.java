@@ -11,16 +11,15 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import lu.crghost.myex.models.Account;
+import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
 
 /**
- * A fragment representing a list of Items.
- * Large screen devices (such as tablets) are supported by replacing the ListView with a GridView.
- * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener} interface.
+ * Accounts list
  */
-public class AccountsFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class AccountsFragment extends Fragment implements AbsListView.OnItemClickListener, AbsListView.OnItemLongClickListener {
 
     MyExApp app;
-    private OnFragmentInteractionListener mListener;
+    private MyOnFragmentInteractionListener mListener;
 
     /**
      * The fragment's ListView/GridView.
@@ -50,9 +49,6 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
         super.onCreate(savedInstanceState);
         app = (MyExApp) getActivity().getApplication();
         mAdapter = new AccountsAdapter(app,getActivity(),app.getDataManager().getAccounts(null,null));
-        if (mAdapter.getCount() < 1) {
-            setEmptyText(getResources().getString(R.string.accounts_empty));
-        }
     }
 
     @Override
@@ -65,6 +61,7 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
 
         return view;
     }
@@ -73,10 +70,10 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (MyOnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement MyOnFragmentInteractionListener");
         }
     }
 
@@ -91,21 +88,18 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (null != mListener) {
             Account account = (Account) mAdapter.getItem(position);
-            mListener.onFragmentInteraction(account.getIdAsString());
+            mListener.onFragmentInteractionNewTransaction(account.getIdAsString(), null ,null);
         }
     }
 
-    /**
-     * The default content for this Fragment has a TextView that is shown when
-     * the list is empty. If you would like to change the text, call this method
-     * to supply the text it should use.
-     */
-    public void setEmptyText(CharSequence emptyText) {
-        View emptyView = mListView.getEmptyView();
 
-        if (emptyView instanceof TextView) {
-            ((TextView) emptyView).setText(emptyText);
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        if (null != mListener) {
+            Account account = (Account) mAdapter.getItem(position);
+            mListener.onFragmentInteractionEdit(account.getIdAsString(), MyOnFragmentInteractionListener.ACTION_EDIT_ACCOUNT);
         }
+        return false;
     }
 
     /**

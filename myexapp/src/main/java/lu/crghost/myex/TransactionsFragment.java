@@ -14,15 +14,10 @@ import android.widget.TextView;
 
 
 import lu.crghost.myex.dummy.DummyContent;
+import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Large screen devices (such as tablets) are supported by replacing the ListView
- * with a GridView.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
- * interface.
+ * Transactions list
  */
 public class TransactionsFragment extends Fragment implements AbsListView.OnItemClickListener {
 
@@ -35,7 +30,7 @@ public class TransactionsFragment extends Fragment implements AbsListView.OnItem
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private MyOnFragmentInteractionListener mListener;
 
     /**
      * The fragment's ListView/GridView.
@@ -98,7 +93,7 @@ public class TransactionsFragment extends Fragment implements AbsListView.OnItem
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (MyOnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -117,7 +112,7 @@ public class TransactionsFragment extends Fragment implements AbsListView.OnItem
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            mListener.onFragmentInteractionEdit(DummyContent.ITEMS.get(position).id,MyOnFragmentInteractionListener.ACTION_EDIT_TRANSACTION);
         }
     }
 
