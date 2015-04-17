@@ -4,10 +4,12 @@
              android:layout_height="match_parent"
              tools:context="lu.crghost.myex.CostcentersFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <RelativeLayout
+            android:id="@+id/ccstcontainer"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/action_costcenters"/>
+            android:layout_height="match_parent">
+    </RelativeLayout>
 
 </FrameLayout>

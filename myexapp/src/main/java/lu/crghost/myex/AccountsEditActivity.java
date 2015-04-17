@@ -116,13 +116,11 @@ public class AccountsEditActivity extends Activity {
         measureArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.ameasure.setAdapter(measureArrayAdapter);
         int mpos = app.getDataManager().getMeasurePosition(measures,holder.ameasure_selected_id);
-        Log.d(TAG,"------------------Init measure position="+mpos+" id="+holder.ameasure_selected_id);
         holder.ameasure.setSelection(mpos);
         holder.ameasure.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                holder.ameasure_selected_id = holder.ameasure.getAdapter().getItemId(position);
-                Log.d(TAG,"------------Measure selected position="+ position + " id="+holder.ameasure_selected_id);
+                holder.ameasure_selected_id = ((Measure)holder.ameasure.getItemAtPosition(position)).getId();
             }
 
             @Override

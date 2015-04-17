@@ -72,6 +72,8 @@
     <!-- Costcenters -->
     <string name="costcenters_title">Costcenters</string>
     <string name="costcenters_empty">Please create a costcenter</string>
+    <string name="ccstexpand">+</string>
+    <string name="ccstcollapse">-</string>
 
     <!-- Transactions -->
     <string name="transactions_title">Transactions</string>
