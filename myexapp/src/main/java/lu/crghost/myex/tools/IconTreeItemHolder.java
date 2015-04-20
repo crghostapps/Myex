@@ -14,9 +14,11 @@ import lu.crghost.myex.R;
 public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItemHolder.IconTreeItem> {
 
     TextView textView;
+    int padding;
 
     public IconTreeItemHolder(Context context) {
         super(context);
+        padding = context.getResources().getDimensionPixelSize(R.dimen.treeviewpadding);
     }
 
     @Override
@@ -24,8 +26,26 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
         final LayoutInflater inflater = LayoutInflater.from(context);
         final View view = inflater.inflate(R.layout.simple_tree_item, null, false);
         textView = (TextView) view.findViewById(R.id.node_value);
-        textView.setText(iconTreeItem.text);
 
+        String prefix = "+ ";
+        if (treeNode.isLeaf()) {
+            prefix = ". ";
+        } else {
+            if (treeNode.isExpanded()) {
+                prefix = "- ";
+            }
+            if (treeNode.isSelected()) {
+                prefix = "> ";
+            }
+        }
+
+        String text = prefix + iconTreeItem.text + " (" + treeNode.getLevel() + ")";
+        textView.setText(text);
+        textView.setPadding(padding * (treeNode.getLevel() - 1),0,0,0);
+
+
+
+        /*
         view.findViewById(R.id.btntoggle).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,7 +53,7 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
                 getTreeView().addNode(treeNode, newFolder);
             }
         });
-
+        */
 
 
         //view.findViewById(R.id.btn_delete).setOnClickListener(new View.OnClickListener() {

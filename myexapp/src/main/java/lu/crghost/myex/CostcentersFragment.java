@@ -45,10 +45,14 @@ public class CostcentersFragment extends Fragment {
         ViewGroup containerView = (ViewGroup) rootView.findViewById(R.id.ccstcontainer);
 
         TreeNode root = TreeNode.root();
-        TreeNode parent = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ccstexpand, "RootNode"));
-        TreeNode child0 = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ccstexpand, "Child0"));
-        TreeNode child1 = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ccstexpand, "Child1"));
-        parent.addChildren(child0, child1);
+        TreeNode parent = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "RootNode"));
+        TreeNode child0 = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "Child0"));
+        TreeNode child1 = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "Child1"));
+        TreeNode parentB = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "RootNode B"));
+        TreeNode childB0 = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "ChildB0"));
+        TreeNode childB1 = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "ChildB1"));
+        parentB.addChildren(childB0,childB1);
+        parent.addChildren(child0, child1, parentB);
         root.addChild(parent);
         tView = new AndroidTreeView(getActivity(), root);
         tView.setDefaultViewHolder(IconTreeItemHolder.class);

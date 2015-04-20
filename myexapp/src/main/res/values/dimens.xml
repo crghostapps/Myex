@@ -7,4 +7,6 @@
     <dimen name="progressbar_width_main">220dp</dimen>
     <dimen name="textprogressbar_textsize">15sp</dimen>
     <dimen name="transadd_margin_titles">10dp</dimen>
+
+    <dimen name="treeviewpadding">10dp</dimen>
 </resources>
