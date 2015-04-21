@@ -1,8 +1,10 @@
 package lu.crghost.myex.tools;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import com.unnamed.b.atv.model.TreeNode;
 import lu.crghost.myex.R;
@@ -13,54 +15,74 @@ import lu.crghost.myex.R;
  */
 public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItemHolder.IconTreeItem> {
 
+    private static final String TAG = "IconTreeItemHolder";
+
     TextView textView;
+    ImageButton btnToggle;
+    Context context;
     int padding;
 
     public IconTreeItemHolder(Context context) {
         super(context);
+        this.context = context;
         padding = context.getResources().getDimensionPixelSize(R.dimen.treeviewpadding);
     }
 
     @Override
-    public View createNodeView(final TreeNode treeNode, IconTreeItemHolder.IconTreeItem iconTreeItem) {
+    public View createNodeView(final TreeNode treeNode, final IconTreeItemHolder.IconTreeItem iconTreeItem) {
         final LayoutInflater inflater = LayoutInflater.from(context);
         final View view = inflater.inflate(R.layout.simple_tree_item, null, false);
+
         textView = (TextView) view.findViewById(R.id.node_value);
-
-        String prefix = "+ ";
-        if (treeNode.isLeaf()) {
-            prefix = ". ";
-        } else {
-            if (treeNode.isExpanded()) {
-                prefix = "- ";
-            }
-            if (treeNode.isSelected()) {
-                prefix = "> ";
-            }
-        }
-
-        String text = prefix + iconTreeItem.text + " (" + treeNode.getLevel() + ")";
+        String text = iconTreeItem.text + " (" + treeNode.getLevel() + ")";
         textView.setText(text);
-        textView.setPadding(padding * (treeNode.getLevel() - 1),0,0,0);
-
-
-
         /*
-        view.findViewById(R.id.btntoggle).setOnClickListener(new View.OnClickListener() {
+        textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TreeNode newFolder = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ccstexpand, "New ?"));
-                getTreeView().addNode(treeNode, newFolder);
+                //Log.d(TAG, "Click on node " + iconTreeItem.id);
+                mClickListener.onIconTreeClick(iconTreeItem.id);
             }
         });
-        */
+        textView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mClickListener.onIconTreeLongClick(iconTreeItem.id);
+                return false;
+            }
+        });
+         */
+
+        // Expand or collapse with imagebutton
+        btnToggle = (ImageButton) view.findViewById(R.id.btnToggle);
+        btnToggle.setPadding(padding * (treeNode.getLevel() - 1), 0, 0, 0);
+        int iconres = R.drawable.ic_action_expand;
+        if (treeNode.isLeaf()) {
+            iconres = R.drawable.ic_action_leaf;
+        } else {
+            if (treeNode.isExpanded()) {
+                iconres = R.drawable.ic_action_collapse;
+            }
+            if (treeNode.isSelected()) {
+            }
+        }
+        btnToggle.setImageDrawable(context.getResources().getDrawable(iconres));
+        btnToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!treeNode.isLeaf()) {
+                    if (treeNode.isExpanded()) {
+                        getTreeView().collapseNode(treeNode);
+                        btnToggle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_expand));
+                    } else {
+                        getTreeView().expandNode(treeNode);
+                        btnToggle.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_collapse));
+                    }
+                }
+            }
+        });
 
 
-        //view.findViewById(R.id.btn_delete).setOnClickListener(new View.OnClickListener() {
-        //    public void onClick(View v) {
-        //        getTreeView().removeNode(node);
-        //    }
-        //});
 
         // Root node
         if (treeNode.getLevel() == 1) {
@@ -76,12 +98,13 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
     }
 
     public static class IconTreeItem {
-        public int icon;
+        public long id;
         public String text;
 
-        public IconTreeItem(int icon, String text) {
-            this.icon = icon;
+        public IconTreeItem(long id, String text) {
+            this.id   = id;
             this.text = text;
         }
     }
+
 }

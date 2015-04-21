@@ -20,7 +20,7 @@ import java.util.List;
 
 public class AccountsEditActivity extends Activity {
 
-    private static final String TAG = "DebtorsEditActivity";
+    private static final String TAG = "AccountsEditActivity";
 
     private MyExApp app;
     private boolean isupdate;

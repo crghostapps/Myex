@@ -22,7 +22,7 @@ public class DaoGeotrack implements DbDao<Geotrack> {
 
     @Override
     public long save(Geotrack type) {
-        return db.insert(Geotrack.TABLE_NAME, null, type.getContentValues(true));
+        return db.insert(Geotrack.TABLE_NAME, null, type.getContentValues(false));
     }
 
     @Override

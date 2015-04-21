@@ -22,7 +22,7 @@ public class DaoMeasure implements DbDao<Measure> {
 
     @Override
     public long save(Measure type) {
-        return db.insert(Measure.TABLE_NAME, null, type.getContentValues(true));
+        return db.insert(Measure.TABLE_NAME, null, type.getContentValues(false));
     }
 
     @Override

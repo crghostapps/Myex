@@ -76,6 +76,26 @@ public class DataManager {
         openDb();
     }
 
+
+    /**
+     * Get position of an id in a list
+     * @param list
+     * @param id
+     * @return
+     */
+    public int getPositionInList(List<BaseModel> list, long id) {
+        int cpos = 0;
+        int position = 0;
+        for (BaseModel m : list) {
+            if (m.getId()==id) {
+                position = cpos;
+                break;
+            }
+            cpos++;
+        }
+        return position;
+    }
+
     /***********************************************************************************************
      * Account
      ***********************************************************************************************/
@@ -145,6 +165,8 @@ public class DataManager {
         daoCostcenter.update(type);
     }
 
+    public void deleteCostcenter(Costcenter type) { daoCostcenter.delete(type); }
+
     /***********************************************************************************************
      * Geotrack
      ***********************************************************************************************/
@@ -185,10 +207,10 @@ public class DataManager {
 
     public void deleteMeasure(Measure type) { daoMeasure.delete(type); }
 
-    public int getMeasurePosition(List<Measure> mesures, long id) {
+    public int getMeasurePosition(List<Measure> list, long id) {
         int cpos = 0;
         int position = 0;
-        for (Measure m : mesures) {
+        for (Measure m : list) {
             if (m.getId()==id) {
                 position = cpos;
                 break;

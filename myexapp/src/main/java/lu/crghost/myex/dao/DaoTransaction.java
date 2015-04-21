@@ -22,7 +22,7 @@ public class DaoTransaction implements DbDao<Transaction> {
 
     @Override
     public long save(Transaction type) {
-        return db.insert(Transaction.TABLE_NAME, null, type.getContentValues(true));
+        return db.insert(Transaction.TABLE_NAME, null, type.getContentValues(false));
     }
 
     @Override

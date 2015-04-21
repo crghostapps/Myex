@@ -23,7 +23,7 @@ public class DaoCostcenter implements DbDao<Costcenter> {
 
     @Override
     public long save(Costcenter type) {
-        return db.insert(Costcenter.TABLE_NAME, null, type.getContentValues(true));
+        return db.insert(Costcenter.TABLE_NAME, null, type.getContentValues(false));
     }
 
     @Override

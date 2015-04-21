@@ -22,7 +22,7 @@ public class DaoAccount implements DbDao<Account> {
 
     @Override
     public long save(Account type) {
-        return db.insert(Account.TABLE_NAME, null, type.getContentValues(true));
+        return db.insert(Account.TABLE_NAME, null, type.getContentValues(false));
     }
 
     @Override

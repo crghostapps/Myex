@@ -3,12 +3,20 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:padding="6dip">
+              android:paddingLeft="6dip">
 
+    <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnToggle"
+            android:src="@drawable/ic_action_expand"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"/>
     <TextView
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:text="New Text"
             android:id="@+id/node_value"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical" android:layout_gravity="center_vertical" android:layout_marginLeft="5dp"
+            style="@style/Base.TextAppearance.AppCompat.Widget.DropDownItem"/>
 </LinearLayout>

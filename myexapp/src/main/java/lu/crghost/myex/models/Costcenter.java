@@ -13,7 +13,7 @@ import lu.crghost.cralib.tools.HashCodeUtil;
 import static android.provider.BaseColumns._ID;
 
 /**
- * Created by CR on 23/12/2014.
+ * Costcenter model
  */
 public class Costcenter extends BaseModel implements BaseModelInterface {
 
@@ -44,10 +44,10 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
     private int isdefaultcct;
     private long measure_id;
 
-    public static final int TYPE_INCOME  = 1;
-    public static final int TYPE_EXPENSE = 2;
-    public static final int MAXLEVEL = 4;			// 1->4
-    public static final int MAXSTDID = 4;			// Id's 1-4 are fixed
+    public static final int TYPE_INCOME  = 0;
+    public static final int TYPE_EXPENSE = 1;
+    //public static final int MAXLEVEL = 4;			// 1->4
+    //public static final int MAXSTDID = 4;			// Id's 1-4 are fixed
 
     public Costcenter() {};
     public Costcenter(ContentValues c) { setValues(c); }
@@ -207,7 +207,8 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
 
     @Override
     public String toString() {
-        return "Costcenter [id="+this.getId()+ " " + getName() +"]";
+        //return "Costcenter [id="+this.getId()+ " " + getName() +"]";
+        return getName();
     }
 
     @Override

@@ -26,6 +26,10 @@
             android:name=".AccountsEditActivity"
             android:label="@string/accounts_title" >
         </activity>
+        <activity
+            android:name=".CostcentersEditActivity"
+            android:label="@string/title_activity_costcenters_edit" >
+        </activity>
     </application>
 
 </manifest>
