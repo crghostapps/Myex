@@ -166,6 +166,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                         startActivityForResult(debtorsedit, TABITEM_DEBTORS);
                         return true;
                     case TABITEM_TRANSACTIONS:
+                        Intent transactionedit = new Intent(this,TransactionsEditActivity.class);
+                        transactionedit.putExtra("id", 0L);
+                        startActivityForResult(transactionedit, TABITEM_TRANSACTIONS);
                         return true;
                     default:
                 }
@@ -237,6 +240,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 Intent costcenteredit = new Intent(this,CostcentersEditActivity.class);
                 costcenteredit.putExtra("id", costcenter_id);
                 startActivityForResult(costcenteredit, TABITEM_COSTCENTERS);
+                break;
+            case MyOnFragmentInteractionListener.ACTION_EDIT_TRANSACTION:
+                long transaction_id = Long.parseLong(id);
+                Intent transactionedit = new Intent(this,TransactionsEditActivity.class);
+                transactionedit.putExtra("id", transaction_id);
+                startActivityForResult(transactionedit, TABITEM_TRANSACTIONS);
                 break;
         }
     }

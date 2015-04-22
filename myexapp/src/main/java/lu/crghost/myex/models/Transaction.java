@@ -76,6 +76,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     public Transaction(Cursor c) {
         setValues(c);
     }
+    public Transaction(android.database.Cursor c) { setValues(c); }
 
     /**
      * Create table
@@ -169,6 +170,27 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         }
     }
 
+    public void setValues(android.database.Cursor c) {
+        if (c!=null) {
+            setId(c.getLong(0));
+            setDescription(c.getString(1));
+            setTranstype(c.getInt(2));
+            setCostcenter_id(c.getLong(3));
+            setAccount_id(c.getLong(4));
+            setAccount_target_id(c.getLong(5));
+            setDebitor_id(c.getLong(6));
+            setAmount(new BigDecimal(c.getDouble(7)));
+            setMeasure(new BigDecimal(c.getDouble(8)));
+            setMeasure_id(c.getLong(9));
+            setLatitude(new BigDecimal(c.getDouble(10)));
+            setLongitude(new BigDecimal(c.getDouble(11)));
+            setAltitude(new BigDecimal(c.getDouble(12)));
+            setAmount_at(c.getString(13));
+            setCreated_at(c.getString(14));
+            setUpdated_at(c.getString(15));
+        }
+    }
+
 
     public String getDescription() {
         return description;
@@ -219,6 +241,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     }
 
     public BigDecimal getAmount() {
+        if (amount==null) return BigDecimal.ZERO;
         return amount;
     }
 
@@ -227,6 +250,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     }
 
     public BigDecimal getMeasure() {
+        if (measure==null) return BigDecimal.ZERO;
         return measure;
     }
 
@@ -243,6 +267,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     }
 
     public BigDecimal getLatitude() {
+        if (latitude==null) return BigDecimal.ZERO;
         return latitude;
     }
 
@@ -251,6 +276,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     }
 
     public BigDecimal getLongitude() {
+        if (longitude==null) return BigDecimal.ZERO;
         return longitude;
     }
 
@@ -304,6 +330,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     }
 
     public BigDecimal getAltitude() {
+        if (altitude==null) return BigDecimal.ZERO;
         return altitude;
     }
 

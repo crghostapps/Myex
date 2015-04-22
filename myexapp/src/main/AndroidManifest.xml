@@ -30,6 +30,16 @@
             android:name=".CostcentersEditActivity"
             android:label="@string/title_activity_costcenters_edit" >
         </activity>
+
+        <provider
+            android:name=".TransactionsProvider"
+            android:authorities="lu.crghost.myex.trans"
+            android:exported="false" />
+
+        <activity
+            android:name=".TransactionsEditActivity"
+            android:label="@string/title_activity_transactions_edit" >
+        </activity>
     </application>
 
 </manifest>

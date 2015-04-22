@@ -1,10 +1,8 @@
 package lu.crghost.myex;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +20,13 @@ import java.util.List;
 /**
  * Costcenters treelist
  */
-public class CostcentersFragment extends Fragment {
+public class CostcentersFragment extends Fragment implements IconTreeItemHolder.IconItemClickListener {
 
 
     private static final String TAG = "CostcentersFragment";
     MyExApp app;
     private MyOnFragmentInteractionListener mListener;
+
 
     AndroidTreeView tView;
 
@@ -43,7 +42,7 @@ public class CostcentersFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (MyExApp) getActivity().getApplication();
-        debug();
+        //debug();
     }
 
     @Override
@@ -51,38 +50,17 @@ public class CostcentersFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_costcenters, container, false);
         ViewGroup containerView = (ViewGroup) rootView.findViewById(R.id.ccstcontainer);
 
-        /*
-        TreeNode root = TreeNode.root();
-        TreeNode parent = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "RootNode"));
-        TreeNode child0 = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "Child0"));
-        TreeNode child1 = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "Child1"));
-        TreeNode parentB = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "RootNode B"));
-        TreeNode childB0 = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "ChildB0"));
-        TreeNode childB1 = new TreeNode(new IconTreeItemHolder.IconTreeItem(0, "ChildB1"));
-        parentB.addChildren(childB0,childB1);
-        parent.addChildren(child0, child1, parentB);
-
-        root.addChild(parent);
-
-        */
-
         TreeNode root = TreeNode.root();
         List<Costcenter> roots = app.getDataManager().getCostcenters("parent_id=?",new String[]{"0"});
         for (Costcenter cc : roots) {
-            TreeNode parent = new TreeNode(new IconTreeItemHolder.IconTreeItem(cc.getId(),cc.getName()));
-            Log.d(TAG,"parent="+cc.getName() );
+            IconTreeItemHolder myHolder = new IconTreeItemHolder(this.getActivity(),this);
+            TreeNode parent = new TreeNode(new IconTreeItemHolder.IconTreeItem(cc.getId(),cc.getName())).setViewHolder(myHolder);
+            //Log.d(TAG,"parent="+cc.getName() );
             List<TreeNode> childs = getChilds(cc.getId());
             if (childs != null) parent.addChildren(childs);
             root.addChildren(parent);
         }
         tView = new AndroidTreeView(getActivity(), root);
-        tView.setDefaultViewHolder(IconTreeItemHolder.class);
-        tView.setDefaultNodeClickListener(new TreeNode.TreeNodeClickListener() {
-            @Override
-            public void onClick(TreeNode treeNode, Object o) {
-                Log.d(TAG,"------------------------------------click in tree--------------------------------------------");
-            }
-        });
         containerView.addView(tView.getView());
 
         return rootView;
@@ -94,8 +72,9 @@ public class CostcentersFragment extends Fragment {
         if (childs != null) {
             childtrees = new ArrayList<TreeNode>();
             for (Costcenter costcenter : childs) {
-                TreeNode child = new TreeNode(new IconTreeItemHolder.IconTreeItem(costcenter.getId(),costcenter.getName()));
-                Log.d(TAG,"child="+costcenter.getName());
+                IconTreeItemHolder myHolder = new IconTreeItemHolder(this.getActivity(),this);
+                TreeNode child = new TreeNode(new IconTreeItemHolder.IconTreeItem(costcenter.getId(),costcenter.getName())).setViewHolder(myHolder);
+                //Log.d(TAG,"child="+costcenter.getName());
                 List<TreeNode> childchilds = getChilds(costcenter.getId());
                 if (childchilds != null) child.addChildren(childchilds);
                 childtrees.add(child);
@@ -130,4 +109,17 @@ public class CostcentersFragment extends Fragment {
     }
 
 
+    @Override
+    public void onIconItemClick(long costcenter_id) {
+        if (null != mListener) {
+            mListener.onFragmentInteractionNewTransaction(null,Long.toString(costcenter_id),null);
+        }
+    }
+
+    @Override
+    public void onIconItemLongClick(long costcenter_id) {
+        if (null != mListener) {
+            mListener.onFragmentInteractionEdit(Long.toString(costcenter_id), MyOnFragmentInteractionListener.ACTION_EDIT_COSTCENTER);
+        }
+    }
 }

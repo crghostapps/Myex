@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import android.widget.TextView;
 import lu.crghost.myex.models.Account;
 import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
 

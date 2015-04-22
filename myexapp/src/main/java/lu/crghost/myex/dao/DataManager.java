@@ -2,18 +2,18 @@ package lu.crghost.myex.dao;
 
 import android.content.Context;
 import lu.crghost.myex.models.*;
+import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 import android.os.SystemClock;
 import android.util.Log;
 
-import java.security.MessageDigest;
 import java.util.List;
 
 import lu.crghost.myex.conf.MyExProperties;
 
 /**
- * Created by CR on 24/12/2014.
+ * Central data access
  */
 public class DataManager {
 
@@ -239,6 +239,15 @@ public class DataManager {
         daoTransaction.update(type);
     }
 
+    public void deleteTransaction(Transaction type) { daoTransaction.delete(type);}
+
+    public Cursor getTransactionsCursor(String selection, String[] selectionArgs, String order) {
+        return daoTransaction.getCursorAll(selection,selectionArgs,order);
+    }
+
+    public Cursor getTransactionCursorById(long id) {
+        return daoTransaction.getCursorById(id);
+    }
 
 
 

@@ -22,10 +22,13 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
     Context context;
     int padding;
 
-    public IconTreeItemHolder(Context context) {
+    IconItemClickListener mListener;
+
+    public IconTreeItemHolder(Context context, IconItemClickListener listener) {
         super(context);
         this.context = context;
         padding = context.getResources().getDimensionPixelSize(R.dimen.treeviewpadding);
+        mListener = listener;
     }
 
     @Override
@@ -34,24 +37,23 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
         final View view = inflater.inflate(R.layout.simple_tree_item, null, false);
 
         textView = (TextView) view.findViewById(R.id.node_value);
-        String text = iconTreeItem.text + " (" + treeNode.getLevel() + ")";
+        String text = iconTreeItem.text;
         textView.setText(text);
-        /*
+
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Log.d(TAG, "Click on node " + iconTreeItem.id);
-                mClickListener.onIconTreeClick(iconTreeItem.id);
+                mListener.onIconItemClick(iconTreeItem.id);
             }
         });
         textView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mClickListener.onIconTreeLongClick(iconTreeItem.id);
+                mListener.onIconItemLongClick(iconTreeItem.id);
                 return false;
             }
         });
-         */
+
 
         // Expand or collapse with imagebutton
         btnToggle = (ImageButton) view.findViewById(R.id.btnToggle);
@@ -82,8 +84,6 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
             }
         });
 
-
-
         // Root node
         if (treeNode.getLevel() == 1) {
             //view.findViewById(R.id.btn_delete).setVisibility(View.GONE);
@@ -105,6 +105,11 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
             this.id   = id;
             this.text = text;
         }
+    }
+
+    public interface IconItemClickListener {
+        public void onIconItemClick(long costcenter_id);
+        public void onIconItemLongClick(long costcenter_id);
     }
 
 }

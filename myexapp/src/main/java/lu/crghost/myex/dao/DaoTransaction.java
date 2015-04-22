@@ -74,4 +74,41 @@ public class DaoTransaction implements DbDao<Transaction> {
         if (!c.isClosed()) c.close();
         return types;
     }
+
+    /**
+     * Returns a cursor for selection
+     * @param selection
+     * @param selectionArgs
+     * @param order
+     * @return
+     */
+    public Cursor getCursorAll(String selection, String[] selectionArgs, String order) {
+        if (order==null) order = Transaction.SORT_ORDER;
+        Cursor c = db.query(Transaction.TABLE_NAME,
+                Transaction.FIELD_NAMES,
+                selection, selectionArgs,
+                null,null,order,null);
+        return c;
+    }
+
+    /**
+     * Returns a cursor for id
+     * @param id
+     * @return
+     */
+    public Cursor getCursorById(long id) {
+        Cursor c = db.query(Transaction.TABLE_NAME,
+                Transaction.FIELD_NAMES,
+                BaseColumns._ID +"=?", new String[]{ String.valueOf(id) },
+                null,null,null,"1");
+        return c;
+    }
+
+    public android.database.Cursor getNativeCursorById(long id) {
+        android.database.Cursor c = db.query(Transaction.TABLE_NAME,
+                Transaction.FIELD_NAMES,
+                BaseColumns._ID +"=?", new String[]{ String.valueOf(id) },
+                null,null,null,"1");
+        return c;
+    }
 }
