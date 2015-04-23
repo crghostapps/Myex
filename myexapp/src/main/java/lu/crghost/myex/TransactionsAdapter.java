@@ -1,5 +1,6 @@
 package lu.crghost.myex;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -21,12 +22,16 @@ public class TransactionsAdapter extends SimpleCursorAdapter {
     private int layout;
     private Context context;
     private int orientation;
+    private String currencySymbol;
 
-    public TransactionsAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
-        super(context, layout, c, from, to, flags);
+    public TransactionsAdapter(Context context, int layout, Cursor c, String[] from, int[] to, String currencySymbol) {
+        super(context, layout, c, from, to, 0);
         this.layout = layout;
         this.context = context;
+        this.currencySymbol = currencySymbol;
+        if (this.currencySymbol==null) this.currencySymbol="";
         this.orientation = context.getResources().getConfiguration().orientation;
+        Log.d(TAG,"--------------adapter created------------------");
     }
 
     @Override
@@ -68,16 +73,17 @@ public class TransactionsAdapter extends SimpleCursorAdapter {
         } else {
             itemdescription = (TextView) v.findViewById(R.id.item_trans_description);
             itemcostcenter  = (TextView) v.findViewById(R.id.item_trans_costcenter);
-            itemamount  = (TextView) v.findViewById(R.id.item_trans_description);
+            itemamount  = (TextView) v.findViewById(R.id.item_trans_amount);
             holder = new ViewHolder(itemdescription,itemcostcenter,itemamount);
             v.setTag(holder);
         }
 
         if (itemdescription != null) {
             Transaction transaction = new Transaction(c);
+            Log.d(TAG, "--"+transaction);
             itemdescription.setText(transaction.getDescription());
-            itemcostcenter.setText(transaction.getCostcenter_id()+"");
-            itemamount.setText(Formats.frDecimalFormat.format(0)+"€");
+            itemcostcenter.setText("ccid="+transaction.getCostcenter_id());
+            itemamount.setText(Formats.frDecimalFormat.format(0)+ currencySymbol);
         }
 
     }

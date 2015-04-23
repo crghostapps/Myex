@@ -1,7 +1,7 @@
 package lu.crghost.myex.models;
 
 import android.content.ContentValues;
-import net.sqlcipher.Cursor;
+import android.database.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;

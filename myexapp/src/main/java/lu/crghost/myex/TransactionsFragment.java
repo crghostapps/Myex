@@ -1,15 +1,12 @@
 package lu.crghost.myex;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.app.ListFragment;
 import android.app.SearchManager;
 
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,16 +17,18 @@ import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.provider.BaseColumns._ID;
+
 /**
  * Transactions list
  */
-public class TransactionsFragment extends Fragment implements LoaderCallbacks<Cursor> {
+public class TransactionsFragment extends ListFragment  {
 
 
     private static final String TAG = "TransactionsFragment";
 
+
     SimpleCursorAdapter mAdapter;
-    ListView mListView;
     String mSearchFilter;
     String selectedFilter;				// Selected Filter
     MyExApp app;
@@ -63,39 +62,31 @@ public class TransactionsFragment extends Fragment implements LoaderCallbacks<Cu
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_transactions, container, false);
 
-        // Click on list
-        mListView = (ListView) view.findViewById(android.R.id.list);
-        mListView.setEmptyView(view.findViewById(android.R.id.empty));
-        mListView.setClickable(true);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-                if (null != mListener) {
-                    mListener.onFragmentInteractionEdit(Long.toString(id), MyOnFragmentInteractionListener.ACTION_EDIT_TRANSACTION);
-                    //getActivity().getLoaderManager().restartLoader(0, null, TransactionsFragment.this);
-                }
-
-            }
-
-        });
-
-        // Fill the list
-        /*
+        Cursor c = getTransactions();
+        getActivity().startManagingCursor(c);
         mAdapter = new TransactionsAdapter(
                 view.getContext(),
                 R.layout.fragment_transactions_item,
-                null,
+                c,
                 new String[] {"description"},
-                new int[] {R.id.item_trans_description}, 0
-        );*/
-        mAdapter = new SimpleCursorAdapter(view.getContext(),android.R.layout.simple_list_item_1,null,new String[] {"description"},
-                new int[] {R.id.item_trans_description}, 0);
-        mListView.setAdapter(mAdapter);
-        getActivity().getSupportLoaderManager().initLoader(0,null,this);
-
-        Log.d(TAG,"--------------------------Adaptercount="+ mAdapter.getCount());
+                new int[] {android.R.id.text1},
+                app.getPrefs().getString("currency",""));
+        setListAdapter(mAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "-------------longclick on " + id);
+                getListView().deferNotifyDataSetChanged();
+                return false;
+            }
+        });
     }
 
     @Override
@@ -104,8 +95,7 @@ public class TransactionsFragment extends Fragment implements LoaderCallbacks<Cu
         try {
             mListener = (MyOnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+            throw new ClassCastException(activity.toString() + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -115,35 +105,31 @@ public class TransactionsFragment extends Fragment implements LoaderCallbacks<Cu
         mListener = null;
     }
 
-
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        mListener.onFragmentInteractionEdit(Long.toString(id), MyOnFragmentInteractionListener.ACTION_EDIT_TRANSACTION);
+        getListView().deferNotifyDataSetChanged();
+    }
+
+    /**
+     * Manage data
+     * @return
+     */
+    private Cursor getTransactions() {
+        final String[] PROJECTION = new String[] {_ID,"description"};
         Uri uri = TransactionsProvider.CONTENT_URI;
-        CursorLoader mLoader = new CursorLoader(this.getActivity(), uri, null, null, null, null);
         String selection = null;
+        String[] selectionArgsArray = null;
         List<String> selectionArgs = new ArrayList<String>();
         if (mSearchFilter != null) {
             selection = "description LIKE ?";
             selectionArgs.add("%" + mSearchFilter + "%");
         }
         if (selection != null) {
-            final String[] SELECTION_ARGS = new String[selectionArgs.size()];
-            selectionArgs.toArray(SELECTION_ARGS);
-            mLoader.setSelection(selection);
-            mLoader.setSelectionArgs(SELECTION_ARGS);
+            selectionArgsArray = new String[selectionArgs.size()];
+            selectionArgs.toArray(selectionArgsArray);
         }
-        Log.d(TAG,"----------------------Loader oncreate--------------------------");
-        return mLoader;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
+        return getActivity().managedQuery(uri,PROJECTION,selection,selectionArgsArray,null);
     }
 
 

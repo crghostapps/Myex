@@ -1,7 +1,7 @@
 package lu.crghost.myex.models;
 
 import android.content.ContentValues;
-import net.sqlcipher.Cursor;
+import android.database.Cursor;
 
 /**
  * Created by CR on 23/12/2014.
