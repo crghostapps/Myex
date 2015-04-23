@@ -40,6 +40,10 @@
             android:name=".TransactionsEditActivity"
             android:label="@string/title_activity_transactions_edit" >
         </activity>
+        <activity
+            android:name=".ExportActivity"
+            android:label="@string/title_activity_export" >
+        </activity>
     </application>
 
 </manifest>

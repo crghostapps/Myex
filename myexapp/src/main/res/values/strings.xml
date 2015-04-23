@@ -13,16 +13,23 @@
     <string name="action_debtors">Debtors</string>
     <string name="action_transactions">Transactions</string>
     <string name="action_basicdata">Basic data</string>
+    <string name="action_export">Exports</string>
     <string name="action_import">Imports</string>
     <string name="action_new_transaction">New transaction</string>
 
     <!-- Preferences -->
-    <string name="pref_username">Your name:</string>
-    <string name="pref_username_long">Your name will only be user for internal proposes</string>
-    <string name="pref_email">Your email:</string>
-    <string name="pref_email_long">For sending your reports</string>
-    <string name="pref_currency">Currency Symbol:</string>
+    <string name="pref_username">Your name</string>
+    <string name="pref_username_long">Your name will only be used for internal proposes</string>
+    <string name="pref_email">Your email adress</string>
+    <string name="pref_email_long">For sending your reports, will only be used for internal proposes</string>
+    <string name="pref_currency">Currency Symbol</string>
     <string name="currencydefault">€</string>
+    <string name="prefscreen_advanced">Advanced ...</string>
+    <string name="pref_bkserver">Backup sftp-server</string>
+    <string name="pref_bkserver_long">Full path to sftp server for doing backups (sftp:&#47;&#47;&lt;username&gt;&#64;&lt;hostname&gt;:&lt;port&gt;&#47;&lt;path&gt;&#47;)</string>
+    <string name="pref_bkserverpass">Backup server\'s password</string>
+    <string name="pref_decryptdb">Decrypt data before exporting</string>
+    <string name="pref_decryptdb_long">Local data is encrypted, decrypt it before sending to backup server (!! secutrity risk !!))</string>
 
     <!-- edit -->
     <string name="menu_save">save</string>
@@ -102,6 +109,10 @@
     <string name="transactions_delete_confirmation">Are you shure that you want to delete this transaction?</string>
     <string name="transactions_deleted">Transaction deleted</string>
 
+    <!-- Exports -->
+    <string name="export_backup">Backup</string>
+    <string name="export_mail_transactions">Transactions sheet</string>
+
     <!-- Initial data -->
     <string name="data_account1">Wallet</string>
     <string name="data_account2">Current account</string>
@@ -132,6 +143,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_costcenters_edit">CostcentersEditActivity</string>
     <string name="title_activity_transactions_edit">TransactionsEditActivity</string>
+    <string name="title_activity_export">ExportActivity</string>
 
 
 </resources>

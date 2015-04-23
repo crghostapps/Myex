@@ -25,4 +25,29 @@
             android:defaultValue="@string/currencydefault"
             />
 
+    <PreferenceScreen
+            android:key="prefadvanced" android:title="@string/prefscreen_advanced" android:persistent="false"
+            >
+
+        <EditTextPreference
+                android:title="@string/pref_bkserver"
+                android:summary="@string/pref_bkserver_long"
+                android:inputType="textUri"
+                android:defaultValue="sftp:///"
+                />
+
+        <EditTextPreference
+                android:title="@string/pref_bkserverpass"
+                android:inputType="textPassword"
+                />
+
+        <CheckBoxPreference
+                android:title="@string/pref_decryptdb"
+                android:summary="@string/pref_decryptdb_long"
+                android:defaultValue="true"
+                />
+
+
+    </PreferenceScreen>
+
 </PreferenceScreen>
