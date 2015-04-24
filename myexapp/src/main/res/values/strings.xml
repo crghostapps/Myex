@@ -26,7 +26,8 @@
     <string name="currencydefault">€</string>
     <string name="prefscreen_advanced">Advanced ...</string>
     <string name="pref_bkserver">Backup sftp-server</string>
-    <string name="pref_bkserver_long">Full path to sftp server for doing backups (sftp:&#47;&#47;&lt;username&gt;&#64;&lt;hostname&gt;:&lt;port&gt;&#47;&lt;path&gt;&#47;)</string>
+    <string name="pref_bkserver_error">Barckupserver url is invalid</string>
+    <string name="pref_bkserver_long">Full path to sftp server for doing backups (username&gt;&#64;&lt;hostname&gt;:&lt;port&gt;&#47;&lt;path&gt;&#47;)</string>
     <string name="pref_bkserverpass">Backup server\'s password</string>
     <string name="pref_decryptdb">Decrypt data before exporting</string>
     <string name="pref_decryptdb_long">Local data is encrypted, decrypt it before sending to backup server (!! secutrity risk !!))</string>
@@ -110,7 +111,8 @@
     <string name="transactions_deleted">Transaction deleted</string>
 
     <!-- Exports -->
-    <string name="export_backup">Backup</string>
+    <string name="export_backup">Backup data</string>
+    <string name="export_backup_end">Backup sended to server</string>
     <string name="export_mail_transactions">Transactions sheet</string>
 
     <!-- Initial data -->

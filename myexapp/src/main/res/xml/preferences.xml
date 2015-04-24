@@ -30,23 +30,18 @@
             >
 
         <EditTextPreference
+                android:key="pref_bkserver"
                 android:title="@string/pref_bkserver"
                 android:summary="@string/pref_bkserver_long"
                 android:inputType="textUri"
-                android:defaultValue="sftp:///"
+                android:defaultValue="sftp://cr@mhfatest.munhowen.lu:8022"
                 />
 
         <EditTextPreference
+                android:key="pref_bkserverpass"
                 android:title="@string/pref_bkserverpass"
                 android:inputType="textPassword"
                 />
-
-        <CheckBoxPreference
-                android:title="@string/pref_decryptdb"
-                android:summary="@string/pref_decryptdb_long"
-                android:defaultValue="true"
-                />
-
 
     </PreferenceScreen>
 
