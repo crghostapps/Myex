@@ -24,8 +24,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="action_export_backup"
-            android:layout_below="@+id/export_mail_transactions" android:layout_alignParentLeft="true"
+            android:layout_below="@+id/export_mail_transactions"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
+
+    <Button
+            android:id="@+id/export_dump"
+            android:text="@string/export_dump"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="action_export_dump"
+            android:layout_below="@+id/export_backup"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
     <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"

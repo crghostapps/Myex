@@ -10,7 +10,7 @@ import android.os.Environment;
  */
 public final class MyExProperties {
 
-    private static final String APP_PACKAGE_NAME = "lu.crghost.myex";
+    public static final String APP_PACKAGE_NAME = "lu.crghost.myex";
     public static final String  DATABASE_NAME = "myex.db" ;
     public static final String  DATABASE_NAME_CLEAN = "myexclean.db" ;
     private static final String EXTERNAL_DATA_DIR_NAME = "myexdata";

@@ -114,6 +114,9 @@
     <string name="export_backup">Backup data</string>
     <string name="export_backup_end">Backup sended to server</string>
     <string name="export_mail_transactions">Transactions sheet</string>
+    <string name="export_dump">SQL-Dump and mail</string>
+    <string name="export_dump_end">Data dumped and mailed</string>
+    <string name="export_dump_msg">The data will be send un-encrypted</string>
 
     <!-- Initial data -->
     <string name="data_account1">Wallet</string>

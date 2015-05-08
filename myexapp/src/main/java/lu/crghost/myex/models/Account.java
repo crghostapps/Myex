@@ -21,6 +21,20 @@ public class Account extends BaseModel implements BaseModelInterface {
     private static final String TAG="Account";
 
     public static final String TABLE_NAME = "accounts";
+
+    public static final String TABLE_SQLCRE =  "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
+            _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "  acname TEXT NULL ,"+
+            "  acnumber TEXT NULL ,"+
+            "  actype INT NULL ,"+
+            "  iconpath TEXT NULL," +
+            "  initbalance NUMERIC, " +
+            "  limitamount NUMERIC," +
+            "  cost_per_measure NUMERIC," +
+            "  measure_id INT NULL," +
+            "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
+            "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );"
+            ;
     public static final String[] FIELD_NAMES = new String[] {
             BaseColumns._ID,
             "acname",
@@ -76,19 +90,7 @@ public class Account extends BaseModel implements BaseModelInterface {
      * @param db
      */
     public static void onCreate(SQLiteDatabase db) {
-        db.execSQL(
-                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
-                        _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "  acname TEXT NULL ,"+
-                        "  acnumber TEXT NULL ,"+
-                        "  actype INT NULL ,"+
-                        "  iconpath TEXT NULL," +
-                        "  initbalance NUMERIC, " +
-                        "  limitamount NUMERIC," +
-                        "  cost_per_measure NUMERIC," +
-                        "  measure_id INT NULL," +
-                        "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
-                        "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );");
+        db.execSQL(TABLE_SQLCRE);
         Log.i(TAG, TABLE_NAME + " created");
 
     }
