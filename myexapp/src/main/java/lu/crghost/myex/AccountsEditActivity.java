@@ -34,9 +34,6 @@ public class AccountsEditActivity extends Activity {
         public long atype_selected_id;
         public EditText ainitbalance;
         public EditText alimitamount;
-        public Spinner  ameasure;
-        public long ameasure_selected_id;
-        public EditText ameasurecost;
     }
     ViewHolder holder;
 
@@ -52,9 +49,6 @@ public class AccountsEditActivity extends Activity {
         holder.atype_selected_id = 0;
         holder.ainitbalance = (EditText) findViewById(R.id.account_initbalance);
         holder.alimitamount = (EditText) findViewById(R.id.account_limitamount);
-        holder.ameasure = (Spinner) findViewById(R.id.account_measure);
-        holder.ameasure_selected_id = 0;
-        holder.ameasurecost = (EditText) findViewById(R.id.account_measure_cost);
 
         app = (MyExApp) getApplication();
 
@@ -73,8 +67,6 @@ public class AccountsEditActivity extends Activity {
                 holder.atype_selected_id = account.getActype();
                 holder.ainitbalance.setText(lu.crghost.cralib.tools.Formats.formatDecimal(account.getInitbalance()));
                 holder.alimitamount.setText(lu.crghost.cralib.tools.Formats.formatDecimal(account.getLimitamount()));
-                holder.ameasure_selected_id = account.getMeasure_id();
-                holder.ameasurecost.setText(lu.crghost.cralib.tools.Formats.formatDecimal(account.getCost_per_measure()));
             }
         }
 
@@ -102,25 +94,6 @@ public class AccountsEditActivity extends Activity {
                         Log.e(TAG, "Invalid number " + sid);
                     }
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        // fill measure spinner
-        measures = app.getDataManager().getMeasures(null,null);
-        MeasureAdapter measureArrayAdapter = new MeasureAdapter(this,measures);
-        measureArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        holder.ameasure.setAdapter(measureArrayAdapter);
-        int mpos = app.getDataManager().getMeasurePosition(measures,holder.ameasure_selected_id);
-        holder.ameasure.setSelection(mpos);
-        holder.ameasure.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                holder.ameasure_selected_id = ((Measure)holder.ameasure.getItemAtPosition(position)).getId();
             }
 
             @Override
@@ -159,8 +132,6 @@ public class AccountsEditActivity extends Activity {
                 account.setActype((int) holder.atype_selected_id);
                 account.setInitbalance(lu.crghost.cralib.tools.Formats.parseDecimal(holder.ainitbalance.getText().toString()));
                 account.setLimitamount(lu.crghost.cralib.tools.Formats.parseDecimal(holder.alimitamount.getText().toString()));
-                account.setMeasure_id(holder.ameasure_selected_id);
-                account.setCost_per_measure(lu.crghost.cralib.tools.Formats.parseDecimal(holder.ameasurecost.getText().toString()));
 
                 if (isupdate)   app.getDataManager().updateAccount(account);
                 else            app.getDataManager().insertAccount(account);

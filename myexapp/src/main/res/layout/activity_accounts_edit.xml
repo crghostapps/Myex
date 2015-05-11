@@ -86,32 +86,5 @@
                 android:inputType="numberDecimal"
                 />
 
-        <TextView
-                android:text="@string/account_measure"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                />
-        <Spinner
-                android:id="@+id/account_measure"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-        </Spinner>
-
-        <TextView
-                android:text="@string/account_measure_cost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                />
-
-        <EditText
-                android:id="@+id/account_measure_cost"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                />
-
     </LinearLayout>
 </ScrollView>

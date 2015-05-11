@@ -20,7 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import lu.crghost.cralib.net.SshClient;
 import lu.crghost.myex.conf.MyExProperties;
-import lu.crghost.myex.models.Account;
+import lu.crghost.myex.dao.DbSqlDump;
+import lu.crghost.myex.models.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -212,7 +213,21 @@ public class ExportActivity extends Activity {
                 writer.write("-- MYEX Data Dump");
                 writer.newLine();
 
-                // Accounts
+                writer.write(DbSqlDump.dump(app, new Account()));
+                writer.newLine();
+                writer.write(DbSqlDump.dump(app, new Costcenter()));
+                writer.newLine();
+                writer.write(DbSqlDump.dump(app, new Debtor()));
+                writer.newLine();
+                writer.write(DbSqlDump.dump(app, new Geotrack()));
+                writer.newLine();
+                writer.write(DbSqlDump.dump(app, new Measure()));
+                writer.newLine();
+                writer.write(DbSqlDump.dump(app, new Transaction()));
+                writer.newLine();
+
+
+                /*
                 writer.write("-- Accounts ");
                 writer.newLine();
                 writer.write(Account.TABLE_SQLCRE);
@@ -222,7 +237,12 @@ public class ExportActivity extends Activity {
                 if (accounts.size()>0) {
                     for (Account a : accounts) {
                         StringBuilder s = new StringBuilder();
-                        s.append("INSERT INTO " + Account.TABLE_NAME + " VALUES(");
+                        s.append("INSERT INTO " + Account.TABLE_NAME + " (");
+                        for (int i=0; i < Account.FIELD_NAMES.length; i++) {
+                            s.append(Account.FIELD_NAMES[i]);
+                            if (i < (Account.FIELD_NAMES.length-1)) s.append(",");
+                        }
+                        s.append(") VALUES(");
                         s.append(a.getId() + ", ");
                         s.append(toSqlObject(a.getAcname())+" ,");
                         s.append(toSqlObject(a.getAcnumber())+" ,");
@@ -230,8 +250,6 @@ public class ExportActivity extends Activity {
                         s.append(toSqlObject(a.getIconpath())+" ,");
                         s.append(a.getInitbalance()+", ");
                         s.append(a.getLimitamount()+", ");
-                        s.append(a.getCost_per_measure()+", ");
-                        s.append(a.getMeasure_id()+", ");
                         s.append(toSqlObject(a.getCreated_at())+", ");
                         s.append(toSqlObject(a.getUpdated_at()));
                         s.append(");");
@@ -239,6 +257,69 @@ public class ExportActivity extends Activity {
                         writer.newLine();
                     }
                 }
+
+                // Constcenters
+                writer.write("-- Costcenters ");
+                writer.newLine();
+                writer.write(Costcenter.TABLE_SQLCRE);
+                writer.newLine();
+                writer.newLine();
+                List<Costcenter> costcenters = app.getDataManager().getCostcenters(null, null);
+                if (costcenters.size()>0) {
+                    for (Costcenter a : costcenters) {
+                        StringBuilder s = new StringBuilder();
+                        s.append("INSERT INTO " + Costcenter.TABLE_NAME + " (");
+                        for (int i=0; i < Costcenter.FIELD_NAMES.length; i++) {
+                            s.append(Costcenter.FIELD_NAMES[i]);
+                            if (i < (Costcenter.FIELD_NAMES.length-1)) s.append(",");
+                        }
+                        s.append(") VALUES(");
+                        s.append(a.getId() + ", ");
+                        s.append(toSqlObject(a.getName())+", ");
+                        s.append(a.getParent_id()+",");
+                        s.append(a.getClevel()+", ");
+                        s.append(a.getSort()+ ", ");
+                        s.append(a.hasSons()+ ", ");
+                        s.append(a.getCcttype()+", ");
+                        s.append(a.isDefaultCct()+", ");
+                        s.append(toSqlId(a.getMeasure1_id())+", ");
+                        s.append(toSqlId(a.getMeasure2_id())+", ");
+                        s.append(toSqlObject(a.getCreated_at())+", ");
+                        s.append(toSqlObject(a.getUpdated_at()));
+                        s.append(");");
+                        writer.write(s.toString());
+                        writer.newLine();
+                    }
+                }
+
+                // Debtors
+                writer.write("-- Debtors ");
+                writer.newLine();
+                writer.write(Debtor.TABLE_SQLCRE);
+                writer.newLine();
+                writer.newLine();
+                List<Debtor> debtors = app.getDataManager().getDebtors(null, null);
+                if (debtors.size()>0) {
+                    for (Debtor a : debtors) {
+                        StringBuilder s = new StringBuilder();
+                        s.append("INSERT INTO " + Debtor.TABLE_NAME + " (");
+                        for (int i=0; i < Debtor.FIELD_NAMES.length; i++) {
+                            s.append(Debtor.FIELD_NAMES[i]);
+                            if (i < (Debtor.FIELD_NAMES.length-1)) s.append(",");
+                        }
+                        s.append(") VALUES(");
+                        s.append(a.getId() + ", ");
+                        s.append(toSqlObject(a.getName())+", ");
+                        s.append(a.getLatitude().doubleValue());
+                        s.append(a.getLongitude().doubleValue());
+                        s.append(a.getAltitude().doubleValue());
+                        s.append(toSqlObject(a.getCreated_at())+", ");
+                        s.append(toSqlObject(a.getUpdated_at()));
+                        s.append(");");
+                        writer.write(s.toString());
+                        writer.newLine();
+                    }
+                }*/
 
                 writer.close();
 
@@ -262,17 +343,6 @@ public class ExportActivity extends Activity {
             return null;
         }
 
-        private String toSqlObject(Object o) {
-            String s = "null";
-            if (o != null) {
-                if (o instanceof String) {
-                    s = "'" + (String) o + "'";
-                } else if (o instanceof BigDecimal) {
-                    s = ((BigDecimal) o).toString();
-                }
-            }
-            return s;
-        }
 
         @Override
         protected void onPostExecute(String s) {

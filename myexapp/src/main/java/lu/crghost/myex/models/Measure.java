@@ -8,6 +8,8 @@ import android.util.Log;
 
 import lu.crghost.cralib.tools.HashCodeUtil;
 
+import java.math.BigDecimal;
+
 import static android.provider.BaseColumns._ID;
 
 /**
@@ -18,11 +20,22 @@ public class Measure extends BaseModel implements BaseModelInterface {
     private static final String TAG="Measure";
 
     public static final String TABLE_NAME = "measures";
+
+    public static final String TABLE_SQLCRE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
+            _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            " name TEXT NULL ,"+
+            " nameshort TEXT," +
+            " iscurrency INT," +		// 0=no, 1=yes
+            " cost_per_measure NUMERIC," +
+            " created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
+            " updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );";
+
     public static final String[] FIELD_NAMES = new String[] {
             BaseColumns._ID,
             "name",
             "nameshort",
             "iscurrency",
+            "cost_per_measure",
             "created_at",
             "updated_at"
     };
@@ -31,6 +44,7 @@ public class Measure extends BaseModel implements BaseModelInterface {
     private String name;
     private String nameshort;
     private int iscurrency;
+    private BigDecimal cost_per_measure;
 
     /**
      * Initiate empty model
@@ -58,17 +72,14 @@ public class Measure extends BaseModel implements BaseModelInterface {
      * @param db
      */
     public static void onCreate(SQLiteDatabase db) {
-        db.execSQL(
-                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
-                        _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        " name TEXT NULL ,"+
-                        " nameshort TEXT," +
-                        " iscurrency INT," +		// 0=no, 1=yes
-                        " created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
-                        " updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );");
+        db.execSQL(TABLE_SQLCRE);
         Log.i(TAG, TABLE_NAME + " created");
 
     }
+
+    public String getTableName() { return TABLE_NAME; }
+    public String getTableSqlCre() { return TABLE_SQLCRE; }
+    public String[] getFieldNames() { return FIELD_NAMES; }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
@@ -82,6 +93,7 @@ public class Measure extends BaseModel implements BaseModelInterface {
         c.put("name",getName());
         c.put("nameshort",getNameshort());
         c.put("iscurrency", getIscurrency());
+        c.put("cost_per_measure", getCost_per_measure().doubleValue());
         c.put("created_at",getCreated_at());
         c.put("updated_at",getUpdated_at());
         return c;
@@ -92,6 +104,7 @@ public class Measure extends BaseModel implements BaseModelInterface {
         name = c.getAsString("name");
         nameshort = c.getAsString("nameshort");
         iscurrency = c.getAsInteger("iscurrency");
+        cost_per_measure = new BigDecimal(c.getAsDouble("cost_per_measure"));
     }
 
     @Override
@@ -101,8 +114,9 @@ public class Measure extends BaseModel implements BaseModelInterface {
             setName(c.getString(1));
             setNameshort(c.getString(2));
             setIscurrency(c.getInt(3));
-            setCreated_at(c.getString(4));
-            setUpdated_at(c.getString(5));
+            setCost_per_measure(new BigDecimal(c.getDouble(4)));
+            setCreated_at(c.getString(5));
+            setUpdated_at(c.getString(6));
         }
     }
 
@@ -180,4 +194,11 @@ public class Measure extends BaseModel implements BaseModelInterface {
         return true;
     }
 
+    public BigDecimal getCost_per_measure() {
+        return cost_per_measure;
+    }
+
+    public void setCost_per_measure(BigDecimal cost_per_measure) {
+        this.cost_per_measure = cost_per_measure;
+    }
 }

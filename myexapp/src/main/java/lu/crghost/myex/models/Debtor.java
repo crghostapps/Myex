@@ -20,6 +20,14 @@ public class Debtor extends BaseModel implements BaseModelInterface {
     private static final String TAG="Debtor";
 
     public static final String TABLE_NAME = "debtors";
+    public static final String TABLE_SQLCRE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
+            _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "  name TEXT NULL ,"+
+            "  latitude  NUMERIC NULL," +
+            "  longitude NUMERIC NULL,"+
+            "  altitude  NUMERIC NULL,"+
+            "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
+            "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );";
     public static final String[] FIELD_NAMES = new String[] {
             BaseColumns._ID,
             "name",
@@ -45,15 +53,7 @@ public class Debtor extends BaseModel implements BaseModelInterface {
      * @param db
      */
     public static void onCreate(SQLiteDatabase db) {
-        db.execSQL(
-                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
-                        _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "  name TEXT NULL ,"+
-                        "  latitude  NUMERIC NULL," +
-                        "  longitude NUMERIC NULL,"+
-                        "  altitude  NUMERIC NULL,"+
-                        "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
-                        "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );");
+        db.execSQL(TABLE_SQLCRE);
         Log.i(TAG, TABLE_NAME + " created");
     }
 
@@ -61,6 +61,10 @@ public class Debtor extends BaseModel implements BaseModelInterface {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
+
+    public String getTableName() { return TABLE_NAME; }
+    public String getTableSqlCre() { return TABLE_SQLCRE; }
+    public String[] getFieldNames() { return FIELD_NAMES; }
 
     @Override
     public ContentValues getContentValues(boolean withId) {

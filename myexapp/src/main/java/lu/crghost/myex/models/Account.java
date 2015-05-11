@@ -30,8 +30,6 @@ public class Account extends BaseModel implements BaseModelInterface {
             "  iconpath TEXT NULL," +
             "  initbalance NUMERIC, " +
             "  limitamount NUMERIC," +
-            "  cost_per_measure NUMERIC," +
-            "  measure_id INT NULL," +
             "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
             "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );"
             ;
@@ -43,8 +41,6 @@ public class Account extends BaseModel implements BaseModelInterface {
             "iconpath",
             "initbalance",
             "limitamount",
-            "cost_per_measure",
-            "measure_id",
             "created_at",
             "updated_at"
     };
@@ -61,8 +57,6 @@ public class Account extends BaseModel implements BaseModelInterface {
     private String iconpath;
     private BigDecimal initbalance;
     private BigDecimal limitamount;
-    private BigDecimal cost_per_measure;
-    private long measure_id;
 
     /**
      * Initiate empty model
@@ -100,6 +94,9 @@ public class Account extends BaseModel implements BaseModelInterface {
         onCreate(db);
     }
 
+    public String getTableName() { return TABLE_NAME; }
+    public String getTableSqlCre() { return TABLE_SQLCRE; }
+    public String[] getFieldNames() { return FIELD_NAMES; }
 
     public ContentValues getContentValues(boolean withId) {
         ContentValues c = new ContentValues();
@@ -110,8 +107,6 @@ public class Account extends BaseModel implements BaseModelInterface {
         c.put("iconpath", getIconpath());
         c.put("initbalance", getInitbalance().doubleValue());
         c.put("limitamount", getLimitamount().doubleValue());
-        c.put("cost_per_measure", getCost_per_measure().doubleValue());
-        c.put("measure_id", getMeasure_id());
         c.put("created_at", getCreated_at());
         c.put("updated_at", getUpdated_at());
         return c;
@@ -125,8 +120,6 @@ public class Account extends BaseModel implements BaseModelInterface {
         iconpath =  c.getAsString("iconpath");
         initbalance = new BigDecimal(c.getAsDouble("initbalance"));
         limitamount = new BigDecimal(c.getAsDouble("limitamount"));
-        cost_per_measure = new BigDecimal(c.getAsDouble("cost_per_measure"));
-        measure_id = c.getAsLong("measure_id");
     }
 
     @Override
@@ -139,10 +132,8 @@ public class Account extends BaseModel implements BaseModelInterface {
             setIconpath(c.getString(4));
             setInitbalance(new BigDecimal(c.getDouble(5)));
             setLimitamount(new BigDecimal(c.getDouble(6)));
-            setCost_per_measure(new BigDecimal(c.getDouble(7)));
-            setMeasure_id(c.getLong(8));
-            setCreated_at(c.getString(9));
-            setUpdated_at(c.getString(10));
+            setCreated_at(c.getString(7));
+            setUpdated_at(c.getString(8));
         }
     }
 
@@ -194,21 +185,6 @@ public class Account extends BaseModel implements BaseModelInterface {
         this.limitamount = limitamount;
     }
 
-    public BigDecimal getCost_per_measure() {
-        return cost_per_measure;
-    }
-
-    public void setCost_per_measure(BigDecimal cost_per_measure) {
-        this.cost_per_measure = cost_per_measure;
-    }
-
-    public long getMeasure_id() {
-        return measure_id;
-    }
-
-    public void setMeasure_id(long measure_id) {
-        this.measure_id = measure_id;
-    }
 
     @Override
     public String toString() {

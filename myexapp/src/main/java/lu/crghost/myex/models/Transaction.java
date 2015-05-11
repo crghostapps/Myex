@@ -20,6 +20,25 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     private static final String TAG="Transaction";
 
     public static final String TABLE_NAME = "transactions";
+    public static final String TABLE_SQLCRE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
+            _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "  description TEXT NULL ,"+
+            "  transtype INT NULL, " +
+            "  costcenter_id INT NULL ,"+
+            "  account_id INT NULL ,"+
+            "  account_target_id INT NULL ,"+
+            "  debitor_id INT NULL ," +
+            "  amount NUMERIC NULL ,"+
+            "  measure1 NUMERIC NULL," +
+            "  measure1_id INT NULL," +
+            "  measure2 NUMERIC NULL," +
+            "  measure2_id INT NULL," +
+            "  latitude NUMERIC NULL," +
+            "  longitude NUMERIC NULL,"+
+            "  altitude  NUMERIC NULL,"+
+            "  amount_at  TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
+            "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
+            "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );";
     public static final String[] FIELD_NAMES = new String[] {
             BaseColumns._ID,
             "description",
@@ -29,10 +48,13 @@ public class Transaction extends BaseModel implements BaseModelInterface {
             "account_target_id",
             "debitor_id",
             "amount",
-            "measure",
-            "measure_id",
+            "measure1",
+            "measure1_id",
+            "measure2",
+            "measure2_id",
             "latitude",
             "longitude",
+            "altitude",
             "amount_at",
             "created_at",
             "updated_at"
@@ -49,8 +71,10 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     private long account_target_id;
     private long debitor_id;
     private BigDecimal amount;
-    private BigDecimal measure;
-    private long measure_id;
+    private BigDecimal measure1;
+    private long measure1_id;
+    private BigDecimal measure2;
+    private long measure2_id;
     private BigDecimal latitude;
     private BigDecimal longitude;
     private BigDecimal altitude;
@@ -82,24 +106,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
      * @param db
      */
     public static void onCreate(SQLiteDatabase db) {
-        db.execSQL(
-                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
-                        _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "  description TEXT NULL ,"+
-                        "  transtype INT NULL, " +
-                        "  costcenter_id INT NULL ,"+
-                        "  account_id INT NULL ,"+
-                        "  account_target_id INT NULL ,"+
-                        "  debitor_id INT NULL ," +
-                        "  amount NUMERIC NULL ,"+
-                        "  measure NUMERIC NULL," +
-                        "  measure_id INT NULL," +
-                        "  latitude NUMERIC NULL," +
-                        "  longitude NUMERIC NULL,"+
-                        "  altitude  NUMERIC NULL,"+
-                        "  amount_at  TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
-                        "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
-                        "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );");
+        db.execSQL(TABLE_SQLCRE);
         Log.i(TAG, TABLE_NAME + " created");
     }
 
@@ -107,6 +114,10 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
+
+    public String getTableName() { return TABLE_NAME; }
+    public String getTableSqlCre() { return TABLE_SQLCRE; }
+    public String[] getFieldNames() { return FIELD_NAMES; }
 
     @Override
     public ContentValues getContentValues(boolean withId) {
@@ -119,8 +130,10 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         c.put("account_target_id",getAccount_target_id());
         c.put("debitor_id",getDebitor_id());
         c.put("amount",getAmount().doubleValue());
-        c.put("measure",getMeasure().doubleValue());
-        c.put("measure_id",getMeasure_id());
+        c.put("measure1",getMeasure1().doubleValue());
+        c.put("measure1_id",getMeasure1_id());
+        c.put("measure2",getMeasure2().doubleValue());
+        c.put("measure2_id",getMeasure2_id());
         c.put("latitude",getLatitude().doubleValue());
         c.put("longitude",getLongitude().doubleValue());
         c.put("altitude",getAltitude().doubleValue());
@@ -139,8 +152,10 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         account_target_id = c.getAsLong("account_target_id");
         debitor_id = c.getAsLong("debitor_id");
         amount = new BigDecimal(c.getAsDouble("amount"));
-        measure = new BigDecimal(c.getAsDouble("measure"));
-        measure_id = c.getAsLong("measure_id");
+        measure1 = new BigDecimal(c.getAsDouble("measure1"));
+        measure1_id = c.getAsLong("measure1_id");
+        measure2 = new BigDecimal(c.getAsDouble("measure2"));
+        measure2_id = c.getAsLong("measure2_id");
         latitude = new BigDecimal(c.getAsDouble("latitude"));
         longitude = new BigDecimal(c.getAsDouble("longitude"));
         altitude = new BigDecimal(c.getAsDouble("altitude"));
@@ -158,14 +173,16 @@ public class Transaction extends BaseModel implements BaseModelInterface {
             setAccount_target_id(c.getLong(5));
             setDebitor_id(c.getLong(6));
             setAmount(new BigDecimal(c.getDouble(7)));
-            setMeasure(new BigDecimal(c.getDouble(8)));
-            setMeasure_id(c.getLong(9));
-            setLatitude(new BigDecimal(c.getDouble(10)));
-            setLongitude(new BigDecimal(c.getDouble(11)));
-            setAltitude(new BigDecimal(c.getDouble(12)));
-            setAmount_at(c.getString(13));
-            setCreated_at(c.getString(14));
-            //setUpdated_at(c.getString(15));
+            setMeasure1(new BigDecimal(c.getDouble(8)));
+            setMeasure1_id(c.getLong(9));
+            setMeasure2(new BigDecimal(c.getDouble(10)));
+            setMeasure2_id(c.getLong(119));
+            setLatitude(new BigDecimal(c.getDouble(12)));
+            setLongitude(new BigDecimal(c.getDouble(13)));
+            setAltitude(new BigDecimal(c.getDouble(14)));
+            setAmount_at(c.getString(15));
+            setCreated_at(c.getString(16));
+            //setUpdated_at(c.getString(17));
         }
     }
 
@@ -226,21 +243,38 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         this.amount = amount;
     }
 
-    public BigDecimal getMeasure() {
-        if (measure==null) return BigDecimal.ZERO;
-        return measure;
+    public BigDecimal getMeasure2() {
+        if (measure2==null) return BigDecimal.ZERO;
+        return measure2;
     }
 
-    public void setMeasure(BigDecimal measure) {
-        this.measure = measure;
+    public void setMeasure2(BigDecimal measure) {
+        this.measure2 = measure;
     }
 
-    public long getMeasure_id() {
-        return measure_id;
+    public long getMeasure2_id() {
+        return measure2_id;
     }
 
-    public void setMeasure_id(long measure_id) {
-        this.measure_id = measure_id;
+    public void setMeasure2_id(long measure_id) {
+        this.measure2_id = measure_id;
+    }
+
+    public BigDecimal getMeasure1() {
+        if (measure1==null) return BigDecimal.ZERO;
+        return measure1;
+    }
+
+    public void setMeasure1(BigDecimal measure) {
+        this.measure1 = measure;
+    }
+
+    public long getMeasure1_id() {
+        return measure1_id;
+    }
+
+    public void setMeasure1_id(long measure_id) {
+        this.measure1_id = measure_id;
     }
 
     public BigDecimal getLatitude() {

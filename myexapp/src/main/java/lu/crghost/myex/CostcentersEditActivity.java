@@ -34,8 +34,10 @@ public class CostcentersEditActivity extends Activity {
         public long cparent_selected_id;
         public Spinner ctype;
         public long ctype_selected_id;
-        public Spinner cmeasure;
-        public long cmeasure_selected_id;
+        public Spinner cmeasure1;
+        public long cmeasure1_selected_id;
+        public Spinner cmeasure2;
+        public long cmeasure2_selected_id;
 
     }
     ViewHolder holder;
@@ -52,8 +54,10 @@ public class CostcentersEditActivity extends Activity {
         holder.cparent_selected_id = 0;
         holder.ctype = (Spinner) findViewById(R.id.costcenters_type);
         holder.ctype_selected_id = 0;
-        holder.cmeasure = (Spinner) findViewById(R.id.costcenters_measure);
-        holder.cmeasure_selected_id = 0;
+        holder.cmeasure1 = (Spinner) findViewById(R.id.costcenters_measure1);
+        holder.cmeasure1_selected_id = 0;
+        holder.cmeasure2 = (Spinner) findViewById(R.id.costcenters_measure2);
+        holder.cmeasure2_selected_id = 0;
 
         app = (MyExApp) getApplication();
 
@@ -70,7 +74,8 @@ public class CostcentersEditActivity extends Activity {
                 holder.cname.setText(costcenter.getName());
                 holder.cparent_selected_id = costcenter.getParent_id();
                 holder.ctype_selected_id = costcenter.getCcttype();
-                holder.cmeasure_selected_id = costcenter.getMeasure_id();
+                holder.cmeasure1_selected_id = costcenter.getMeasure1_id();
+                holder.cmeasure2_selected_id = costcenter.getMeasure2_id();
             }
         }
 
@@ -132,13 +137,28 @@ public class CostcentersEditActivity extends Activity {
         measureList = app.getDataManager().getMeasures(null,null);
         MeasureAdapter measureArrayAdapter = new MeasureAdapter(this,measureList);
         measureArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        holder.cmeasure.setAdapter(measureArrayAdapter);
-        int mpos = app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList, holder.cmeasure_selected_id );
-        holder.cmeasure.setSelection(mpos);
-        holder.cmeasure.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        holder.cmeasure1.setAdapter(measureArrayAdapter);
+        int mpos1 = app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList, holder.cmeasure1_selected_id );
+        holder.cmeasure1.setSelection(mpos1);
+        holder.cmeasure1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                holder.cmeasure_selected_id = ((Measure)holder.cmeasure.getItemAtPosition(position)).getId();
+                holder.cmeasure1_selected_id = ((Measure) holder.cmeasure1.getItemAtPosition(position)).getId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        holder.cmeasure2.setAdapter(measureArrayAdapter);
+        int mpos2 = app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList, holder.cmeasure2_selected_id );
+        holder.cmeasure2.setSelection(mpos2);
+        holder.cmeasure2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                holder.cmeasure2_selected_id = ((Measure)holder.cmeasure2.getItemAtPosition(position)).getId();
             }
 
             @Override
@@ -175,7 +195,8 @@ public class CostcentersEditActivity extends Activity {
                 }
                 costcenter.setCcttype((int) holder.ctype_selected_id);
                 costcenter.setParent_id(holder.cparent_selected_id);
-                costcenter.setMeasure_id(holder.cmeasure_selected_id);
+                costcenter.setMeasure1_id(holder.cmeasure1_selected_id);
+                costcenter.setMeasure2_id(holder.cmeasure2_selected_id);
 
                 if (isupdate)   app.getDataManager().updateCostcenter(costcenter);
                 else            app.getDataManager().insertCostcenter(costcenter);

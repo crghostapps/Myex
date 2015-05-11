@@ -18,6 +18,19 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
     private static final String TAG="Costcenter";
 
     public static final String TABLE_NAME = "costcenters";
+    public static final String TABLE_SQLCRE =  "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
+            _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "  name TEXT NULL ,"+
+            "  parent_id INT NULL ,"+
+            "  clevel INT ,"+
+            "  sort   INT ," +
+            "  hassons INT," +
+            "  ccttype INT," +
+            "  isdefaultcct INT," +
+            "  measure1_id INT NULL, " +
+            "  measure2_id INT NULL, " +
+            "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime'))  ,"+
+            "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );";
     public static final String[] FIELD_NAMES = new String[] {
             BaseColumns._ID,
             "name",
@@ -27,7 +40,8 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
             "hassons",
             "ccttype",
             "isdefaultcct",
-            "measure_id",
+            "measure1_id",
+            "measure2_id",
             "created_at",
             "updated_at"
     };
@@ -40,7 +54,8 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
     private int hassons;
     private int ccttype;
     private int isdefaultcct;
-    private long measure_id;
+    private long measure1_id;
+    private long measure2_id;
 
     public static final int TYPE_INCOME  = 0;
     public static final int TYPE_EXPENSE = 1;
@@ -51,24 +66,16 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
     public Costcenter(ContentValues c) { setValues(c); }
     public Costcenter(Cursor c) { setValues(c); }
 
+    public String getTableName() { return TABLE_NAME; }
+    public String getTableSqlCre() { return TABLE_SQLCRE; }
+    public String[] getFieldNames() { return FIELD_NAMES; }
+
     /**
      * Create table
      * @param db
      */
     public static void onCreate(SQLiteDatabase db) {
-        db.execSQL(
-                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
-                        _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "  name TEXT NULL ,"+
-                        "  parent_id INT NULL ,"+
-                        "  clevel INT ,"+
-                        "  sort   INT ," +
-                        "  hassons INT," +
-                        "  ccttype INT," +
-                        "  isdefaultcct INT," +
-                        "  measure_id INT NULL, " +
-                        "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime'))  ,"+
-                        "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );");
+        db.execSQL(TABLE_SQLCRE);
         Log.i(TAG, TABLE_NAME + " created");
 
     }
@@ -89,7 +96,8 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
         c.put("hassons",getHassons());
         c.put("ccttype",getCcttype());
         c.put("isdefaultcct",getIsdefaultcct());
-        c.put("measure_id",getMeasure_id());
+        c.put("measure1_id",getMeasure1_id());
+        c.put("measure2_id",getMeasure2_id());
         c.put("created_at",getCreated_at());
         c.put("updated_at",getUpdated_at());
         return c;
@@ -104,7 +112,8 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
         hassons = c.getAsInteger("hassons");
         ccttype = c.getAsInteger("ccttype");
         isdefaultcct = c.getAsInteger("isdefaultcct");
-        measure_id = c.getAsLong("measure_id");
+        measure1_id = c.getAsLong("measure1_id");
+        measure2_id = c.getAsLong("measure2_id");
     }
 
     @Override
@@ -118,9 +127,10 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
             setHassons(c.getInt(5));
             setCcttype(c.getInt(6));
             setIsdefaultcct(c.getInt(7));
-            setMeasure_id(c.getLong(8));
-            setCreated_at(c.getString(9));
-            setUpdated_at(c.getString(10));
+            setMeasure1_id(c.getLong(8));
+            setMeasure2_id(c.getLong(9));
+            setCreated_at(c.getString(10));
+            setUpdated_at(c.getString(11));
         }
     }
 
@@ -194,13 +204,7 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
         this.isdefaultcct = boolean_to_int(isdefaultcct);
     }
 
-    public long getMeasure_id() {
-        return measure_id;
-    }
 
-    public void setMeasure_id(long measure_id) {
-        this.measure_id = measure_id;
-    }
 
 
     @Override
@@ -239,4 +243,19 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
         return true;
     }
 
+    public long getMeasure1_id() {
+        return measure1_id;
+    }
+
+    public void setMeasure1_id(long measure1_id) {
+        this.measure1_id = measure1_id;
+    }
+
+    public long getMeasure2_id() {
+        return measure2_id;
+    }
+
+    public void setMeasure2_id(long measure2_id) {
+        this.measure2_id = measure2_id;
+    }
 }

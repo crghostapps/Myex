@@ -52,8 +52,6 @@
     <string name="account_type">Type</string>
     <string name="account_initbalance">Initial balance</string>
     <string name="account_limitamount">Amountlimit</string>
-    <string name="account_measure">Measure</string>
-    <string name="account_measure_cost">Cost by measure</string>
     <string name="account_delete_confirmation">Are you shure that you want to delete this account?</string>
     <string name="account_deleted">Account deleted</string>
     <string name="account_number_error">Please type a correct value</string>
@@ -86,7 +84,8 @@
     <string name="costcenters_name_error">Empty name is invalid</string>
     <string name="costcenters_parent">Parent</string>
     <string name="costcenters_type">Type</string>
-    <string name="costcenters_measure">Mesure</string>
+    <string name="costcenters_measure1">Mesure 1</string>
+    <string name="costcenters_measure2">Mesure 2</string>
     <string name="costcenters_delete_confirmation">Are you shure that you want to delete this costcenter?</string>
     <string name="costcenters_deleted">Costcenter deleted</string>
     <string-array name="costcenter_type_array">

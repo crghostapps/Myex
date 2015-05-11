@@ -10,4 +10,8 @@ public interface BaseModelInterface {
     public ContentValues getContentValues(boolean withId);
     public void setValues(ContentValues c);
     public void setValues(Cursor c);
+
+    public String getTableName();
+    public String getTableSqlCre();
+    public String[] getFieldNames();
 }
