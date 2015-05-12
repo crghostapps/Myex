@@ -1,4 +1,4 @@
-package lu.crghost.myex;
+package lu.crghost.myex.tools;
 
 import android.content.Context;
 import android.view.View;
@@ -12,12 +12,12 @@ import java.util.List;
 /**
  * Simple Measure adapter
  */
-public class MeasureAdapter extends ArrayAdapter<Measure> {
+public class SimpleMeasureAdapter extends ArrayAdapter<Measure> {
 
     private static final String TAG = "MeasureAdapter";
     Context context;
 
-    public MeasureAdapter(Context context, List<Measure> measures) {
+    public SimpleMeasureAdapter(Context context, List<Measure> measures) {
         super(context, android.R.layout.simple_spinner_item, measures);
         this.context = context;
     }

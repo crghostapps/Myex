@@ -187,7 +187,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 startActivity(iexport);
                 return true;
             case R.id.action_import:
-
+                return true;
+            case R.id.action_basicdata:
+                Intent imeasures = new Intent(this,MeasuresActivity.class);
+                startActivity(imeasures);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

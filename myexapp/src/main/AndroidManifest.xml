@@ -37,32 +37,38 @@
         </activity>
         <activity
             android:name=".CostcentersEditActivity"
-            android:label="@string/title_activity_costcenters_edit" >
+            android:label="@string/costcenters_title_edit" >
         </activity>
 
         <provider
             android:name=".TransactionsProvider"
             android:authorities="lu.crghost.myex.trans"
             android:exported="false" />
-        
         <provider
-                android:authorities="lu.crghost.myex.fileprovider"
-                android:name="android.support.v4.content.FileProvider"
-                android:exported="false"
-                android:grantUriPermissions="true">
-                <meta-data
-                        android:name="android.support.FILE_PROVIDER_PATHS"
-                        android:resource="@xml/paths"
-                        />
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="lu.crghost.myex.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/paths" />
         </provider>
 
         <activity
             android:name=".TransactionsEditActivity"
-            android:label="@string/title_activity_transactions_edit" >
+            android:label="@string/transactions_title" >
         </activity>
         <activity
             android:name=".ExportActivity"
-            android:label="@string/title_activity_export" >
+            android:label="@string/export_title" >
+        </activity>
+        <activity
+            android:name=".MeasuresActivity"
+            android:label="@string/measures_title" >
+        </activity>
+        <activity
+            android:name=".MeasuresEditActivity"
+            android:label="@string/measures_edit" >
         </activity>
     </application>
 

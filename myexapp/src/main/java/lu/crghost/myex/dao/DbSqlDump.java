@@ -2,8 +2,7 @@ package lu.crghost.myex.dao;
 
 import android.content.ContentValues;
 import lu.crghost.myex.MyExApp;
-import lu.crghost.myex.models.Account;
-import lu.crghost.myex.models.BaseModelInterface;
+import lu.crghost.myex.models.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,6 +24,21 @@ public final class DbSqlDump {
         List<BaseModelInterface> data = null;
         if (table instanceof Account) {
             data = (List<BaseModelInterface>) (List<?>) app.getDataManager().getAccounts(null,null);
+        }
+        if (table instanceof Costcenter) {
+            data = (List<BaseModelInterface>) (List<?>) app.getDataManager().getCostcenters(null, null);
+        }
+        if (table instanceof Debtor) {
+            data = (List<BaseModelInterface>) (List<?>) app.getDataManager().getDebtors(null, null);
+        }
+        if (table instanceof Geotrack) {
+            data = (List<BaseModelInterface>) (List<?>) app.getDataManager().getGeotracks(null,null);
+        }
+        if (table instanceof Measure) {
+            data = (List<BaseModelInterface>) (List<?>) app.getDataManager().getMeasures(null,null);
+        }
+        if (table instanceof Transaction) {
+            data = (List<BaseModelInterface>) (List<?>) app.getDataManager().getTransactions(null,null);
         }
 
         if (data == null) {

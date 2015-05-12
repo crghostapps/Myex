@@ -6,7 +6,7 @@
                 android:padding="6dip">
 
     <TextView
-            android:id="@+id/item_debtor_name"
+            android:id="@+id/item_measure_name"
             android:text="@string/dummytext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
             />
 
     <TextView
-            android:id="@+id/item_debtor_amount"
+            android:id="@+id/item_measure_nameshort"
             android:text="@string/dummynumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

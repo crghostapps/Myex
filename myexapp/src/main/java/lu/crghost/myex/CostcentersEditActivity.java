@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import lu.crghost.myex.models.*;
+import lu.crghost.myex.tools.SimpleMeasureAdapter;
 
 import java.util.List;
 
@@ -135,7 +136,7 @@ public class CostcentersEditActivity extends Activity {
 
         // fill measure spinner
         measureList = app.getDataManager().getMeasures(null,null);
-        MeasureAdapter measureArrayAdapter = new MeasureAdapter(this,measureList);
+        SimpleMeasureAdapter measureArrayAdapter = new SimpleMeasureAdapter(this,measureList);
         measureArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.cmeasure1.setAdapter(measureArrayAdapter);
         int mpos1 = app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList, holder.cmeasure1_selected_id );

@@ -110,6 +110,7 @@
     <string name="transactions_deleted">Transaction deleted</string>
 
     <!-- Exports -->
+    <string name="export_title">Exports</string>
     <string name="export_backup">Backup data</string>
     <string name="export_backup_end">Backup sended to server</string>
     <string name="export_mail_transactions">Transactions sheet</string>
@@ -141,13 +142,16 @@
     <string name="data_costcenter_income">Income</string>
     <string name="data_costcenter_income_misc">Miscellaneous</string>
 
+    <!-- Measures -->
+    <string name="measures_title">Measures</string>
+    <string name="measures_new">Add measure</string>
+    <string name="measures_edit">Edit measure</string>
+    <string name="measures_name">Name</string>
+    <string name="measures_nameshort">Short name</string>
+    <string name="measures_cost">Cost per measure</string>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="dummytext">Dummy text</string>
     <string name="dummynumber">0,00€</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_costcenters_edit">CostcentersEditActivity</string>
-    <string name="title_activity_transactions_edit">TransactionsEditActivity</string>
-    <string name="title_activity_export">ExportActivity</string>
-
 
 </resources>
