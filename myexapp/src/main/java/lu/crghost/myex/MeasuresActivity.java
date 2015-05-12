@@ -1,5 +1,6 @@
 package lu.crghost.myex;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import lu.crghost.myex.models.Measure;
 
 
 public class MeasuresActivity extends FragmentActivity {
@@ -33,12 +35,10 @@ public class MeasuresActivity extends FragmentActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-
-                Bundle params = new Bundle();
-                params.putLong("id", id);
-                //Intent intent = new Intent(CustomersActivity.this, CustomerShowActivity.class);
-                //intent.putExtras(params);
-                //startActivity(intent);
+                Measure measure = (Measure) mAdapter.getItem(position);
+                Intent intent = new Intent(MeasuresActivity.this,MeasuresEditActivity.class);
+                intent.putExtra("id", measure.getId());
+                startActivityForResult(intent, 0);
             }
 
         });
@@ -66,9 +66,21 @@ public class MeasuresActivity extends FragmentActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add) {
+            Intent intent = new Intent(this,MeasuresEditActivity.class);
+            intent.putExtra("id", 0L);
+            startActivityForResult(intent, 0);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            // Re-Fill the list
+            mAdapter = new MeasuresAdapter(app,this,app.getDataManager().getMeasures(null,null));
+            mListView.setAdapter(mAdapter);
+        }
     }
 }
