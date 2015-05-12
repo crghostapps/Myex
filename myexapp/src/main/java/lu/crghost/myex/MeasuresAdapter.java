@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import lu.crghost.myex.models.Measure;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -42,7 +43,11 @@ public class MeasuresAdapter extends ArrayAdapter<Measure> {
         // fill with the data
         final Measure measure = this.getItem(position);
         holder.measure_name.setText(measure.getName());
-        holder.measure_nameshort.setText(measure.getNameshort());
+        if (measure.getCost_per_measure()==null || measure.getCost_per_measure().compareTo(BigDecimal.ZERO)==0) {
+            holder.measure_nameshort.setText(measure.getNameshort());
+        } else {
+            holder.measure_nameshort.setText(lu.crghost.cralib.tools.Formats.formatDecimal(measure.getCost_per_measure(),2) + "/" + measure.getNameshort() );
+        }
         return listItem;
     }
 

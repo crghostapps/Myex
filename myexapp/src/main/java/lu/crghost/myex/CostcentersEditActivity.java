@@ -87,11 +87,7 @@ public class CostcentersEditActivity extends Activity {
         }
 
         // fill parent spinner
-        if (isupdate) {
-            parentList = app.getDataManager().getCostcenters(_ID + " <> ?",new String[] {Long.toString(holder.cparent_selected_id)});
-        } else {
-            parentList = app.getDataManager().getCostcenters(null,null);
-        }
+        parentList = app.getDataManager().getCostcentersForSpinner();
         CostcenterAdapter costcenterAdapter = new CostcenterAdapter(this,parentList);
         costcenterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.cparent.setAdapter(costcenterAdapter);
@@ -135,7 +131,7 @@ public class CostcentersEditActivity extends Activity {
         });
 
         // fill measure spinner
-        measureList = app.getDataManager().getMeasures(null,null);
+        measureList = app.getDataManager().getMeasuresForSpinner(true,false);
         SimpleMeasureAdapter measureArrayAdapter = new SimpleMeasureAdapter(this,measureList);
         measureArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.cmeasure1.setAdapter(measureArrayAdapter);

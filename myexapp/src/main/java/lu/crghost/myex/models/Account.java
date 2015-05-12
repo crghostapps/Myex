@@ -30,6 +30,7 @@ public class Account extends BaseModel implements BaseModelInterface {
             "  iconpath TEXT NULL," +
             "  initbalance NUMERIC, " +
             "  limitamount NUMERIC," +
+            "  currency_id INTEGER," +
             "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
             "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );"
             ;
@@ -41,6 +42,7 @@ public class Account extends BaseModel implements BaseModelInterface {
             "iconpath",
             "initbalance",
             "limitamount",
+            "currency_id",
             "created_at",
             "updated_at"
     };
@@ -57,6 +59,7 @@ public class Account extends BaseModel implements BaseModelInterface {
     private String iconpath;
     private BigDecimal initbalance;
     private BigDecimal limitamount;
+    private long currency_id;
 
     /**
      * Initiate empty model
@@ -107,6 +110,7 @@ public class Account extends BaseModel implements BaseModelInterface {
         c.put("iconpath", getIconpath());
         c.put("initbalance", getInitbalance().doubleValue());
         c.put("limitamount", getLimitamount().doubleValue());
+        c.put("currency_id", getCurrency_id());
         c.put("created_at", getCreated_at());
         c.put("updated_at", getUpdated_at());
         return c;
@@ -118,6 +122,7 @@ public class Account extends BaseModel implements BaseModelInterface {
         acnumber = c.getAsString("acnumber");
         actype   = c.getAsInteger("actype");
         iconpath =  c.getAsString("iconpath");
+        currency_id = c.getAsLong("currency_id");
         initbalance = new BigDecimal(c.getAsDouble("initbalance"));
         limitamount = new BigDecimal(c.getAsDouble("limitamount"));
     }
@@ -132,8 +137,9 @@ public class Account extends BaseModel implements BaseModelInterface {
             setIconpath(c.getString(4));
             setInitbalance(new BigDecimal(c.getDouble(5)));
             setLimitamount(new BigDecimal(c.getDouble(6)));
-            setCreated_at(c.getString(7));
-            setUpdated_at(c.getString(8));
+            setCurrency_id(c.getLong(7));
+            setCreated_at(c.getString(8));
+            setUpdated_at(c.getString(9));
         }
     }
 
@@ -185,6 +191,14 @@ public class Account extends BaseModel implements BaseModelInterface {
         this.limitamount = limitamount;
     }
 
+    public long getCurrency_id() {
+        return currency_id;
+    }
+
+    public void setCurrency_id(long currency_id) {
+        this.currency_id = currency_id;
+    }
+
 
     @Override
     public String toString() {
@@ -220,4 +234,6 @@ public class Account extends BaseModel implements BaseModelInterface {
         }
         return true;
     }
+
+
 }

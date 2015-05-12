@@ -1,6 +1,7 @@
 package lu.crghost.myex.dao;
 
 import android.content.Context;
+import lu.crghost.myex.R;
 import lu.crghost.myex.models.*;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
@@ -8,6 +9,7 @@ import net.sqlcipher.database.SQLiteOpenHelper;
 import android.os.SystemClock;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lu.crghost.myex.conf.MyExProperties;
@@ -157,6 +159,18 @@ public class DataManager {
         return daoCostcenter.getAll(selection, selectionArgs);
     }
 
+    public List<Costcenter> getCostcentersForSpinner() {
+        List<Costcenter> costcenters = new ArrayList<Costcenter>();
+        Costcenter root = new Costcenter();
+        root.setId(0L);
+        root.setName(context.getResources().getString(R.string.data_costcenter_root));
+        costcenters.add(root);
+        for (Costcenter c : daoCostcenter.getAll(null,null)) {
+            costcenters.add(c);
+        }
+        return costcenters;
+    }
+
     public long insertCostcenter(Costcenter type) {
         return daoCostcenter.save(type);
     }
@@ -195,6 +209,30 @@ public class DataManager {
 
     public List<Measure> getMeasures(String selection, String[] selectionArgs) {
         return daoMeasure.getAll(selection, selectionArgs);
+    }
+
+    public List<Measure> getMeasuresForSpinner(boolean addempty, boolean iscurrency) {
+        List<Measure> mlist = new ArrayList<Measure>();
+        if (addempty) {
+            Measure emptymeasure = new Measure();
+            emptymeasure.setId(0L);
+            emptymeasure.setName(context.getResources().getString(R.string.measures_none));
+            mlist.add(emptymeasure);
+        }
+        String selection = "iscurrency=?";
+        String args[] = new String[] {"0"};
+        if (iscurrency) args[0] = "1";
+        for (Measure m : daoMeasure.getAll(selection,args)) {
+            mlist.add(m);
+        }
+        return mlist;
+    }
+
+    public String getCurrencySymbol(long id) {
+        String s = "";
+        Measure measure = daoMeasure.get(id);
+        if (measure != null) s = measure.getNameshort();
+        return s;
     }
 
     public long insertMeasure(Measure type) {

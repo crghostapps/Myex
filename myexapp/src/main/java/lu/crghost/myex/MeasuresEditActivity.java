@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ public class MeasuresEditActivity extends Activity {
         public EditText name;
         public EditText nameShort;
         public EditText cost;
+        public CheckBox iscurrency;
     }
     ViewHolder holder;
 
@@ -39,6 +41,7 @@ public class MeasuresEditActivity extends Activity {
         holder.name = (EditText) findViewById(R.id.measures_name);
         holder.nameShort = (EditText) findViewById(R.id.measures_nameshort);
         holder.cost = (EditText) findViewById(R.id.measures_cost);
+        holder.iscurrency = (CheckBox) findViewById(R.id.measures_iscurrency);
 
         app = (MyExApp) getApplication();
 
@@ -54,7 +57,8 @@ public class MeasuresEditActivity extends Activity {
             } else {
                 holder.name.setText(measure.getName());
                 holder.nameShort.setText(measure.getNameshort());
-                holder.cost.setText(lu.crghost.cralib.tools.Formats.formatDecimal(measure.getCost_per_measure()));
+                holder.cost.setText(lu.crghost.cralib.tools.Formats.formatDecimal(measure.getCost_per_measure(),2));
+                holder.iscurrency.setChecked(measure.isCurrency());
             }
         }
 
@@ -92,7 +96,8 @@ public class MeasuresEditActivity extends Activity {
                     holder.nameShort.setError(getResources().getString(R.string.measures_name_error));
                     return false;
                 }
-                measure.setCost_per_measure(lu.crghost.cralib.tools.Formats.parseDecimal(holder.cost.getText().toString()));
+                measure.setCost_per_measure(lu.crghost.cralib.tools.Formats.parseDecimal(holder.cost.getText().toString(),2));
+                measure.setIscurrency(holder.iscurrency.isChecked());
 
                 if (isupdate) app.getDataManager().updateMeasure(measure);
                 else app.getDataManager().insertMeasure(measure);

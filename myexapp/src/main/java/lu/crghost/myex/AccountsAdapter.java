@@ -54,7 +54,7 @@ public class AccountsAdapter extends ArrayAdapter<Account> {
         double balance = app.getDataManager().getAccountBalance(account);
 
         holder.progressBar.setMax(maxcre);
-        holder.account_amount.setText(Formats.frDecimalFormat.format(balance) + app.getPrefs().getString("currency",""));
+        holder.account_amount.setText(Formats.frDecimalFormat.format(balance) + app.getDataManager().getCurrencySymbol(account.getCurrency_id()));
 
         boolean isred = false;
         if (balance<0) {
