@@ -31,6 +31,7 @@ public class DebtorsEditActivity extends Activity {
         public EditText name;
         public EditText latitude;
         public EditText longitude;
+        public EditText altitude;
         public ImageButton btngps;
     }
     ViewHolder holder;
@@ -44,6 +45,7 @@ public class DebtorsEditActivity extends Activity {
         holder.name = (EditText) findViewById(R.id.debtors_name);
         holder.latitude = (EditText) findViewById(R.id.debtors_latitude);
         holder.longitude = (EditText) findViewById(R.id.debtors_longitude);
+        holder.altitude = (EditText) findViewById(R.id.debtors_altitude);
         holder.btngps = (ImageButton) findViewById(R.id.debtors_btngps);
 
         app = (MyExApp) getApplication();
@@ -59,8 +61,9 @@ public class DebtorsEditActivity extends Activity {
                 isupdate = false;
             } else {
                 holder.name.setText(debtor.getName());
-                holder.latitude.setText(lu.crghost.cralib.tools.Formats.formatDecimal(debtor.getLatitude()));
-                holder.longitude.setText(lu.crghost.cralib.tools.Formats.formatDecimal(debtor.getLongitude()));
+                holder.latitude.setText(lu.crghost.cralib.tools.Formats.formatDecimal(debtor.getLatitude(),5));
+                holder.altitude.setText(lu.crghost.cralib.tools.Formats.formatDecimal(debtor.getAltitude(),5));
+                holder.longitude.setText(lu.crghost.cralib.tools.Formats.formatDecimal(debtor.getLongitude(),5));
             }
         }
 
@@ -99,9 +102,9 @@ public class DebtorsEditActivity extends Activity {
                     holder.name.setError(getResources().getString(R.string.debtors_name_error));
                     return false;
                 }
-                debtor.setLatitude(lu.crghost.cralib.tools.Formats.parseDecimal(holder.latitude.getText().toString()));
-                debtor.setLongitude(lu.crghost.cralib.tools.Formats.parseDecimal(holder.longitude.getText().toString()));
-                debtor.setAltitude(new BigDecimal(0));
+                debtor.setLatitude(lu.crghost.cralib.tools.Formats.parseDecimal(holder.latitude.getText().toString(),5));
+                debtor.setAltitude(lu.crghost.cralib.tools.Formats.parseDecimal(holder.altitude.getText().toString(),5));
+                debtor.setLongitude(lu.crghost.cralib.tools.Formats.parseDecimal(holder.longitude.getText().toString(),5));
                 if (isupdate)   app.getDataManager().updateDebtor(debtor);
                 else            app.getDataManager().insertDebtor(debtor);
                 setResult(RESULT_OK);

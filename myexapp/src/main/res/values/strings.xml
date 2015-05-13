@@ -74,6 +74,7 @@
     <string name="debtors_name_error">Empty name is invalid</string>
     <string name="debtors_longitude">Coordinates longitude</string>
     <string name="debtors_latitude">Coordinates latitude</string>
+    <string name="debtors_altitude">Coordinates altitude</string>
     <string name="debtors_delete_confirmation">Are you shure that you want to delete this debtor?</string>
     <string name="debtors_deleted">Debtor deleted</string>
     <string name="debtors_number_error">Please type a correct value</string>

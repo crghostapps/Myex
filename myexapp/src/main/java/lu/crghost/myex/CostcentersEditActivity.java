@@ -66,6 +66,8 @@ public class CostcentersEditActivity extends Activity {
         if (id==0) {
             isupdate = false;
             costcenter = new Costcenter();
+            holder.cparent_selected_id = app.getCostcentersEdit_last_parent_id();
+            costcenter.setParent_id(holder.cparent_selected_id);
         } else {
             isupdate = true;
             costcenter = app.getDataManager().getCostcenterById(id);
@@ -86,25 +88,6 @@ public class CostcentersEditActivity extends Activity {
             setTitle(getResources().getString(R.string.costcenters_title_new));
         }
 
-        // fill parent spinner
-        parentList = app.getDataManager().getCostcentersForSpinner();
-        CostcenterAdapter costcenterAdapter = new CostcenterAdapter(this,parentList);
-        costcenterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        holder.cparent.setAdapter(costcenterAdapter);
-        int cpos = app.getDataManager().getPositionInList( (List<BaseModel>) (List) parentList,holder.cparent_selected_id);
-        holder.cparent.setSelection(cpos);
-        holder.cparent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                holder.cparent_selected_id = ((Costcenter)holder.cparent.getItemAtPosition(position)).getId();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         // fill cost center type spinner
         ArrayAdapter<CostcenterTypes.CostcenterType> costcenterTypeArrayAdapter = new ArrayAdapter<CostcenterTypes.CostcenterType>(this,android.R.layout.simple_spinner_item, CostcenterTypes.CCTYPES);
         costcenterTypeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -121,6 +104,30 @@ public class CostcentersEditActivity extends Activity {
                     } catch (NumberFormatException e) {
                         Log.e(TAG, "Invalid number " + sid);
                     }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        // fill parent spinner
+        parentList = app.getDataManager().getCostcentersForSpinner();
+        CostcenterAdapter costcenterAdapter = new CostcenterAdapter(this,parentList);
+        costcenterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        holder.cparent.setAdapter(costcenterAdapter);
+        int cpos = app.getDataManager().getPositionInList( (List<BaseModel>) (List) parentList,holder.cparent_selected_id);
+        holder.cparent.setSelection(cpos);
+        holder.cparent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Costcenter parentcc = (Costcenter)holder.cparent.getItemAtPosition(position);
+                holder.cparent_selected_id = parentcc.getId();
+                // Rootid = 0
+                if (holder.cparent_selected_id != 0) {
+                    holder.ctype.setSelection((int)parentcc.getCcttype());
                 }
             }
 
@@ -197,6 +204,8 @@ public class CostcentersEditActivity extends Activity {
 
                 if (isupdate)   app.getDataManager().updateCostcenter(costcenter);
                 else            app.getDataManager().insertCostcenter(costcenter);
+                app.setCostcentersEdit_last_parent_id(costcenter.getParent_id());
+                app.getDataManager().resortCostcenters();
                 setResult(RESULT_OK);
                 finish();
                 return true;

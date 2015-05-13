@@ -45,7 +45,7 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
             "created_at",
             "updated_at"
     };
-    public static final String SORT_ORDER = "name";
+    public static final String SORT_ORDER = "sort";
 
     private String name;
     private long parent_id;
@@ -139,6 +139,16 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
         return name;
     }
 
+    public String getLevelName() {
+        String levels = "";
+        if (clevel > 0) {
+            for (int i=0;i<=clevel;i++) {
+                levels = levels + "- ";
+            }
+        }
+        return (levels + name);
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -210,7 +220,7 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
     @Override
     public String toString() {
         //return "Costcenter [id="+this.getId()+ " " + getName() +"]";
-        return getName();
+        return getLevelName();
     }
 
     @Override

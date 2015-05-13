@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -27,7 +28,7 @@ public class TransactionsEditActivity extends Activity {
     private List<Measure> measures;
 
     static class ViewHolder {
-        public EditText description;
+        public AutoCompleteTextView description;
         public EditText amount;
     }
     ViewHolder holder;
@@ -38,7 +39,7 @@ public class TransactionsEditActivity extends Activity {
         setContentView(R.layout.activity_transactions_edit);
 
         holder = new ViewHolder();
-        holder.description = (EditText) findViewById(R.id.transactions_description);
+        holder.description = (AutoCompleteTextView) findViewById(R.id.transactions_description);
         holder.amount = (EditText) findViewById(R.id.transactions_amount);
 
 
@@ -55,7 +56,7 @@ public class TransactionsEditActivity extends Activity {
                 isupdate = false;
             } else {
                 holder.description.setText(transaction.getDescription());
-                holder.amount.setText(lu.crghost.cralib.tools.Formats.formatDecimal(transaction.getAmount()));
+                holder.amount.setText(lu.crghost.cralib.tools.Formats.formatDecimal(transaction.getAmount(),2));
             }
         }
 

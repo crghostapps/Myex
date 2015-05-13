@@ -62,7 +62,7 @@ public class CostcentersFragment extends Fragment implements IconTreeItemHolder.
         }
         tView = new AndroidTreeView(getActivity(), root);
         containerView.addView(tView.getView());
-
+        tView.expandAll();
         return rootView;
     }
 

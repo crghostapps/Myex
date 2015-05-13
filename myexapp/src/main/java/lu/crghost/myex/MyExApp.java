@@ -22,6 +22,8 @@ public class MyExApp extends Application {
     private SharedPreferences prefs;
     private static Context myContext;
 
+    private long costcentersEdit_last_parent_id = 0;
+
     //
     // getters/setters
     //
@@ -149,6 +151,14 @@ public class MyExApp extends Application {
                 + getResources().getString(R.string.data_costcenter_expence_misc) + "',1,20,2,1,1);");
     }
 
+    /***********************************************************************************************
+    * Global variables
+    ***********************************************************************************************/
+    public long getCostcentersEdit_last_parent_id() {
+        return costcentersEdit_last_parent_id;
+    }
 
-
+    public void setCostcentersEdit_last_parent_id(long costcentersEdit_last_parent_id) {
+        this.costcentersEdit_last_parent_id = costcentersEdit_last_parent_id;
+    }
 }

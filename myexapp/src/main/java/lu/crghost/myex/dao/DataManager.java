@@ -171,6 +171,10 @@ public class DataManager {
         return costcenters;
     }
 
+    public void resortCostcenters() {
+        daoCostcenter.resort();
+    }
+
     public long insertCostcenter(Costcenter type) {
         return daoCostcenter.save(type);
     }

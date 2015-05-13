@@ -17,6 +17,8 @@ public class DaoCostcenter implements DbDao<Costcenter> {
 
     private SQLiteDatabase db;
 
+    private int cc_sort;
+
     public DaoCostcenter(SQLiteDatabase db) {
         this.db = db;
     }
@@ -75,4 +77,34 @@ public class DaoCostcenter implements DbDao<Costcenter> {
         if (!c.isClosed()) c.close();
         return types;
     }
+
+    /**
+     * Calculate levels and sort of tree
+     */
+    public void resort() {
+        cc_sort  = 0;
+        // Roots
+        List<Costcenter> roots = getAll("parent_id=?", new String[] {"0"}, "name");
+        for (Costcenter root : roots) {
+            int clevel = 0;
+            root.setClevel(clevel);
+            root.setSort(cc_sort++);
+            root.setHassons(resortChilds(root.getId(), clevel));
+            update(root);
+        }
+    }
+
+    private boolean resortChilds(long parent_id, int clevel) {
+        clevel++;
+        List<Costcenter> childs = getAll("parent_id=?", new String[]{Long.toString(parent_id)}, "name");
+        for (Costcenter child : childs) {
+            child.setClevel(clevel);
+            child.setSort(cc_sort++);
+            child.setHassons(resortChilds(child.getId(), clevel));
+            update(child);
+        }
+        return true;
+    }
+
+
 }
