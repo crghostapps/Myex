@@ -22,7 +22,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
-                <LinearLayout
+                <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -31,23 +31,28 @@
                                 android:id="@+id/transactions_amount"
                                 android:inputType="numberDecimal"
                                 android:gravity="right"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"/>
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content" android:layout_alignParentLeft="true"
+                                android:layout_toLeftOf="@+id/transactions_pm" android:layout_toStartOf="@+id/transactions_pm"
+                                android:layout_alignParentBottom="true"/>
 
-                        <TextView
-                                android:id="@+id/transactions_currency"
+                        <ToggleButton
+                                android:id="@+id/transactions_pm"
+                                android:onClick="action_toggle_pm"
                                 android:text="@string/currencydefault"
-                                android:layout_gravity="right"
+                                android:textOn="-"
+                                android:textOff="+"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content" android:layout_alignParentRight="true"
+                                />
 
-                </LinearLayout>
+                </RelativeLayout>
 
                 <TextView
                         android:text="@string/transactions_description"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" android:layout_marginTop="5dp"/>
 
                 <AutoCompleteTextView
                         android:id="@+id/transactions_description"
@@ -55,6 +60,95 @@
                         android:completionThreshold="1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
+
+                <TextView
+                        android:text="@string/transactions_debtor"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:layout_marginTop="5dp"/>
+
+                <AutoCompleteTextView
+                        android:id="@+id/transactions_debtor"
+                        android:inputType="textCapSentences"
+                        android:completionThreshold="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                <TextView
+                        android:text="@string/transactions_costcenter"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:layout_marginTop="5dp"/>
+
+                <Spinner
+                        android:id="@+id/transactions_costcentersel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                <TextView
+                        android:text="@string/transactions_account"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:layout_marginTop="5dp"/>
+
+                <Spinner
+                        android:id="@+id/transactions_accountsel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                <TextView
+                        android:text="@string/transactions_measures"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:layout_marginTop="5dp"/>
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <EditText
+                                android:id="@+id/transactions_measure1"
+                                android:inputType="numberDecimal"
+                                android:gravity="right"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_toLeftOf="@+id/transactions_sel_measure1"
+                                android:layout_toStartOf="@+id/transactions_sel_measure1"
+                                android:layout_alignParentBottom="true"/>
+
+                        <Spinner
+                                android:id="@+id/transactions_sel_measure1"
+                                android:layout_width="60dp"
+                                android:layout_height="40dp" android:layout_alignParentRight="true"
+                                />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <EditText
+                                android:id="@+id/transactions_measure2"
+                                android:inputType="numberDecimal"
+                                android:gravity="right"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_toLeftOf="@+id/transactions_sel_measure2"
+                                android:layout_toStartOf="@+id/transactions_sel_measure2"
+                                android:layout_alignParentBottom="true"/>
+
+                        <Spinner
+                                android:id="@+id/transactions_sel_measure2"
+                                android:layout_width="60dp"
+                                android:layout_height="40dp" android:layout_alignParentRight="true"
+                                />
+
+                </RelativeLayout>
 
 
         </LinearLayout>

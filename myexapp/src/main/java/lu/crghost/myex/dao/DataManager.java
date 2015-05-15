@@ -148,6 +148,10 @@ public class DataManager {
 
     public void deleteDebtor(Debtor type) { daoDebtor.delete(type);}
 
+    public Cursor getDebtorsCursor(String selection, String[] selectionArgs) {
+       return daoDebtor.getCursorAll(selection, selectionArgs, null);
+    }
+
     /***********************************************************************************************
      * Costcenter
      ***********************************************************************************************/
@@ -159,13 +163,24 @@ public class DataManager {
         return daoCostcenter.getAll(selection, selectionArgs);
     }
 
-    public List<Costcenter> getCostcentersForSpinner() {
+    public static final int COSTCENTERTYPE_INCOME = 0;
+    public static final int COSTCENTERTYPE_EXPENSE = 1;
+    public static final int COSTCENTERTYPE_ALL = 99;
+    public List<Costcenter> getCostcentersForSpinner(String rootname, int cctype) {
         List<Costcenter> costcenters = new ArrayList<Costcenter>();
-        Costcenter root = new Costcenter();
-        root.setId(0L);
-        root.setName(context.getResources().getString(R.string.data_costcenter_root));
-        costcenters.add(root);
-        for (Costcenter c : daoCostcenter.getAll(null,null)) {
+        if (rootname != null) {
+            Costcenter root = new Costcenter();
+            root.setId(0L);
+            root.setName(rootname);
+            costcenters.add(root);
+        }
+        String selection = null;
+        String[] selectionArgs = null;
+        if (cctype==COSTCENTERTYPE_INCOME || cctype==COSTCENTERTYPE_EXPENSE) {
+            selection = "ccttype=?";
+            selectionArgs = new String[] { Integer.toString(cctype) };
+        }
+        for (Costcenter c : daoCostcenter.getAll(selection,selectionArgs)) {
             costcenters.add(c);
         }
         return costcenters;
@@ -291,6 +306,8 @@ public class DataManager {
         return daoTransaction.getCursorById(id);
     }
 
-
+    public Cursor getDescriptionCursor(String selection, String[] selectionArgs) {
+        return daoTransaction.getAllDescriptions(selection,selectionArgs);
+    }
 
 }

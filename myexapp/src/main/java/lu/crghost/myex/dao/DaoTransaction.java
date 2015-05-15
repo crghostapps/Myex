@@ -104,6 +104,21 @@ public class DaoTransaction implements DbDao<Transaction> {
         return c;
     }
 
+    /**
+     * Returns a cursor for last description
+     * @param selection
+     * @param selectionArgs
+     * @return
+     */
+    public Cursor getAllDescriptions(String selection, String[] selectionArgs) {
+        String sql = "select description, max(_id) as _id from " + Transaction.TABLE_NAME ;
+        if (selection != null) {
+            sql += " where " + selection;
+        }
+        sql += " group by description";
+        return db.rawQuery(sql, selectionArgs);
+    }
+
     public android.database.Cursor getNativeCursorById(long id) {
         android.database.Cursor c = db.query(Transaction.TABLE_NAME,
                 Transaction.FIELD_NAMES,

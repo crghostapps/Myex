@@ -25,8 +25,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private static final int TABITEM_COSTCENTERS = 1;
     private static final int TABITEM_DEBTORS = 2;
     private static final int TABITEM_TRANSACTIONS = 3;
-
-
+    private static final int NEW_TRANSACTION = 10;
 
     MyExApp app;
     SearchManager searchManager = null;
@@ -262,7 +261,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public void onFragmentInteractionNewTransaction(String account_id, String costcenter_id, String debtor_id) {
-
+        Intent newtrans = new Intent(this,TransactionsEditActivity.class);
+        newtrans.putExtra("id",0L);
+        if (account_id!=null)    newtrans.putExtra("account_id", Long.parseLong(account_id));
+        if (costcenter_id!=null) newtrans.putExtra("debtor_id",Long.parseLong(debtor_id));
+        if (debtor_id!=null)     newtrans.putExtra("costcenter_id",Long.parseLong(costcenter_id));
+        startActivityForResult(newtrans,NEW_TRANSACTION);
     }
 
     /**

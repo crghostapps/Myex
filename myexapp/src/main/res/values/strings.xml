@@ -110,10 +110,11 @@
     <string name="transactions_costcenter">Costcenter</string>
     <string name="transactions_account">Account</string>
     <string name="transactions_debtor">Debtor</string>
-    <string name="transactions_measure">Measure</string>
+    <string name="transactions_measures">Measures</string>
     <string name="transactions_amount">Amount</string>
     <string name="transactions_delete_confirmation">Are you shure that you want to delete this transaction?</string>
     <string name="transactions_deleted">Transaction deleted</string>
+    <string name="transactions_ccspinner_root">&lt;Add costcenter&gt;</string>
 
     <!-- Exports -->
     <string name="export_title">Exports</string>

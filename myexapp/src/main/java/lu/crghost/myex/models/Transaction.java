@@ -176,7 +176,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
             setMeasure1(new BigDecimal(c.getDouble(8)));
             setMeasure1_id(c.getLong(9));
             setMeasure2(new BigDecimal(c.getDouble(10)));
-            setMeasure2_id(c.getLong(119));
+            setMeasure2_id(c.getLong(11));
             setLatitude(new BigDecimal(c.getDouble(12)));
             setLongitude(new BigDecimal(c.getDouble(13)));
             setAltitude(new BigDecimal(c.getDouble(14)));

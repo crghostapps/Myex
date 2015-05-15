@@ -23,6 +23,7 @@ public class MyExApp extends Application {
     private static Context myContext;
 
     private long costcentersEdit_last_parent_id = 0;
+    private boolean transactionEdit_last_sign_negatif = true;
 
     //
     // getters/setters
@@ -160,5 +161,13 @@ public class MyExApp extends Application {
 
     public void setCostcentersEdit_last_parent_id(long costcentersEdit_last_parent_id) {
         this.costcentersEdit_last_parent_id = costcentersEdit_last_parent_id;
+    }
+
+    public boolean isTransactionEdit_last_sign_negatif() {
+        return transactionEdit_last_sign_negatif;
+    }
+
+    public void setTransactionEdit_last_sign_negatif(boolean transactionEdit_last_sign_negatif) {
+        this.transactionEdit_last_sign_negatif = transactionEdit_last_sign_negatif;
     }
 }

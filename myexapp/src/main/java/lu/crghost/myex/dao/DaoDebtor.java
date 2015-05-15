@@ -74,4 +74,22 @@ public class DaoDebtor implements DbDao<Debtor> {
         if (!c.isClosed()) c.close();
         return types;
     }
+
+    /**
+     * Returns a cursor for selection
+     * @param selection
+     * @param selectionArgs
+     * @param order
+     * @return
+     */
+    public Cursor getCursorAll(String selection, String[] selectionArgs, String order) {
+        if (order==null) order = Debtor.SORT_ORDER;
+        Cursor c = db.query(Debtor.TABLE_NAME,
+                Debtor.FIELD_NAMES,
+                selection, selectionArgs,
+                null,null,order,null);
+        return c;
+    }
+
+
 }

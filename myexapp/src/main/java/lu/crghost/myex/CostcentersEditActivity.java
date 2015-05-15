@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import lu.crghost.myex.dao.DataManager;
 import lu.crghost.myex.models.*;
 import lu.crghost.myex.tools.SimpleMeasureAdapter;
 
@@ -114,7 +115,7 @@ public class CostcentersEditActivity extends Activity {
         });
 
         // fill parent spinner
-        parentList = app.getDataManager().getCostcentersForSpinner();
+        parentList = app.getDataManager().getCostcentersForSpinner(getResources().getString(R.string.data_costcenter_root), DataManager.COSTCENTERTYPE_ALL);
         CostcenterAdapter costcenterAdapter = new CostcenterAdapter(this,parentList);
         costcenterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.cparent.setAdapter(costcenterAdapter);
