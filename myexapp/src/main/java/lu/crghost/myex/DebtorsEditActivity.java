@@ -3,18 +3,25 @@ package lu.crghost.myex;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import lu.crghost.cralib.tools.Formats;
 import lu.crghost.myex.models.Debtor;
+import lu.crghost.myex.tools.MyFormats;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 
 /**
  * CUD a debtor
@@ -61,9 +68,9 @@ public class DebtorsEditActivity extends Activity {
                 isupdate = false;
             } else {
                 holder.name.setText(debtor.getName());
-                holder.latitude.setText(lu.crghost.cralib.tools.Formats.formatDecimal(debtor.getLatitude(),5));
-                holder.altitude.setText(lu.crghost.cralib.tools.Formats.formatDecimal(debtor.getAltitude(),5));
-                holder.longitude.setText(lu.crghost.cralib.tools.Formats.formatDecimal(debtor.getLongitude(),5));
+                holder.longitude.setText(MyFormats.formatDecimal(debtor.getLongitude(),MyFormats.DECIMALS_LOCATIONS));
+                holder.latitude.setText(MyFormats.formatDecimal(debtor.getLatitude(),MyFormats.DECIMALS_LOCATIONS));
+                holder.altitude.setText(MyFormats.formatDecimal(debtor.getAltitude(),MyFormats.DECIMALS_ALTITUDE));
             }
         }
 
@@ -71,6 +78,12 @@ public class DebtorsEditActivity extends Activity {
             setTitle(getResources().getString(R.string.debtors_title_edit));
         } else {
             setTitle(getResources().getString(R.string.debtors_title_new));
+        }
+
+        if (app.getPrefs().getBoolean("localisation",true)) {
+            holder.btngps.setVisibility(View.VISIBLE);
+        } else {
+            holder.btngps.setVisibility(View.GONE);
         }
 
     }
@@ -102,9 +115,9 @@ public class DebtorsEditActivity extends Activity {
                     holder.name.setError(getResources().getString(R.string.debtors_name_error));
                     return false;
                 }
-                debtor.setLatitude(lu.crghost.cralib.tools.Formats.parseDecimal(holder.latitude.getText().toString(),5));
-                debtor.setAltitude(lu.crghost.cralib.tools.Formats.parseDecimal(holder.altitude.getText().toString(),5));
-                debtor.setLongitude(lu.crghost.cralib.tools.Formats.parseDecimal(holder.longitude.getText().toString(),5));
+                debtor.setLongitude(MyFormats.parseDecimal(holder.longitude.getText().toString(), MyFormats.DECIMALS_LOCATIONS));
+                debtor.setLatitude(MyFormats.parseDecimal(holder.latitude.getText().toString(), MyFormats.DECIMALS_LOCATIONS));
+                debtor.setAltitude(MyFormats.parseDecimal(holder.altitude.getText().toString(), MyFormats.DECIMALS_ALTITUDE));
                 if (isupdate)   app.getDataManager().updateDebtor(debtor);
                 else            app.getDataManager().insertDebtor(debtor);
                 setResult(RESULT_OK);
@@ -145,6 +158,14 @@ public class DebtorsEditActivity extends Activity {
      * @param v
      */
     public void btnGps_click(View v) {
-
+        Location location = app.getLastKnownLocation();
+        Log.i(TAG, "------location=" + location);
+        BigDecimal longitude = new BigDecimal(Double.toString(location.getLongitude()));
+        BigDecimal latitude  = new BigDecimal(Double.toString(location.getLatitude()));
+        BigDecimal altitude  = new BigDecimal(Double.toString(location.getAltitude()));
+        holder.longitude.setText(MyFormats.formatDecimal(longitude, MyFormats.DECIMALS_LOCATIONS));
+        holder.latitude.setText(MyFormats.formatDecimal(latitude, MyFormats.DECIMALS_LOCATIONS));
+        holder.altitude.setText(MyFormats.formatDecimal(altitude,MyFormats.DECIMALS_ALTITUDE));
     }
+
 }

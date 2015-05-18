@@ -39,7 +39,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.i(TAG, "------------------------CREATE------------------------------------");
         app = (MyExApp) getApplication();
 
         // Create the adapter that will return a fragment for each of the three primary sections of the app.
@@ -86,6 +86,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (app!=null) app.refreshLocation();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -264,8 +269,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         Intent newtrans = new Intent(this,TransactionsEditActivity.class);
         newtrans.putExtra("id",0L);
         if (account_id!=null)    newtrans.putExtra("account_id", Long.parseLong(account_id));
-        if (costcenter_id!=null) newtrans.putExtra("debtor_id",Long.parseLong(debtor_id));
-        if (debtor_id!=null)     newtrans.putExtra("costcenter_id",Long.parseLong(costcenter_id));
+        if (debtor_id!=null)     newtrans.putExtra("debtor_id",Long.parseLong(debtor_id));
+        if (costcenter_id!=null) newtrans.putExtra("costcenter_id",Long.parseLong(costcenter_id));
         startActivityForResult(newtrans,NEW_TRANSACTION);
     }
 

@@ -3,8 +3,12 @@ package lu.crghost.myex;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.util.Log;
 import lu.crghost.myex.dao.DataManager;
 import lu.crghost.cralib.security.StringEncoder;
@@ -24,6 +28,9 @@ public class MyExApp extends Application {
 
     private long costcentersEdit_last_parent_id = 0;
     private boolean transactionEdit_last_sign_negatif = true;
+
+    LocationManager locationManager;
+    boolean localisationRunning;
 
     //
     // getters/setters
@@ -70,6 +77,58 @@ public class MyExApp extends Application {
             editor.apply();
         }
 
+        // Localisation
+        localisationRunning = false;
+    }
+
+    public Location getLastKnownLocation() {
+        Location location = null;
+        if (locationManager == null) locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        } else {
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+        return location;
+    }
+
+    public void refreshLocation() {
+        if (!prefs.getBoolean("localisation",true)) {
+            return;
+        }
+        if (localisationRunning) {
+            return;
+        }
+        if (locationManager == null) locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.i(TAG, "------- Current location=" + location);
+                locationManager.removeUpdates(this);
+                localisationRunning = false;
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
+        }
+        localisationRunning = true;
     }
 
     public void reloadPreferences() {

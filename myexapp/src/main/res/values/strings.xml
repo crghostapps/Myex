@@ -26,6 +26,8 @@
     <string name="pref_email_long">For sending your reports, will only be used for internal proposes</string>
     <string name="pref_currency">Currency Symbol</string>
     <string name="currencydefault">€</string>
+    <string name="pref_localisation">Use localisation</string>
+    <string name="pref_localisation_long">Use localisation to propose expense points</string>
     <string name="prefscreen_advanced">Advanced ...</string>
     <string name="pref_bkserver">Backup sftp-server</string>
     <string name="pref_bkserver_error">Barckupserver url is invalid</string>

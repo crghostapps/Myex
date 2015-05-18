@@ -34,7 +34,8 @@
                 android:id="@+id/debtors_latitude"
                 android:inputType="numberDecimal"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:gravity="right"/>
 
     <TextView
             android:text="@string/debtors_longitude"
@@ -47,7 +48,8 @@
                 android:id="@+id/debtors_longitude"
                 android:inputType="numberDecimal"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:gravity="right"/>
 
     <TextView
             android:text="@string/debtors_altitude"
@@ -60,7 +62,8 @@
             android:id="@+id/debtors_altitude"
             android:inputType="numberDecimal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:gravity="right"/>
 
 
 
@@ -70,6 +73,8 @@
                 android:onClick="btnGps_click"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+
+
 
 
 </LinearLayout>

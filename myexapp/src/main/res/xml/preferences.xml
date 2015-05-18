@@ -24,6 +24,12 @@
             android:inputType="text"
             android:defaultValue="@string/currencydefault"
             />
+    <CheckBoxPreference
+            android:key="localisation"
+            android:title="@string/pref_localisation"
+            android:summary="@string/pref_localisation_long"
+            android:defaultValue="true"
+            />
 
     <PreferenceScreen
             android:key="prefadvanced" android:title="@string/prefscreen_advanced" android:persistent="false"
