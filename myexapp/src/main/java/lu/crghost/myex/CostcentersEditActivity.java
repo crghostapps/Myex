@@ -139,7 +139,7 @@ public class CostcentersEditActivity extends Activity {
         });
 
         // fill measure spinner
-        measureList = app.getDataManager().getMeasuresForSpinner(true,false);
+        measureList = app.getDataManager().getMeasuresForSpinner(true,null);
         SimpleMeasureAdapter measureArrayAdapter = new SimpleMeasureAdapter(this,measureList);
         measureArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.cmeasure1.setAdapter(measureArrayAdapter);

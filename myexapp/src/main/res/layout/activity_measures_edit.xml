@@ -36,15 +36,6 @@
             android:inputType="textCapCharacters"
             />
 
-    <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="@string/measures_iscurrency"
-            android:id="@+id/measures_iscurrency"/>
-
-
     <TextView
             android:text="@string/measures_cost"
             android:layout_width="wrap_content"

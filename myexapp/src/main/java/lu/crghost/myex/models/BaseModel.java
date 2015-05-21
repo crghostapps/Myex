@@ -1,5 +1,7 @@
 package lu.crghost.myex.models;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Base model to be extended by all Models
  * Created by CR on 23/12/2014.
@@ -9,6 +11,9 @@ public class BaseModel {
     protected long id;
     private String created_at;
     private String updated_at;
+
+    public static final SimpleDateFormat sqlDateFormat   = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat sqlDateTimeFormat   = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public long getId() {
         return id;

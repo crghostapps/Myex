@@ -2,10 +2,12 @@ package lu.crghost.myex;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,17 +16,22 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.CursorToStringConverter;
 import lu.crghost.myex.dao.DataManager;
 import lu.crghost.myex.models.*;
+import lu.crghost.myex.tools.MyFormats;
 import lu.crghost.myex.tools.SimpleAccountAdapter;
 import lu.crghost.myex.tools.SimpleMeasureAdapter;
 import net.sqlcipher.Cursor;
 
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
 public class TransactionsEditActivity extends Activity {
 
-    private static final String TAG = "TransactionsEditActivity";
+    private static final String TAG = "TransEditActivity";
 
     private MyExApp app;
     private boolean isupdate;
@@ -35,6 +42,7 @@ public class TransactionsEditActivity extends Activity {
 
     static class ViewHolder {
         public EditText vamount;
+        public EditText vamountDate;
         public ToggleButton vpm;          // on = - off = +
         public AutoCompleteTextView vdescription;
         public AutoCompleteTextView vdebtor;
@@ -59,6 +67,7 @@ public class TransactionsEditActivity extends Activity {
 
         holder = new ViewHolder();
         holder.vamount = (EditText) findViewById(R.id.transactions_amount);
+        holder.vamountDate = (EditText) findViewById(R.id.transactions_datetime);
         holder.vpm = (ToggleButton) findViewById(R.id.transactions_pm);
         holder.vdescription = (AutoCompleteTextView) findViewById(R.id.transactions_description);
         holder.vdebtor = (AutoCompleteTextView) findViewById(R.id.transactions_debtor);
@@ -86,6 +95,7 @@ public class TransactionsEditActivity extends Activity {
             holder.vdebtor_id = getIntent().getLongExtra("debtor_id",0);
             holder.vcostcenter_id = getIntent().getLongExtra("costcenter_id",0);
             holder.vpm.setChecked(app.isTransactionEdit_last_sign_negatif());
+            holder.vamountDate.setText(MyFormats.formatDateTime.format(new Date(System.currentTimeMillis())));
         } else {
             isupdate = true;
             transaction = app.getDataManager().getTransactionById(id);
@@ -94,18 +104,18 @@ public class TransactionsEditActivity extends Activity {
             } else {
                 holder.vdescription.setText(transaction.getDescription());
                 if (transaction.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-                    holder.vamount.setText(lu.crghost.cralib.tools.Formats.formatDecimal(transaction.getAmount().negate(),2));
+                    holder.vamount.setText(MyFormats.formatDecimal(transaction.getAmount().negate(),2));
                     holder.vpm.setChecked(true);
                 } else {
-                    holder.vamount.setText(lu.crghost.cralib.tools.Formats.formatDecimal(transaction.getAmount(),2));
+                    holder.vamount.setText(MyFormats.formatDecimal(transaction.getAmount(),2));
                     holder.vpm.setChecked(false);
                 }
                 holder.vdebtor_id = transaction.getDebitor_id();
                 holder.vcostcenter_id = transaction.getCostcenter_id();
                 holder.vaccountsel_id = transaction.getAccount_id();
-                holder.vmeasure1.setText(lu.crghost.cralib.tools.Formats.formatDecimal(transaction.getMeasure1(),2));
+                holder.vmeasure1.setText(MyFormats.formatDecimal(transaction.getMeasure1(),2));
                 holder.vmeasure1sel_id = transaction.getMeasure1_id();
-                holder.vmeasure2.setText(lu.crghost.cralib.tools.Formats.formatDecimal(transaction.getMeasure2(),2));
+                holder.vmeasure2.setText(MyFormats.formatDecimal(transaction.getMeasure2(),2));
                 holder.vmeasure2sel_id = transaction.getMeasure1_id();
             }
         }
@@ -217,7 +227,7 @@ public class TransactionsEditActivity extends Activity {
         });
 
         // Measure 1 spinner
-        measureList = app.getDataManager().getMeasuresForSpinner(true,false);
+        measureList = app.getDataManager().getMeasuresForSpinner(true,"");
         SimpleMeasureAdapter measureArrayAdapter = new SimpleMeasureAdapter(this,measureList);
         measureArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.vmeasure1sel.setAdapter(measureArrayAdapter);
@@ -275,6 +285,38 @@ public class TransactionsEditActivity extends Activity {
         holder.vcostcentersel.setAdapter(costcenterAdapter);
     }
 
+    /**
+     * Show calendar to select date and time
+     * @param v
+     */
+    public void action_calendar(View v) {
+        LayoutInflater li = LayoutInflater.from(this);
+        View prompt = li.inflate(R.layout.prompt_datetime, null);
+        final DatePicker picDate = (DatePicker) prompt.findViewById(R.id.prompt_datePicker);
+        final TimePicker picTime = (TimePicker) prompt.findViewById(R.id.prompt_timePicker);
+
+
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setView(prompt);
+        dialog.setTitle(getResources().getString(R.string.prompt_datetime_title));
+        dialog.setIcon(android.R.drawable.ic_menu_my_calendar);
+        dialog.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(picDate.getYear(), picDate.getMonth(), picDate.getDayOfMonth());
+                calendar.set(Calendar.HOUR, picTime.getCurrentHour());
+                calendar.set(Calendar.MINUTE, picTime.getCurrentMinute());
+                holder.vamountDate.setText(MyFormats.formatDateTime.format(calendar.getTime()));
+            }
+        });
+        dialog.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i(TAG, "Cancel pressed");
+            }
+        });
+        dialog.show();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -306,6 +348,14 @@ public class TransactionsEditActivity extends Activity {
                     amount = amount.negate();
                 }
                 transaction.setAmount(amount);
+                Date amount_at = null;
+                try {
+                    amount_at = MyFormats.formatDateTime.parse(holder.vamountDate.getText().toString());
+                } catch(Exception e) {
+                    holder.vamountDate.setError(getResources().getString(R.string.transactions_date_error));
+                    return false;
+                }
+                transaction.setDateAmount_at(amount_at);
                 transaction.setDebitor_id(holder.vdebtor_id);
                 transaction.setCostcenter_id(holder.vcostcenter_id);
                 transaction.setAccount_id(holder.vaccountsel_id);

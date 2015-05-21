@@ -43,6 +43,10 @@ public class MyExApp extends Application {
         return this.dataManager;
     }
 
+    public String getCurrencySymbol() {
+        return prefs.getString("currency","");
+    }
+
 
     //
     // lifecycle
@@ -172,29 +176,23 @@ public class MyExApp extends Application {
         SQLiteDatabase db = dataManager.getDb();
 
         // Measures
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(1,'"
+        db.execSQL("insert into measures (_id,name,nameshort) values(1,'"
                 + getResources().getString(R.string.data_measures1_name) + "','"
                 + getResources().getString(R.string.data_measures1_short) + "');");
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(1,'"
+        db.execSQL("insert into measures (_id,name,nameshort) values(2,'"
                 + getResources().getString(R.string.data_measures2_name) + "','"
                 + getResources().getString(R.string.data_measures2_short) + "');");
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(1,'"
+        db.execSQL("insert into measures (_id,name,nameshort) values(3,'"
                 + getResources().getString(R.string.data_measures3_name) + "','"
                 + getResources().getString(R.string.data_measures3_short) + "');");
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(0,'"
+        db.execSQL("insert into measures (_id,name,nameshort) values(4,'"
                 + getResources().getString(R.string.data_measures4_name) + "','"
                 + getResources().getString(R.string.data_measures4_short) + "');");
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(0,'"
-                + getResources().getString(R.string.data_measures5_name) + "','"
-                + getResources().getString(R.string.data_measures5_short) + "');");
-        db.execSQL("insert into measures (iscurrency,name,nameshort) values(0,'"
-                + getResources().getString(R.string.data_measures6_name) + "','"
-                + getResources().getString(R.string.data_measures6_short) + "');");
 
         // Accounts
-        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,currency_id) values(1,'"
+        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,measure_id) values(1,'"
                 + getResources().getString(R.string.data_account1) + "',null,0,0,0,1);");
-        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,currency_id) values(2,'"
+        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,measure_id) values(2,'"
                 + getResources().getString(R.string.data_account2) + "',null,1,0,0,1);");
 
         // Costcenters

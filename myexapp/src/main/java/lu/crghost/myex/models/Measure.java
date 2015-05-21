@@ -25,7 +25,6 @@ public class Measure extends BaseModel implements BaseModelInterface {
             _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             " name TEXT NULL ,"+
             " nameshort TEXT," +
-            " iscurrency INT," +		// 0=no, 1=yes
             " cost_per_measure NUMERIC," +
             " created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
             " updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );";
@@ -34,7 +33,6 @@ public class Measure extends BaseModel implements BaseModelInterface {
             BaseColumns._ID,
             "name",
             "nameshort",
-            "iscurrency",
             "cost_per_measure",
             "created_at",
             "updated_at"
@@ -43,7 +41,6 @@ public class Measure extends BaseModel implements BaseModelInterface {
 
     private String name;
     private String nameshort;
-    private int iscurrency;
     private BigDecimal cost_per_measure;
 
     /**
@@ -92,7 +89,6 @@ public class Measure extends BaseModel implements BaseModelInterface {
         if (withId) c.put(_ID,getId());
         c.put("name",getName());
         c.put("nameshort",getNameshort());
-        c.put("iscurrency", getIscurrency());
         c.put("cost_per_measure", getCost_per_measure().doubleValue());
         c.put("created_at",getCreated_at());
         c.put("updated_at",getUpdated_at());
@@ -103,7 +99,6 @@ public class Measure extends BaseModel implements BaseModelInterface {
     public void setValues(ContentValues c) {
         name = c.getAsString("name");
         nameshort = c.getAsString("nameshort");
-        iscurrency = c.getAsInteger("iscurrency");
         cost_per_measure = new BigDecimal(c.getAsDouble("cost_per_measure"));
     }
 
@@ -113,13 +108,16 @@ public class Measure extends BaseModel implements BaseModelInterface {
             setId(c.getLong(0));
             setName(c.getString(1));
             setNameshort(c.getString(2));
-            setIscurrency(c.getInt(3));
-            setCost_per_measure(new BigDecimal(c.getDouble(4)));
-            setCreated_at(c.getString(5));
-            setUpdated_at(c.getString(6));
+            setCost_per_measure(new BigDecimal(c.getDouble(3)));
+            setCreated_at(c.getString(4));
+            setUpdated_at(c.getString(5));
         }
     }
 
+    public boolean isCurrency() {
+        if (getId()==1) return true;
+        return false;
+    }
 
     public String getName() {
         return name;
@@ -137,20 +135,6 @@ public class Measure extends BaseModel implements BaseModelInterface {
         this.nameshort = nameshort;
     }
 
-    public int getIscurrency() {
-        return iscurrency;
-    }
-
-    public void setIscurrency(int iscurrency) {
-        this.iscurrency = iscurrency;
-    }
-    public void setIscurrency(boolean b) {
-        this.iscurrency = boolean_to_int(b);
-    }
-
-    public boolean isCurrency() {
-        return int_to_boolean(iscurrency);
-    }
 
     /**
      * Used in dropdown lists

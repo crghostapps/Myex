@@ -10,6 +10,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import lu.crghost.cralib.tools.Formats;
 import lu.crghost.myex.models.Account;
+import lu.crghost.myex.models.Measure;
+import lu.crghost.myex.tools.MyFormats;
 
 import java.util.List;
 
@@ -54,7 +56,14 @@ public class AccountsAdapter extends ArrayAdapter<Account> {
         double balance = app.getDataManager().getAccountBalance(account);
 
         holder.progressBar.setMax(maxcre);
-        holder.account_amount.setText(Formats.frDecimalFormat.format(balance) + app.getDataManager().getCurrencySymbol(account.getCurrency_id()));
+        String symbol = "";
+        if (account.getActype() >= Account.TYPE_COUNTER) {
+            Measure measure = app.getDataManager().getMeasureById(account.getId());
+            if (measure != null) symbol = measure.getNameshort();
+        } else {
+            symbol = app.getCurrencySymbol();
+        }
+        holder.account_amount.setText(MyFormats.formatDouble(balance,2) + symbol);
 
         boolean isred = false;
         if (balance<0) {

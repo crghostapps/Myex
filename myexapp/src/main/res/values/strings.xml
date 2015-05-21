@@ -44,6 +44,7 @@
     <!-- dialogs -->
     <string name="btn_ok">Ok</string>
     <string name="btn_cancel">Cancel</string>
+    <string name="prompt_datetime_title">Date and time</string>
 
     <!-- Accounts -->
     <string name="accounts_title">Accounts</string>
@@ -56,7 +57,7 @@
     <string name="account_type">Type</string>
     <string name="account_initbalance">Initial balance</string>
     <string name="account_limitamount">Amountlimit</string>
-    <string name="account_currency">Currency</string>
+    <string name="account_measure">Measure</string>
     <string name="account_delete_confirmation">Are you shure that you want to delete this account?</string>
     <string name="account_deleted">Account deleted</string>
     <string name="account_number_error">Please type a correct value</string>
@@ -109,6 +110,8 @@
     <string name="transactions_empty">Please create a transaction</string>
     <string name="transactions_description">Description</string>
     <string name="transactions_description_error">Please enter a description</string>
+    <string name="transactions_date">Date and time</string>
+    <string name="transactions_date_error">Please enter a valid date</string>
     <string name="transactions_costcenter">Costcenter</string>
     <string name="transactions_account">Account</string>
     <string name="transactions_debtor">Debtor</string>
@@ -131,18 +134,14 @@
     <string name="data_account1">Wallet</string>
     <string name="data_account2">Current account</string>
 
-    <string name="data_measures1_name">Currency Euro</string>
-    <string name="data_measures1_short">€</string>
-    <string name="data_measures2_name">Currency US Dollar</string>
-    <string name="data_measures2_short">$</string>
-    <string name="data_measures3_name">Currency GB Pound</string>
-    <string name="data_measures3_short">£</string>
-    <string name="data_measures4_name">Kilometers</string>
-    <string name="data_measures4_short">KM</string>
-    <string name="data_measures5_name">Kilowatt</string>
-    <string name="data_measures5_short">KW</string>
-    <string name="data_measures6_name">Liters</string>
-    <string name="data_measures6_short">LIT</string>
+    <string name="data_measures1_name">Amount</string>
+    <string name="data_measures1_short"></string>
+    <string name="data_measures2_name">Kilometers</string>
+    <string name="data_measures2_short">KM</string>
+    <string name="data_measures3_name">Kilowatt</string>
+    <string name="data_measures3_short">KW</string>
+    <string name="data_measures4_name">Liters</string>
+    <string name="data_measures4_short">LIT</string>
 
     <string name="data_debitor">No debitor selected</string>
 
@@ -159,9 +158,8 @@
     <string name="measures_edit">Edit measure</string>
     <string name="measures_name">Name</string>
     <string name="measures_name_error">Please enter a name</string>
-    <string name="measures_nameshort">Short name, currency symbol</string>
+    <string name="measures_nameshort">Symbol</string>
     <string name="measures_cost">Cost per measure</string>
-    <string name="measures_iscurrency">Used for currency</string>
     <string name="measures_delete_confirmation">Are you shure that you want to delete this measure?</string>
     <string name="measures_deleted">Measure deleted</string>
 

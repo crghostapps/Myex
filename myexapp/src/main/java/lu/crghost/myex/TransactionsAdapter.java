@@ -10,7 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import lu.crghost.cralib.tools.Formats;
+import lu.crghost.myex.models.Account;
+import lu.crghost.myex.models.Measure;
 import lu.crghost.myex.models.Transaction;
+import lu.crghost.myex.tools.MyFormats;
 
 /**
  * Dynamic adapter for transaction list
@@ -22,16 +25,19 @@ public class TransactionsAdapter extends SimpleCursorAdapter {
     private int layout;
     private Context context;
     private int orientation;
-    private String currencySymbol;
 
-    public TransactionsAdapter(Context context, int layout, Cursor c, String[] from, int[] to, String currencySymbol) {
+    private long last_account_id;
+    private String last_symbol;
+    private MyExApp app;
+
+    public TransactionsAdapter(Context context, int layout, Cursor c, String[] from, int[] to, MyExApp application) {
         super(context, layout, c, from, to, 0);
         this.layout = layout;
         this.context = context;
-        this.currencySymbol = currencySymbol;
-        if (this.currencySymbol==null) this.currencySymbol="";
         this.orientation = context.getResources().getConfiguration().orientation;
-        Log.d(TAG,"--------------adapter created------------------");
+        this.last_account_id = 0;
+        this.last_symbol = "";
+        this.app = application;
     }
 
     @Override
@@ -61,7 +67,6 @@ public class TransactionsAdapter extends SimpleCursorAdapter {
      * @param c
      */
     private void fillDatainList(View v,Context context, Cursor c) {
-        Log.d(TAG,"---------------------------fill data-------------------------" );
         TextView itemdescription = null;
         TextView itemcostcenter  = null;
         TextView itemamount = null;
@@ -80,10 +85,23 @@ public class TransactionsAdapter extends SimpleCursorAdapter {
 
         if (itemdescription != null) {
             Transaction transaction = new Transaction(c);
-            Log.d(TAG, "--"+transaction);
+            if (last_account_id != transaction.getAccount_id()) {
+                Account account = app.getDataManager().getAccountById(transaction.getAccount_id());
+                if (account!=null) {
+                    last_account_id = account.getId();
+                    Measure measure = app.getDataManager().getMeasureById(account.getMeasure_id());
+                    if (measure != null) {
+                        if (measure.isCurrency()) {
+                            last_symbol = app.getCurrencySymbol();
+                        } else {
+                            last_symbol = measure.getNameshort();
+                        }
+                    }
+                }
+            }
             itemdescription.setText(transaction.getDescription());
-            itemcostcenter.setText("ccid="+transaction.getCostcenter_id());
-            itemamount.setText(Formats.frDecimalFormat.format(0)+ currencySymbol);
+            itemcostcenter.setText(transaction.getAmount_at() + "  " + app.getDataManager().getCostenterDescription(transaction.getCostcenter_id()));
+            itemamount.setText(MyFormats.formatDecimal(transaction.getAmount(),2) + last_symbol);
         }
 
     }

@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import lu.crghost.myex.models.Debtor;
 import lu.crghost.myex.models.Measure;
+import lu.crghost.myex.tools.MyFormats;
 
 /**
  * CUD a measure
@@ -28,7 +29,6 @@ public class MeasuresEditActivity extends Activity {
         public EditText name;
         public EditText nameShort;
         public EditText cost;
-        public CheckBox iscurrency;
     }
     ViewHolder holder;
 
@@ -41,7 +41,6 @@ public class MeasuresEditActivity extends Activity {
         holder.name = (EditText) findViewById(R.id.measures_name);
         holder.nameShort = (EditText) findViewById(R.id.measures_nameshort);
         holder.cost = (EditText) findViewById(R.id.measures_cost);
-        holder.iscurrency = (CheckBox) findViewById(R.id.measures_iscurrency);
 
         app = (MyExApp) getApplication();
 
@@ -57,8 +56,7 @@ public class MeasuresEditActivity extends Activity {
             } else {
                 holder.name.setText(measure.getName());
                 holder.nameShort.setText(measure.getNameshort());
-                holder.cost.setText(lu.crghost.cralib.tools.Formats.formatDecimal(measure.getCost_per_measure(),2));
-                holder.iscurrency.setChecked(measure.isCurrency());
+                holder.cost.setText(MyFormats.formatDecimal(measure.getCost_per_measure(), 2));
             }
         }
 
@@ -97,7 +95,6 @@ public class MeasuresEditActivity extends Activity {
                     return false;
                 }
                 measure.setCost_per_measure(lu.crghost.cralib.tools.Formats.parseDecimal(holder.cost.getText().toString(),2));
-                measure.setIscurrency(holder.iscurrency.isChecked());
 
                 if (isupdate) app.getDataManager().updateMeasure(measure);
                 else app.getDataManager().insertMeasure(measure);

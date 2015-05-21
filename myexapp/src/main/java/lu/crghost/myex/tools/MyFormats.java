@@ -2,6 +2,7 @@ package lu.crghost.myex.tools;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
@@ -14,6 +15,8 @@ public class MyFormats {
 
     public static final int DECIMALS_LOCATIONS = 6;
     public static final int DECIMALS_ALTITUDE  = 1;
+    public static DateFormat formatDate = DateFormat.getDateInstance(DateFormat.MEDIUM);
+    public static DateFormat formatDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
     /**
      * Convert String to BigDecimal
@@ -64,11 +67,19 @@ public class MyFormats {
     public static String formatDecimal(BigDecimal big, int decimals) {
         String s = "";
         if (big!=null && big.compareTo(BigDecimal.ZERO) != 0 ) {
+            s = formatDouble(big.doubleValue(),decimals);
+        }
+        return s;
+    }
+
+    public static String formatDouble(double d, int decimals) {
+        String s = "";
+        if (d != 0 ) {
             NumberFormat nf = NumberFormat.getNumberInstance();
             nf.setMaximumFractionDigits(decimals);
             nf.setMinimumFractionDigits(decimals);
             nf.setRoundingMode(RoundingMode.HALF_UP);
-            s = nf.format(big.doubleValue());
+            s = nf.format(d);
         }
         return s;
     }

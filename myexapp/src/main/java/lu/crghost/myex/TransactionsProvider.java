@@ -58,10 +58,8 @@ public class TransactionsProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Log.d(TAG,"-------------> "+uri );
         if(uriMatcher.match(uri)==TRANSACTIONS){
             Cursor c = app.getDataManager().getTransactionsCursor(selection,selectionArgs,sortOrder);
-            Log.d(TAG,"----------------> got "+c.getCount() + " recs for " + selection);
             return c;
         }else{
             String id = uri.getPathSegments().get(1);

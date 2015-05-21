@@ -19,7 +19,10 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.List;
 
-
+/**
+ * CUD Account
+ * @TODO mesure_id should by 1 if account_type < 3
+ */
 public class AccountsEditActivity extends Activity {
 
     private static final String TAG = "AccountsEditActivity";
@@ -36,8 +39,8 @@ public class AccountsEditActivity extends Activity {
         public long atype_selected_id;
         public EditText ainitbalance;
         public EditText alimitamount;
-        public Spinner acurrency;
-        public long acurrency_selected_id;
+        public Spinner ameasure;
+        public long ameasure_selected_id;
     }
     ViewHolder holder;
 
@@ -53,8 +56,8 @@ public class AccountsEditActivity extends Activity {
         holder.atype_selected_id = 0;
         holder.ainitbalance = (EditText) findViewById(R.id.account_initbalance);
         holder.alimitamount = (EditText) findViewById(R.id.account_limitamount);
-        holder.acurrency = (Spinner) findViewById(R.id.account_currency);
-        holder.acurrency_selected_id = 1;
+        holder.ameasure = (Spinner) findViewById(R.id.account_measure);
+        holder.ameasure_selected_id = 1;
 
         app = (MyExApp) getApplication();
 
@@ -73,7 +76,7 @@ public class AccountsEditActivity extends Activity {
                 holder.atype_selected_id = account.getActype();
                 holder.ainitbalance.setText(lu.crghost.cralib.tools.Formats.formatDecimal(account.getInitbalance(),2));
                 holder.alimitamount.setText(lu.crghost.cralib.tools.Formats.formatDecimal(account.getLimitamount(),2));
-                holder.acurrency_selected_id = account.getCurrency_id();
+                holder.ameasure_selected_id = account.getMeasure_id();
             }
         }
 
@@ -91,7 +94,6 @@ public class AccountsEditActivity extends Activity {
         holder.atype.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "------------AccountTypes selected:" + AccountTypes.ACTYPES.get(position));
                 String sid = AccountTypes.ACTYPES.get(position).id;
                 holder.atype_selected_id = 0;
                 if (sid != null) {
@@ -109,17 +111,17 @@ public class AccountsEditActivity extends Activity {
             }
         });
 
-        // fill currency spinner
-        List<Measure> measureList = app.getDataManager().getMeasuresForSpinner(false,true);
+        // fill measure spinner
+        List<Measure> measureList = app.getDataManager().getMeasuresForSpinner(false,null);
         SimpleMeasureAdapter measureArrayAdapter = new SimpleMeasureAdapter(this,measureList);
         measureArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        holder.acurrency.setAdapter(measureArrayAdapter);
-        int mpos1 = app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList, holder.acurrency_selected_id );
-        holder.acurrency.setSelection(mpos1);
-        holder.acurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        holder.ameasure.setAdapter(measureArrayAdapter);
+        int mpos1 = app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList, holder.ameasure_selected_id );
+        holder.ameasure.setSelection(mpos1);
+        holder.ameasure.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                holder.acurrency_selected_id = ((Measure) holder.acurrency.getItemAtPosition(position)).getId();
+                holder.ameasure_selected_id = ((Measure) holder.ameasure.getItemAtPosition(position)).getId();
             }
 
             @Override
@@ -158,7 +160,8 @@ public class AccountsEditActivity extends Activity {
                 account.setActype((int) holder.atype_selected_id);
                 account.setInitbalance(lu.crghost.cralib.tools.Formats.parseDecimal(holder.ainitbalance.getText().toString(),2));
                 account.setLimitamount(lu.crghost.cralib.tools.Formats.parseDecimal(holder.alimitamount.getText().toString(),2));
-                account.setCurrency_id(holder.acurrency_selected_id);
+                if (account.getActype() < Account.TYPE_COUNTER) holder.ameasure_selected_id = 1;
+                account.setMeasure_id(holder.ameasure_selected_id);
 
                 if (isupdate)   app.getDataManager().updateAccount(account);
                 else            app.getDataManager().insertAccount(account);

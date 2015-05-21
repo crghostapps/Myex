@@ -7,6 +7,7 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import lu.crghost.cralib.tools.HashCodeUtil;
 
@@ -301,6 +302,26 @@ public class Transaction extends BaseModel implements BaseModelInterface {
 
     public void setAmount_at(String amount_at) {
         this.amount_at = amount_at;
+    }
+
+    public Date getDateAmount_at() {
+        Date date = null;
+        if (amount_at!=null) {
+            try {
+                date = sqlDateTimeFormat.parse(amount_at);
+            } catch(Exception e) { }
+        }
+        return date;
+    }
+
+    public void setDateAmount_at(Date date) {
+        String s = null;
+        if (date!=null) {
+            try {
+                amount_at = sqlDateTimeFormat.format(date);
+            } catch(Exception e) {}
+        }
+        amount_at = s;
     }
 
 

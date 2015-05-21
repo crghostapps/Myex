@@ -22,7 +22,7 @@ import static android.provider.BaseColumns._ID;
 /**
  * Transactions list
  */
-public class TransactionsFragment extends ListFragment  {
+public class TransactionsFragment extends ListFragment implements AdapterView.OnItemLongClickListener {
 
 
     private static final String TAG = "TransactionsFragment";
@@ -56,6 +56,7 @@ public class TransactionsFragment extends ListFragment  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (MyExApp) getActivity().getApplication();
+
     }
 
     @Override
@@ -69,8 +70,7 @@ public class TransactionsFragment extends ListFragment  {
                 R.layout.fragment_transactions_item,
                 c,
                 new String[] {"description"},
-                new int[] {android.R.id.text1},
-                app.getPrefs().getString("currency",""));
+                new int[] {android.R.id.text1}, app);
         setListAdapter(mAdapter);
 
         return view;
@@ -79,14 +79,7 @@ public class TransactionsFragment extends ListFragment  {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "-------------longclick on " + id);
-                getListView().deferNotifyDataSetChanged();
-                return false;
-            }
-        });
+        getListView().setOnItemLongClickListener(this);
     }
 
     @Override
@@ -111,6 +104,15 @@ public class TransactionsFragment extends ListFragment  {
         getListView().deferNotifyDataSetChanged();
     }
 
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        mListener.onFragmentInteractionEdit(Long.toString(id), MyOnFragmentInteractionListener.ACTION_EDIT_TRANSACTION);
+        getListView().deferNotifyDataSetChanged();
+        return true;
+    }
+
+
     /**
      * Manage data
      * @return
@@ -131,6 +133,7 @@ public class TransactionsFragment extends ListFragment  {
         }
         return getActivity().managedQuery(uri,PROJECTION,selection,selectionArgsArray,null);
     }
+
 
 
 }
