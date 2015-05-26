@@ -14,10 +14,11 @@
     <string name="action_costcenters">Cost centers</string>
     <string name="action_debtors">Debtors</string>
     <string name="action_transactions">Transactions</string>
-    <string name="action_basicdata">Basic data</string>
+    <string name="action_basicdata">Measures</string>
     <string name="action_export">Exports</string>
     <string name="action_import">Imports</string>
     <string name="action_new_transaction">New transaction</string>
+    <string name="action_exit">Quit</string>
 
     <!-- Preferences -->
     <string name="pref_username">Your name</string>
@@ -28,13 +29,6 @@
     <string name="currencydefault">€</string>
     <string name="pref_localisation">Use localisation</string>
     <string name="pref_localisation_long">Use localisation to propose expense points</string>
-    <string name="prefscreen_advanced">Advanced ...</string>
-    <string name="pref_bkserver">Backup sftp-server</string>
-    <string name="pref_bkserver_error">Barckupserver url is invalid</string>
-    <string name="pref_bkserver_long">Full path to sftp server for doing backups (username&gt;&#64;&lt;hostname&gt;:&lt;port&gt;&#47;&lt;path&gt;&#47;)</string>
-    <string name="pref_bkserverpass">Backup server\'s password</string>
-    <string name="pref_decryptdb">Decrypt data before exporting</string>
-    <string name="pref_decryptdb_long">Local data is encrypted, decrypt it before sending to backup server (!! secutrity risk !!))</string>
 
     <!-- edit -->
     <string name="menu_save">save</string>
@@ -124,11 +118,31 @@
     <!-- Exports -->
     <string name="export_title">Exports</string>
     <string name="export_backup">Backup data</string>
-    <string name="export_backup_end">Backup sended to server</string>
     <string name="export_mail_transactions">Transactions sheet</string>
-    <string name="export_dump">SQL-Dump and mail</string>
-    <string name="export_dump_end">Data dumped and mailed</string>
-    <string name="export_dump_msg">The data will be send un-encrypted</string>
+    <string name="export_ok">Task compleated</string>
+    <string name="export_error">An error occured</string>
+
+    <!-- Imports -->
+    <string name="import_title">Imports</string>
+    <string name="import_restore">Restore data</string>
+    <string name="import_bankfile">Import bank flow</string>
+    <string name="import_filedialog_title">Please select a file to restore</string>
+    <string name="import_confirm_restore">WARNING!</string>
+    <string name="import_confirm_restore_message">All your data will be DELETED! and replaced by this restore, are you really shure?</string>
+    <string name="import_restore_error">An error occured while restoring, changes rolled back</string>
+    <string name="import_restore_ok">All data restored, please restart application</string>
+
+    <!-- Backup data -->
+    <string name="bk_title">Select tables to export:</string>
+    <string name="bk_accounts">Accounts</string>
+    <string name="bk_costcenters">Costcenters</string>
+    <string name="bk_debtors">Debtors</string>
+    <string name="bk_measures">Measures</string>
+    <string name="bk_transactions">Transactions</string>
+    <string name="bk_key">Encrypt? and password</string>
+    <string name="bk_local">Copy backup to</string>
+    <string name="bk_localdoc">Public documents folder</string>
+    <string name="bk_mail">Mail backup to </string>
 
     <!-- Initial data -->
     <string name="data_account1">Wallet</string>
@@ -166,5 +180,6 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="dummytext">Dummy text</string>
     <string name="dummynumber">0,00€</string>
+    <string name="title_activity_import">ImportActivity</string>
 
 </resources>

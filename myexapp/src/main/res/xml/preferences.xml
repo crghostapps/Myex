@@ -31,24 +31,5 @@
             android:defaultValue="true"
             />
 
-    <PreferenceScreen
-            android:key="prefadvanced" android:title="@string/prefscreen_advanced" android:persistent="false"
-            >
-
-        <EditTextPreference
-                android:key="pref_bkserver"
-                android:title="@string/pref_bkserver"
-                android:summary="@string/pref_bkserver_long"
-                android:inputType="textUri"
-                android:defaultValue="sftp://cr@mhfatest.munhowen.lu:8022"
-                />
-
-        <EditTextPreference
-                android:key="pref_bkserverpass"
-                android:title="@string/pref_bkserverpass"
-                android:inputType="textPassword"
-                />
-
-    </PreferenceScreen>
 
 </PreferenceScreen>

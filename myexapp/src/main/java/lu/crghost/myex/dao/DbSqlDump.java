@@ -13,11 +13,15 @@ import java.util.List;
  */
 public final class DbSqlDump {
 
-    public static String dump(MyExApp app, BaseModelInterface table) {
+    public static String dump(MyExApp app, BaseModelInterface table, boolean addDrop) {
         String[] fieldNames = table.getFieldNames();
         StringBuilder s = new StringBuilder();
         s.append("-- creating " + table.getTableName());
         s.append(System.getProperty("line.separator"));
+        if (addDrop) {
+            s.append("DROP TABLE IF EXISTS " + table.getTableName() + ";");
+            s.append(System.getProperty("line.separator"));
+        }
         s.append(table.getTableSqlCre());
         s.append(System.getProperty("line.separator"));
 

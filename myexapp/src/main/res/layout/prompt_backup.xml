@@ -5,23 +5,103 @@
               android:layout_height="match_parent">
 
     <TextView
-            android:text="@string/pref_bkserver"
+            android:text="@string/bk_title"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent" android:layout_height="wrap_content"/>
 
-    <EditText
-            android:id="@+id/prompt_bkserver"
-            android:inputType="textUri"
-            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    <CheckBox
+            android:id="@+id/bk_accounts"
+            android:text="@string/bk_accounts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <CheckBox
+            android:id="@+id/bk_costcenters"
+            android:text="@string/bk_costcenters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <CheckBox
+            android:id="@+id/bk_debtors"
+            android:text="@string/bk_debtors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <CheckBox
+            android:id="@+id/bk_measures"
+            android:text="@string/bk_measures"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <CheckBox
+            android:id="@+id/bk_transactions"
+            android:text="@string/bk_transactions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     <TextView
-            android:text="@string/pref_bkserverpass"
+            android:text="@string/bk_key"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent" android:layout_height="wrap_content"/>
 
-    <EditText
-            android:id="@+id/prompt_bkserverpass"
-            android:inputType="textPassword"
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <CheckBox
+                android:id="@+id/bk_encrypt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <EditText
+                android:id="@+id/bk_key"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+    <TextView
+            android:text="@string/bk_local"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+
+
+        <CheckBox
+                android:id="@+id/bk_local"
+                android:text="@string/bk_localdoc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+
+
+
+    <TextView
+            android:text="@string/bk_mail"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <CheckBox
+                android:id="@+id/bk_mail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <EditText
+                android:id="@+id/bk_mailto"
+                android:inputType="textEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

@@ -148,6 +148,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public boolean onOptionsItemSelected(MenuItem item) {
         int current_item = mViewPager.getCurrentItem();
         switch (item.getItemId()) {
+            case R.id.action_exit:
+                finish();
+                return true;
             case R.id.action_settings:
                 Intent settings = new Intent(this,SettingsActivity.class);
                 startActivity(settings);
@@ -191,6 +194,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 startActivity(iexport);
                 return true;
             case R.id.action_import:
+                Intent iimport = new Intent(this,ImportActivity.class);
+                startActivity(iimport);
                 return true;
             case R.id.action_basicdata:
                 Intent imeasures = new Intent(this,MeasuresActivity.class);

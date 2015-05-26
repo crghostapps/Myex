@@ -9,10 +9,13 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import lu.crghost.myex.dao.DataManager;
 import lu.crghost.cralib.security.StringEncoder;
 import net.sqlcipher.database.SQLiteDatabase;
+
+import java.io.File;
 
 /**
  * Created by CR on 13/04/2015.
@@ -167,6 +170,21 @@ public class MyExApp extends Application {
      */
     public static Context getContext() {
         return myContext;
+    }
+
+    /**
+     * Get public document directory
+     * @return
+     */
+    public static File getPublicDocumentDir() {
+        File file = new File(Environment.getExternalStorageDirectory() + "/Documents/myex");
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
+                Log.e(TAG, "Directory " + file.getAbsolutePath() + " not created");
+                file = null;
+            }
+        }
+        return file;
     }
 
     /***********************************************************************************************

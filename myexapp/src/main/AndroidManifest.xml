@@ -71,6 +71,10 @@
             android:name=".MeasuresEditActivity"
             android:label="@string/measures_edit" >
         </activity>
+        <activity
+            android:name=".ImportActivity"
+            android:label="@string/import_title" >
+        </activity>
     </application>
 
 </manifest>
