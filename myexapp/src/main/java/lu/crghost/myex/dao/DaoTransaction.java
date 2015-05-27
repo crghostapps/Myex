@@ -1,5 +1,6 @@
 package lu.crghost.myex.dao;
 
+import android.content.ContentValues;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 import android.provider.BaseColumns;

@@ -90,7 +90,8 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
         ContentValues c = new ContentValues();
         if (withId) c.put(_ID,getId());
         c.put("name",getName());
-        c.put("parent_id",getParent_id());
+        if (getParent_id()==0) c.putNull("parent_id");
+        else c.put("parent_id",getParent_id());
         c.put("clevel",getClevel());
         c.put("sort",getSort());
         c.put("hassons",getHassons());

@@ -74,16 +74,37 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
+                <!-- Costcenter -->
                 <TextView
                         android:text="@string/transactions_costcenter"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" android:layout_marginTop="5dp"/>
 
-                <Spinner
-                        android:id="@+id/transactions_costcentersel"
+                <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Spinner
+                                android:id="@+id/transactions_costcentersel"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toLeftOf="@+id/transactions_btnAddCostcenter"
+                                android:layout_toStartOf="@+id/transactions_btnAddCostcenter"/>
+
+                        <ImageButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_action_expand"
+                                android:layout_alignParentRight="true"
+                                android:id="@+id/transactions_btnAddCostcenter"
+                                android:onClick="action_addcostcenter"/>
+
+
+                </RelativeLayout>
+
+                <!-- Date and Time -->
 
                 <TextView
                         android:text="@string/transactions_date"
@@ -91,7 +112,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" android:layout_marginTop="5dp"/>
 
-                <!-- Date and Time -->
                 <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

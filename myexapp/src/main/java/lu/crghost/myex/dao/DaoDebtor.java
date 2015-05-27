@@ -4,6 +4,7 @@ import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 import android.provider.BaseColumns;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,5 +92,20 @@ public class DaoDebtor implements DbDao<Debtor> {
         return c;
     }
 
+
+    /**
+     * Returns total amount for debtor _id
+     * @param id
+     * @return
+     */
+    public BigDecimal getTotalAmount(long id) {
+        BigDecimal sum = BigDecimal.ZERO;
+        Cursor c = db.rawQuery("select sum(amount) as sumamount from transactions where debtor_id=?",new String[]{Long.toString(id)});
+        if (c.moveToFirst()) {
+            sum = new BigDecimal(Double.toString(c.getDouble(0)));
+        }
+        c.close();
+        return sum;
+    }
 
 }

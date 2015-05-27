@@ -57,7 +57,7 @@ public final class DbSqlDump {
                 }
                 s.append(") VALUES(");
                 for (int i=0; i < fieldNames.length; i++) {
-                    s.append(toSqlString(c.get(fieldNames[i])));
+                    s.append(toSqlString(fieldNames[i],c.get(fieldNames[i])));
                     if (i < (fieldNames.length-1)) s.append(",");
                 }
                 s.append(");");
@@ -68,7 +68,7 @@ public final class DbSqlDump {
         return s.toString();
     }
 
-    private static String toSqlString(Object o) {
+    private static String toSqlString(String fieldName, Object o) {
         String s = "null";
         if (o != null) {
             if (o instanceof String) {
@@ -89,6 +89,11 @@ public final class DbSqlDump {
                 if (l.longValue() != 0) s = l.toString();
             } else if (o instanceof Boolean) {
                 s = ((Boolean) o).toString();
+            }
+        // 0 not null for numeric fields
+        } else {
+            if (o instanceof Number) {
+                s = "0";
             }
         }
         return s;

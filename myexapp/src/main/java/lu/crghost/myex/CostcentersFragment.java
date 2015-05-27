@@ -51,7 +51,7 @@ public class CostcentersFragment extends Fragment implements IconTreeItemHolder.
         ViewGroup containerView = (ViewGroup) rootView.findViewById(R.id.ccstcontainer);
 
         TreeNode root = TreeNode.root();
-        List<Costcenter> roots = app.getDataManager().getCostcenters("parent_id=?",new String[]{"0"});
+        List<Costcenter> roots = app.getDataManager().getCostcenters("parent_id is null",new String[]{});
         for (Costcenter cc : roots) {
             IconTreeItemHolder myHolder = new IconTreeItemHolder(this.getActivity(),this);
             TreeNode parent = new TreeNode(new IconTreeItemHolder.IconTreeItem(cc.getId(),cc.getName())).setViewHolder(myHolder);

@@ -80,7 +80,7 @@ public class DebtorsEditActivity extends Activity {
             setTitle(getResources().getString(R.string.debtors_title_new));
         }
 
-        if (app.getPrefs().getBoolean("localisation",true)) {
+        if (app.getPrefs().getBoolean("localisation",false)) {
             holder.btngps.setVisibility(View.VISIBLE);
         } else {
             holder.btngps.setVisibility(View.GONE);

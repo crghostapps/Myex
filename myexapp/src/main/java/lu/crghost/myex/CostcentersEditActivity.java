@@ -3,6 +3,7 @@ package lu.crghost.myex;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -204,10 +205,12 @@ public class CostcentersEditActivity extends Activity {
                 costcenter.setMeasure2_id(holder.cmeasure2_selected_id);
 
                 if (isupdate)   app.getDataManager().updateCostcenter(costcenter);
-                else            app.getDataManager().insertCostcenter(costcenter);
+                else            costcenter.setId(app.getDataManager().insertCostcenter(costcenter));
                 app.setCostcentersEdit_last_parent_id(costcenter.getParent_id());
                 app.getDataManager().resortCostcenters();
-                setResult(RESULT_OK);
+                Intent rtData = new Intent();
+                rtData.putExtra("costcenter_id", costcenter.getId());
+                setResult(RESULT_OK, rtData);
                 finish();
                 return true;
             case R.id.action_cancel:

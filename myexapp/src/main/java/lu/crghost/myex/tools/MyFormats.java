@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Date;
 
 
 /**
@@ -15,8 +16,9 @@ public class MyFormats {
 
     public static final int DECIMALS_LOCATIONS = 6;
     public static final int DECIMALS_ALTITUDE  = 1;
-    public static DateFormat formatDate = DateFormat.getDateInstance(DateFormat.MEDIUM);
-    public static DateFormat formatDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+    public static DateFormat formatDate = DateFormat.getDateInstance(DateFormat.SHORT);
+    public static DateFormat formatDateTime = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
+
 
     /**
      * Convert String to BigDecimal

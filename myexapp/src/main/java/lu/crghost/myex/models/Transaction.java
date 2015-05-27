@@ -14,6 +14,7 @@ import lu.crghost.cralib.tools.HashCodeUtil;
 import static android.provider.BaseColumns._ID;
 
 /**
+ * Transaction model
  * Created by CR on 23/12/2014.
  */
 public class Transaction extends BaseModel implements BaseModelInterface {
@@ -28,7 +29,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
             "  costcenter_id INT NULL ,"+
             "  account_id INT NULL ,"+
             "  account_target_id INT NULL ,"+
-            "  debitor_id INT NULL ," +
+            "  debtor_id INT NULL ," +
             "  amount NUMERIC NULL ,"+
             "  measure1 NUMERIC NULL," +
             "  measure1_id INT NULL," +
@@ -37,7 +38,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
             "  latitude NUMERIC NULL," +
             "  longitude NUMERIC NULL,"+
             "  altitude  NUMERIC NULL,"+
-            "  amount_at  TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
+            "  amount_at  TEXT ,"+
             "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
             "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );";
     public static final String[] FIELD_NAMES = new String[] {
@@ -47,7 +48,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
             "costcenter_id",
             "account_id",
             "account_target_id",
-            "debitor_id",
+            "debtor_id",
             "amount",
             "measure1",
             "measure1_id",
@@ -70,7 +71,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     private long costcenter_id;
     private long account_id;
     private long account_target_id;
-    private long debitor_id;
+    private long debtor_id;
     private BigDecimal amount;
     private BigDecimal measure1;
     private long measure1_id;
@@ -129,7 +130,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         c.put("costcenter_id",getCostcenter_id());
         c.put("account_id",getAccount_id());
         c.put("account_target_id",getAccount_target_id());
-        c.put("debitor_id",getDebitor_id());
+        c.put("debtor_id",getDebtor_id());
         c.put("amount",getAmount().doubleValue());
         c.put("measure1",getMeasure1().doubleValue());
         c.put("measure1_id",getMeasure1_id());
@@ -139,8 +140,8 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         c.put("longitude",getLongitude().doubleValue());
         c.put("altitude",getAltitude().doubleValue());
         c.put("amount_at",getAmount_at());
-        c.put("created_at",getCreated_at());
-        c.put("updated_at",getUpdated_at());
+        c.put("created_at", getCreated_at());
+        c.put("updated_at", getUpdated_at());
         return c;
     }
 
@@ -151,7 +152,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         costcenter_id = c.getAsLong("costcenter_id");
         account_id = c.getAsLong("account_id");
         account_target_id = c.getAsLong("account_target_id");
-        debitor_id = c.getAsLong("debitor_id");
+        debtor_id = c.getAsLong("debtor_id");
         amount = new BigDecimal(c.getAsDouble("amount"));
         measure1 = new BigDecimal(c.getAsDouble("measure1"));
         measure1_id = c.getAsLong("measure1_id");
@@ -172,7 +173,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
             setCostcenter_id(c.getLong(3));
             setAccount_id(c.getLong(4));
             setAccount_target_id(c.getLong(5));
-            setDebitor_id(c.getLong(6));
+            setDebtor_id(c.getLong(6));
             setAmount(new BigDecimal(c.getDouble(7)));
             setMeasure1(new BigDecimal(c.getDouble(8)));
             setMeasure1_id(c.getLong(9));
@@ -183,7 +184,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
             setAltitude(new BigDecimal(c.getDouble(14)));
             setAmount_at(c.getString(15));
             setCreated_at(c.getString(16));
-            //setUpdated_at(c.getString(17));
+            setUpdated_at(c.getString(17));
         }
     }
 
@@ -227,12 +228,12 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         this.account_target_id = account_target_id;
     }
 
-    public long getDebitor_id() {
-        return debitor_id;
+    public long getDebtor_id() {
+        return debtor_id;
     }
 
-    public void setDebitor_id(long debitor_id) {
-        this.debitor_id = debitor_id;
+    public void setDebtor_id(long debtor_id) {
+        this.debtor_id = debtor_id;
     }
 
     public BigDecimal getAmount() {
@@ -318,8 +319,10 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         String s = null;
         if (date!=null) {
             try {
-                amount_at = sqlDateTimeFormat.format(date);
-            } catch(Exception e) {}
+                s = sqlDateTimeFormat.format(date);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
         }
         amount_at = s;
     }

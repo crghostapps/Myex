@@ -216,13 +216,13 @@ public class MyExApp extends Application {
         // Costcenters
         // income
         db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id, isdefaultcct, ccttype) values(1,'"
-                + getResources().getString(R.string.data_costcenter_income) + "',0,30,0,0,0);");
+                + getResources().getString(R.string.data_costcenter_income) + "',0,30,null,0,0);");
         db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id, isdefaultcct, ccttype) values(3,'"
                 + getResources().getString(R.string.data_costcenter_income_misc) + "',1,40,1,1,0);");
 
         // expense
         db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id, isdefaultcct, ccttype) values(2,'"
-                + getResources().getString(R.string.data_costcenter_expence) + "',0,10,0,0,1);");
+                + getResources().getString(R.string.data_costcenter_expence) + "',0,10,null,0,1);");
         db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id,isdefaultcct,ccttype) values(4,'"
                 + getResources().getString(R.string.data_costcenter_expence_misc) + "',1,20,2,1,1);");
     }

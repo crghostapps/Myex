@@ -9,6 +9,7 @@ import net.sqlcipher.database.SQLiteOpenHelper;
 import android.os.SystemClock;
 import android.util.Log;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,6 +153,10 @@ public class DataManager {
        return daoDebtor.getCursorAll(selection, selectionArgs, null);
     }
 
+    public BigDecimal getDebtorTotalAmount(long id) {
+        return daoDebtor.getTotalAmount(id);
+    }
+
     /***********************************************************************************************
      * Costcenter
      ***********************************************************************************************/
@@ -163,7 +168,7 @@ public class DataManager {
         StringBuilder sb = new StringBuilder();
         List<String> names = new ArrayList<String>();
         Costcenter child = daoCostcenter.get(id);
-        while (child.getParent_id() > 0) {
+        while (child != null && child.getParent_id() > 0) {
             names.add(child.getName());
             child = daoCostcenter.get(child.getParent_id());
         }

@@ -1,6 +1,7 @@
 package lu.crghost.myex.models;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Base model to be extended by all Models
@@ -26,6 +27,7 @@ public class BaseModel {
     }
 
     public String getCreated_at() {
+        if (created_at==null) created_at = sqlDateTimeFormat.format(new Date(System.currentTimeMillis()));
         return created_at;
     }
 
@@ -34,6 +36,7 @@ public class BaseModel {
     }
 
     public String getUpdated_at() {
+        if (updated_at==null) updated_at = sqlDateTimeFormat.format(new Date(System.currentTimeMillis()));
         return updated_at;
     }
 

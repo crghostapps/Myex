@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +41,7 @@ public class TransactionsEditActivity extends Activity {
     private List<Measure> measureList;
     private List<Account> accountList;
     private List<Costcenter> costcenterList;
+    private boolean usegps;
 
     static class ViewHolder {
         public EditText vamount;
@@ -87,6 +90,9 @@ public class TransactionsEditActivity extends Activity {
 
         app = (MyExApp) getApplication();
 
+        usegps = app.getPrefs().getBoolean("localisation",false);
+        if (usegps) app.refreshLocation();
+
         long id = this.getIntent().getLongExtra("id",0);
         if (id==0) {
             isupdate = false;
@@ -110,13 +116,15 @@ public class TransactionsEditActivity extends Activity {
                     holder.vamount.setText(MyFormats.formatDecimal(transaction.getAmount(),2));
                     holder.vpm.setChecked(false);
                 }
-                holder.vdebtor_id = transaction.getDebitor_id();
+                holder.vdebtor_id = transaction.getDebtor_id();
                 holder.vcostcenter_id = transaction.getCostcenter_id();
                 holder.vaccountsel_id = transaction.getAccount_id();
                 holder.vmeasure1.setText(MyFormats.formatDecimal(transaction.getMeasure1(),2));
                 holder.vmeasure1sel_id = transaction.getMeasure1_id();
                 holder.vmeasure2.setText(MyFormats.formatDecimal(transaction.getMeasure2(),2));
-                holder.vmeasure2sel_id = transaction.getMeasure1_id();
+                holder.vmeasure2sel_id = transaction.getMeasure2_id();
+                if (transaction.getDateAmount_at()!=null)
+                    holder.vamountDate.setText(MyFormats.formatDateTime.format(transaction.getDateAmount_at()));
             }
         }
 
@@ -143,11 +151,16 @@ public class TransactionsEditActivity extends Activity {
         holder.vdescription.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-                //Log.i(TAG, "desc item selected " + id);
-                // Set costcenter
+                // Fill data from selected description
                 Transaction trans = app.getDataManager().getTransactionById(id);
                 if (trans != null && trans.getCostcenter_id() > 0) {
                     holder.vcostcenter_id = trans.getCostcenter_id();
+                    holder.vcostcentersel.setSelection(app.getDataManager().getPositionInList((List<BaseModel>) (List) costcenterList,holder.vcostcenter_id));
+                    if (trans.getDebtor_id() > 0) {
+                        Debtor debtor = app.getDataManager().getDebtortById(trans.getDebtor_id());
+                        holder.vdebtor_id = debtor.getId();
+                        holder.vdebtor.setText(debtor.getName());
+                    }
                 }
             }
         });
@@ -188,7 +201,7 @@ public class TransactionsEditActivity extends Activity {
         // Costcenter spinner
         int cctype = DataManager.COSTCENTERTYPE_INCOME;
         if (holder.vpm.isChecked()) cctype = DataManager.COSTCENTERTYPE_EXPENSE;
-        costcenterList = app.getDataManager().getCostcentersForSpinner(getResources().getString(R.string.transactions_ccspinner_root),cctype);
+        costcenterList = app.getDataManager().getCostcentersForSpinner(null,cctype);
         CostcenterAdapter costcenterAdapter = new CostcenterAdapter(this,costcenterList);
         costcenterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.vcostcentersel.setAdapter(costcenterAdapter);
@@ -199,6 +212,15 @@ public class TransactionsEditActivity extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Costcenter cc = (Costcenter) holder.vcostcentersel.getItemAtPosition(position);
                 holder.vcostcenter_id = cc.getId();
+                if (cc.getMeasure1_id() > 0) {
+                    holder.vmeasure1sel_id = cc.getMeasure1_id();
+                    holder.vmeasure1sel.setSelection(app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList,holder.vmeasure1sel_id ));
+                }
+                if (cc.getMeasure2_id() > 0) {
+                    holder.vmeasure2sel_id = cc.getMeasure2_id();
+                    holder.vmeasure2sel.setSelection(app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList,holder.vmeasure2sel_id ));
+                }
+                ((TextView) parent.getChildAt(0)).setText(app.getDataManager().getCostenterDescription(cc.getId()));
             }
 
             @Override
@@ -280,7 +302,7 @@ public class TransactionsEditActivity extends Activity {
         // Reload costcenter selection
         int cctype = DataManager.COSTCENTERTYPE_INCOME;
         if (holder.vpm.isChecked()) cctype = DataManager.COSTCENTERTYPE_EXPENSE;
-        costcenterList = app.getDataManager().getCostcentersForSpinner(getResources().getString(R.string.transactions_ccspinner_root),cctype);
+        costcenterList = app.getDataManager().getCostcentersForSpinner(null,cctype);
         CostcenterAdapter costcenterAdapter = new CostcenterAdapter(this,costcenterList);
         holder.vcostcentersel.setAdapter(costcenterAdapter);
     }
@@ -317,6 +339,30 @@ public class TransactionsEditActivity extends Activity {
         dialog.show();
     }
 
+    /**
+     * Add a costcenter
+     * @param v
+     */
+    public void action_addcostcenter(View v) {
+        Intent costcenteredit = new Intent(this,CostcentersEditActivity.class);
+        costcenteredit.putExtra("id", 0L);
+        startActivityForResult(costcenteredit, MainActivity.TABITEM_COSTCENTERS);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode==RESULT_OK) {
+            switch (requestCode) {
+                case MainActivity.TABITEM_COSTCENTERS:
+                    long costcenter_id = data.getLongExtra("costcenter_id",0);
+                    if (costcenter_id > 0) {
+                        holder.vcostcenter_id = costcenter_id;
+                        holder.vcostcentersel.setSelection(app.getDataManager().getPositionInList((List<BaseModel>) (List) costcenterList, holder.vcostcenter_id));
+                    }
+                    break;
+            }
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -356,13 +402,39 @@ public class TransactionsEditActivity extends Activity {
                     return false;
                 }
                 transaction.setDateAmount_at(amount_at);
-                transaction.setDebitor_id(holder.vdebtor_id);
+
+                // Localisation
+                BigDecimal longitude = BigDecimal.ZERO;
+                BigDecimal latitude  = BigDecimal.ZERO;
+                BigDecimal altitude  = BigDecimal.ZERO;
+                if (usegps) {
+                    Location location = app.getLastKnownLocation();
+                    longitude = new BigDecimal(Double.toString(location.getLongitude()));
+                    latitude = new BigDecimal(Double.toString(location.getLatitude()));
+                    altitude = new BigDecimal(Double.toString(location.getAltitude()));
+                }
+
+                // create or update debtor ?
+                if (holder.vdebtor_id > 0) {
+                    if (holder.vdebtor.getText().toString().length() > 0) {
+                        Debtor debtor = app.getDataManager().getDebtortById(holder.vdebtor_id);
+                        if (debtor!=null && !debtor.getName().equals(holder.vdebtor.getText().toString())) {
+                            holder.vdebtor_id = createDebtor(holder.vdebtor.getText().toString(), longitude, latitude, altitude);
+                        }
+                    }
+                } else if (holder.vdebtor.getText().toString().length() > 0) {
+                    holder.vdebtor_id = createDebtor(holder.vdebtor.getText().toString(), longitude, latitude, altitude);
+                }
+                transaction.setDebtor_id(holder.vdebtor_id);
                 transaction.setCostcenter_id(holder.vcostcenter_id);
                 transaction.setAccount_id(holder.vaccountsel_id);
                 transaction.setMeasure1_id(holder.vmeasure1sel_id);
                 transaction.setMeasure1(lu.crghost.cralib.tools.Formats.parseDecimal(holder.vmeasure1.getText().toString(),2));
-                transaction.setMeasure2_id(holder.vmeasure1sel_id);
-                transaction.setMeasure2(lu.crghost.cralib.tools.Formats.parseDecimal(holder.vmeasure1.getText().toString(),2));
+                transaction.setMeasure2_id(holder.vmeasure2sel_id);
+                transaction.setMeasure2(lu.crghost.cralib.tools.Formats.parseDecimal(holder.vmeasure2.getText().toString(),2));
+                transaction.setLongitude(longitude);
+                transaction.setLatitude(latitude);
+                transaction.setAltitude(altitude);
 
                 if (isupdate)   app.getDataManager().updateTransaction(transaction);
                 else            app.getDataManager().insertTransaction(transaction);
@@ -402,5 +474,21 @@ public class TransactionsEditActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Create a debtor
+     * @param name
+     * @param longitude
+     * @param latitude
+     * @param altitude
+     * @return
+     */
+    private long createDebtor(String name, BigDecimal longitude, BigDecimal latitude, BigDecimal altitude) {
+        Debtor debtor = new Debtor();
+        debtor.setName(name);
+        debtor.setLongitude(longitude);
+        debtor.setLatitude(latitude);
+        debtor.setAltitude(altitude);
+        return app.getDataManager().insertDebtor(debtor);
+    }
 
 }

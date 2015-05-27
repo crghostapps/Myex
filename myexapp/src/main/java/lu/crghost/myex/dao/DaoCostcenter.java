@@ -84,7 +84,7 @@ public class DaoCostcenter implements DbDao<Costcenter> {
     public void resort() {
         cc_sort  = 0;
         // Roots
-        List<Costcenter> roots = getAll("parent_id=?", new String[] {"0"}, "name");
+        List<Costcenter> roots = getAll("parent_id is null", new String[] {}, "name");
         for (Costcenter root : roots) {
             int clevel = 0;
             root.setClevel(clevel);

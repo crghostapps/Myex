@@ -32,7 +32,7 @@ public class SimpleMeasureAdapter extends ArrayAdapter<Measure> {
 
         // fill with the data
         final Measure measure = this.getItem(position);
-        text1.setText(measure.getName());
+        text1.setText(measure.getNameshort());
 
         return listItem;
     }

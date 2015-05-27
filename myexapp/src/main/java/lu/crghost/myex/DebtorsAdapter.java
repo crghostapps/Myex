@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import lu.crghost.cralib.tools.Formats;
 import lu.crghost.myex.models.Debtor;
+import lu.crghost.myex.tools.MyFormats;
 
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class DebtorsAdapter extends ArrayAdapter<Debtor> {
         // fill with the data
         final Debtor debtor = this.getItem(position);
         holder.debtor_name.setText(debtor.getName());
-        holder.debtor_amount.setText(Formats.frDecimalFormat.format(0) + app.getPrefs().getString("currency",""));
+        holder.debtor_amount.setText(MyFormats.formatDecimal(app.getDataManager().getDebtorTotalAmount(debtor.getId()),2)+app.getCurrencySymbol());
         return listItem;
     }
 

@@ -21,11 +21,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     private static final String TAG = "MainActivity";
 
-    private static final int TABITEM_ACCOUNTS = 0;
-    private static final int TABITEM_COSTCENTERS = 1;
-    private static final int TABITEM_DEBTORS = 2;
-    private static final int TABITEM_TRANSACTIONS = 3;
-    private static final int NEW_TRANSACTION = 10;
+    public static final int TABITEM_ACCOUNTS = 0;
+    public static final int TABITEM_COSTCENTERS = 1;
+    public static final int TABITEM_DEBTORS = 2;
+    public static final int TABITEM_TRANSACTIONS = 3;
+    public static final int NEW_TRANSACTION = 10;
 
     MyExApp app;
     SearchManager searchManager = null;

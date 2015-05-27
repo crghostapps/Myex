@@ -100,7 +100,7 @@ public class TransactionsAdapter extends SimpleCursorAdapter {
                 }
             }
             itemdescription.setText(transaction.getDescription());
-            itemcostcenter.setText(transaction.getAmount_at() + "  " + app.getDataManager().getCostenterDescription(transaction.getCostcenter_id()));
+            itemcostcenter.setText(MyFormats.formatDate.format(transaction.getDateAmount_at()) + "  " + app.getDataManager().getCostenterDescription(transaction.getCostcenter_id()));
             itemamount.setText(MyFormats.formatDecimal(transaction.getAmount(),2) + last_symbol);
         }
 
