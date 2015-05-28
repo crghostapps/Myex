@@ -30,6 +30,13 @@
             android:summary="@string/pref_localisation_long"
             android:defaultValue="true"
             />
+    <ListPreference
+            android:key="language"
+            android:title="@string/pref_language"
+            android:summary="@string/pref_language_long"
+            android:entries="@array/language_array"
+            android:entryValues="@array/language_value_array"
+        />
 
 
 </PreferenceScreen>

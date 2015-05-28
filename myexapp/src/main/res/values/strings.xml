@@ -29,6 +29,23 @@
     <string name="currencydefault">€</string>
     <string name="pref_localisation">Use localisation</string>
     <string name="pref_localisation_long">Use localisation to propose expense points</string>
+    <string name="pref_language">Application language</string>
+    <string name="pref_language_long">The language used in MyEx if diffrent from your phone settings, please restart the application after changeing</string>
+    <string-array name="language_array">
+        <item>Default</item>
+        <item>English (US)</item>
+        <item>English (UK)</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Luxembourgish (French)</item>
+    </string-array>
+    <string-array name="language_value_array">
+        <item>"default"</item>
+        <item>"en_GB"</item>
+        <item>"fr_FR"</item>
+        <item>"de_DE"</item>
+        <item>"fr_LU"</item>
+    </string-array>
 
     <!-- edit -->
     <string name="menu_save">save</string>
