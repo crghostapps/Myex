@@ -1,4 +1,4 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,7 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import lu.crghost.cralib.tools.Formats;
+import lu.crghost.cralib3.tools.Formats;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 import lu.crghost.myex.models.Account;
 import lu.crghost.myex.models.Measure;
 import lu.crghost.myex.tools.MyFormats;
@@ -60,6 +62,8 @@ public class AccountsAdapter extends ArrayAdapter<Account> {
         if (account.getActype() >= Account.TYPE_COUNTER) {
             Measure measure = app.getDataManager().getMeasureById(account.getId());
             if (measure != null) symbol = measure.getNameshort();
+        } else if (account.isOtherCurrency()) {
+            symbol = account.getCurrencyname();
         } else {
             symbol = app.getCurrencySymbol();
         }

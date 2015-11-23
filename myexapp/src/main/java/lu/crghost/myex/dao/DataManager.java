@@ -66,7 +66,7 @@ public class DataManager {
         }
     }
 
-    private void closeDb() {
+    public void closeDb() {
         if (db.isOpen()) {
             db.close();
         }

@@ -1,4 +1,4 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 import lu.crghost.myex.tools.FileOpenDialog;
 import net.sqlcipher.database.SQLiteDatabase;
 

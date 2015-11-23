@@ -1,4 +1,4 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,13 +10,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 import lu.crghost.myex.dao.DataManager;
 import lu.crghost.myex.models.*;
 import lu.crghost.myex.tools.SimpleMeasureAdapter;
 
 import java.util.List;
-
-import static android.provider.BaseColumns._ID;
 
 /**
  * CUD a Cost center

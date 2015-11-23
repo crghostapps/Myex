@@ -1,1 +1,2 @@
-include ':myexapp'
+include ':myexapp', ':lib'
+project(':lib').projectDir = new File('D:/devj/trunks/cr/CRalib3/lib')

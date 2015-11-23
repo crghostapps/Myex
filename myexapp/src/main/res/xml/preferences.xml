@@ -38,5 +38,11 @@
             android:entryValues="@array/language_value_array"
         />
 
+    <CheckBoxPreference
+            android:key="checkpass"
+            android:title="@string/pref_check_passwd"
+            android:summary="@string/pref_check_passwd_long"
+            android:defaultValue="true"
+    />
 
 </PreferenceScreen>

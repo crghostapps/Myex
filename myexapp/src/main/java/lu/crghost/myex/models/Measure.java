@@ -2,11 +2,12 @@ package lu.crghost.myex.models;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import net.sqlcipher.database.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import lu.crghost.cralib.tools.HashCodeUtil;
+import lu.crghost.cralib3.tools.HashCodeUtil;
 
 import java.math.BigDecimal;
 
@@ -79,8 +80,8 @@ public class Measure extends BaseModel implements BaseModelInterface {
     public String[] getFieldNames() { return FIELD_NAMES; }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        //onCreate(db);
     }
 
     @Override
@@ -97,22 +98,24 @@ public class Measure extends BaseModel implements BaseModelInterface {
 
     @Override
     public void setValues(ContentValues c) {
-        name = c.getAsString("name");
-        nameshort = c.getAsString("nameshort");
-        cost_per_measure = new BigDecimal(c.getAsDouble("cost_per_measure"));
+        setName(c.getAsString("name"));
+        setNameshort(c.getAsString("nameshort"));
+        setCost_per_measure(c.getAsDouble("cost_per_measure"));
     }
 
     @Override
     public void setValues(Cursor c) {
         if (c!=null) {
-            setId(c.getLong(0));
-            setName(c.getString(1));
-            setNameshort(c.getString(2));
-            setCost_per_measure(new BigDecimal(c.getDouble(3)));
-            setCreated_at(c.getString(4));
-            setUpdated_at(c.getString(5));
+            id = c.getLong(c.getColumnIndex(_ID));
+            ContentValues co = new ContentValues();
+            DatabaseUtils.cursorRowToContentValues(c,co);
+            setValues(co);
         }
     }
+
+    /*******************************************************************************************************************
+     * Getters & setters
+     *******************************************************************************************************************/
 
     public boolean isCurrency() {
         if (getId()==1) return true;
@@ -135,6 +138,19 @@ public class Measure extends BaseModel implements BaseModelInterface {
         this.nameshort = nameshort;
     }
 
+    public BigDecimal getCost_per_measure() {
+        return cost_per_measure;
+    }
+
+    public void setCost_per_measure(Double cost_per_measure) {
+        if (cost_per_measure==null) this.cost_per_measure = BigDecimal.ZERO;
+        else this.cost_per_measure = new BigDecimal(cost_per_measure);
+    }
+
+    public void setCost_per_measure(BigDecimal cost_per_measure) {
+        this.cost_per_measure = cost_per_measure;
+    }
+
 
     /**
      * Used in dropdown lists
@@ -147,6 +163,10 @@ public class Measure extends BaseModel implements BaseModelInterface {
     public String toString() {
         return getName();
     }
+
+    /*******************************************************************************************************************
+     * Overrides
+     *******************************************************************************************************************/
 
     @Override
     public int hashCode() {
@@ -178,11 +198,5 @@ public class Measure extends BaseModel implements BaseModelInterface {
         return true;
     }
 
-    public BigDecimal getCost_per_measure() {
-        return cost_per_measure;
-    }
 
-    public void setCost_per_measure(BigDecimal cost_per_measure) {
-        this.cost_per_measure = cost_per_measure;
-    }
 }

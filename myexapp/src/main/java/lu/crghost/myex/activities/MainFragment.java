@@ -1,11 +1,10 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
@@ -13,10 +12,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.*;
 import android.widget.SearchView;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
 
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener,
+public class MainFragment extends FragmentActivity implements ActionBar.TabListener,
         MyOnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
@@ -38,7 +39,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_mainfragment);
         Log.i(TAG, "------------------------CREATE------------------------------------");
         app = (MyExApp) getApplication();
 
@@ -95,7 +96,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_mainfragment, menu);
 
         // Get the SearchView and set the searchable configuration
         searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);

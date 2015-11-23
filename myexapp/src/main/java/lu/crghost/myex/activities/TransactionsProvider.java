@@ -1,4 +1,4 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -6,6 +6,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
+import lu.crghost.myex.MyExApp;
 
 /**
  * Content provider for transactions
@@ -51,6 +52,7 @@ public class TransactionsProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        Log.d(TAG,"---------------- oncreate ------------------");
         app = (MyExApp) getContext().getApplicationContext();
         return false;
     }

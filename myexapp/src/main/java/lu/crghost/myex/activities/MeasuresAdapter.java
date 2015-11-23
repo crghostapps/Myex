@@ -1,10 +1,12 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 import lu.crghost.myex.models.Measure;
 
 import java.math.BigDecimal;
@@ -46,7 +48,7 @@ public class MeasuresAdapter extends ArrayAdapter<Measure> {
         if (measure.getCost_per_measure()==null || measure.getCost_per_measure().compareTo(BigDecimal.ZERO)==0) {
             holder.measure_nameshort.setText(measure.getNameshort());
         } else {
-            holder.measure_nameshort.setText(lu.crghost.cralib.tools.Formats.formatDecimal(measure.getCost_per_measure(),2) + "/" + measure.getNameshort() );
+            holder.measure_nameshort.setText(lu.crghost.cralib3.tools.Formats.formatDecimal(measure.getCost_per_measure(),2) + "/" + measure.getNameshort() );
         }
         return listItem;
     }

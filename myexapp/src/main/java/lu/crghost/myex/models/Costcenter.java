@@ -2,11 +2,12 @@ package lu.crghost.myex.models;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import net.sqlcipher.database.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import lu.crghost.cralib.tools.HashCodeUtil;
+import lu.crghost.cralib3.tools.HashCodeUtil;
 
 import static android.provider.BaseColumns._ID;
 
@@ -81,8 +82,8 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        //onCreate(db);
     }
 
     @Override
@@ -106,35 +107,30 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
 
     @Override
     public void setValues(ContentValues c) {
-        name = c.getAsString("name");
-        parent_id = c.getAsLong("parent_id");
-        clevel = c.getAsInteger("clevel");
-        sort = c.getAsInteger("sort");
-        hassons = c.getAsInteger("hassons");
-        ccttype = c.getAsInteger("ccttype");
-        isdefaultcct = c.getAsInteger("isdefaultcct");
-        measure1_id = c.getAsLong("measure1_id");
-        measure2_id = c.getAsLong("measure2_id");
+        setName(c.getAsString("name"));
+        setParent_id(c.getAsLong("parent_id"));
+        setClevel(c.getAsInteger("clevel"));
+        setSort(c.getAsInteger("sort"));
+        setHassons(c.getAsInteger("hassons"));
+        setCcttype(c.getAsInteger("ccttype"));
+        setIsdefaultcct(c.getAsInteger("isdefaultcct"));
+        setMeasure1_id(c.getAsLong("measure1_id"));
+        setMeasure2_id(c.getAsLong("measure2_id"));
     }
 
     @Override
     public void setValues(Cursor c) {
         if (c!=null) {
-            setId(c.getLong(0));
-            setName(c.getString(1));
-            setParent_id(c.getLong(2));
-            setClevel(c.getInt(3));
-            setSort(c.getInt(4));
-            setHassons(c.getInt(5));
-            setCcttype(c.getInt(6));
-            setIsdefaultcct(c.getInt(7));
-            setMeasure1_id(c.getLong(8));
-            setMeasure2_id(c.getLong(9));
-            setCreated_at(c.getString(10));
-            setUpdated_at(c.getString(11));
+            id = c.getLong(c.getColumnIndex(_ID));
+            ContentValues co = new ContentValues();
+            DatabaseUtils.cursorRowToContentValues(c,co);
+            setValues(co);
         }
     }
 
+    /*******************************************************************************************************************
+     * Getters & setters
+     *******************************************************************************************************************/
 
     public String getName() {
         return name;
@@ -158,9 +154,11 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
         return parent_id;
     }
 
-    public void setParent_id(long parent_id) {
-        this.parent_id = parent_id;
+    public void setParent_id(Long parent_id) {
+        if (parent_id==null) this.parent_id = 0;
+        else this.parent_id = parent_id;
     }
+
 
     public int getClevel() {
         return clevel;
@@ -215,8 +213,28 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
         this.isdefaultcct = boolean_to_int(isdefaultcct);
     }
 
+    public long getMeasure1_id() {
+        return measure1_id;
+    }
+
+    public void setMeasure1_id(Long measure1_id) {
+        if (measure1_id==null) this.measure1_id=0;
+        else this.measure1_id = measure1_id;
+    }
+
+    public long getMeasure2_id() {
+        return measure2_id;
+    }
+
+    public void setMeasure2_id(Long measure2_id) {
+        if (measure2_id==null) this.measure2_id=0;
+        else this.measure2_id = measure2_id;
+    }
 
 
+    /*******************************************************************************************************************
+     * Overrides
+     *******************************************************************************************************************/
 
     @Override
     public String toString() {
@@ -254,19 +272,5 @@ public class Costcenter extends BaseModel implements BaseModelInterface {
         return true;
     }
 
-    public long getMeasure1_id() {
-        return measure1_id;
-    }
 
-    public void setMeasure1_id(long measure1_id) {
-        this.measure1_id = measure1_id;
-    }
-
-    public long getMeasure2_id() {
-        return measure2_id;
-    }
-
-    public void setMeasure2_id(long measure2_id) {
-        this.measure2_id = measure2_id;
-    }
 }

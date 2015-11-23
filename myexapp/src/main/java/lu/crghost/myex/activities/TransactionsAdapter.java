@@ -1,4 +1,4 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import lu.crghost.cralib.tools.Formats;
+import lu.crghost.cralib3.tools.Formats;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 import lu.crghost.myex.models.Account;
 import lu.crghost.myex.models.Measure;
 import lu.crghost.myex.models.Transaction;
@@ -93,6 +95,7 @@ public class TransactionsAdapter extends SimpleCursorAdapter {
                     if (measure != null) {
                         if (measure.isCurrency()) {
                             last_symbol = app.getCurrencySymbol();
+                            if (account.isOtherCurrency()) last_symbol = account.getCurrencyname();
                         } else {
                             last_symbol = measure.getNameshort();
                         }

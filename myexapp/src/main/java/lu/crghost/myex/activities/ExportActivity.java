@@ -1,38 +1,32 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import lu.crghost.cralib.net.SshClient;
+import lu.crghost.cralib3.net.SshClient;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 import lu.crghost.myex.conf.MyExProperties;
 import lu.crghost.myex.dao.DbSqlDump;
 import lu.crghost.myex.models.*;
 import lu.crghost.myex.tools.MyFormats;
 
 import java.io.*;
-import java.math.BigDecimal;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 
 public class ExportActivity extends Activity {
@@ -228,7 +222,7 @@ public class ExportActivity extends Activity {
                 if (!mypath.exists()) {
                     mypath.mkdir();
                 }
-                String filename = "exdump_"+lu.crghost.cralib.tools.Formats.fileTimeToday() +".sql";
+                String filename = "exdump_"+lu.crghost.cralib3.tools.Formats.fileTimeToday() +".sql";
                 File file = new File(mypath, filename);
                 if (!file.exists()) {
                     file.createNewFile();

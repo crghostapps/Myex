@@ -1,4 +1,4 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,11 +6,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
-import lu.crghost.myex.models.Debtor;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 import lu.crghost.myex.models.Measure;
 import lu.crghost.myex.tools.MyFormats;
 
@@ -94,7 +93,7 @@ public class MeasuresEditActivity extends Activity {
                     holder.nameShort.setError(getResources().getString(R.string.measures_name_error));
                     return false;
                 }
-                measure.setCost_per_measure(lu.crghost.cralib.tools.Formats.parseDecimal(holder.cost.getText().toString(),2));
+                measure.setCost_per_measure(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.cost.getText().toString(),2));
 
                 if (isupdate) app.getDataManager().updateMeasure(measure);
                 else app.getDataManager().insertMeasure(measure);

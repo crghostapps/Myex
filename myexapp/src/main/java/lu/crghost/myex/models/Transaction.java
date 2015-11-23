@@ -2,6 +2,7 @@ package lu.crghost.myex.models;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import net.sqlcipher.database.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
@@ -9,7 +10,7 @@ import android.util.Log;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import lu.crghost.cralib.tools.HashCodeUtil;
+import lu.crghost.cralib3.tools.HashCodeUtil;
 
 import static android.provider.BaseColumns._ID;
 
@@ -30,7 +31,8 @@ public class Transaction extends BaseModel implements BaseModelInterface {
             "  account_id INT NULL ,"+
             "  account_target_id INT NULL ,"+
             "  debtor_id INT NULL ," +
-            "  amount NUMERIC NULL ,"+
+            "  amount NUMERIC NULL ,"+          // amount in currency
+            "  amountbase NUMERIC NULL, " +     // amount in base currency
             "  measure1 NUMERIC NULL," +
             "  measure1_id INT NULL," +
             "  measure2 NUMERIC NULL," +
@@ -50,6 +52,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
             "account_target_id",
             "debtor_id",
             "amount",
+            "amountbase",
             "measure1",
             "measure1_id",
             "measure2",
@@ -73,6 +76,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     private long account_target_id;
     private long debtor_id;
     private BigDecimal amount;
+    private BigDecimal amountbase;
     private BigDecimal measure1;
     private long measure1_id;
     private BigDecimal measure2;
@@ -113,8 +117,8 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        //onCreate(db);
     }
 
     public String getTableName() { return TABLE_NAME; }
@@ -132,6 +136,7 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         c.put("account_target_id",getAccount_target_id());
         c.put("debtor_id",getDebtor_id());
         c.put("amount",getAmount().doubleValue());
+        c.put("amountbase",getAmountbase().doubleValue());
         c.put("measure1",getMeasure1().doubleValue());
         c.put("measure1_id",getMeasure1_id());
         c.put("measure2",getMeasure2().doubleValue());
@@ -147,46 +152,37 @@ public class Transaction extends BaseModel implements BaseModelInterface {
 
     @Override
     public void setValues(ContentValues c) {
-        description = c.getAsString("description");
-        transtype = c.getAsInteger("transtype");
-        costcenter_id = c.getAsLong("costcenter_id");
-        account_id = c.getAsLong("account_id");
-        account_target_id = c.getAsLong("account_target_id");
-        debtor_id = c.getAsLong("debtor_id");
-        amount = new BigDecimal(c.getAsDouble("amount"));
-        measure1 = new BigDecimal(c.getAsDouble("measure1"));
-        measure1_id = c.getAsLong("measure1_id");
-        measure2 = new BigDecimal(c.getAsDouble("measure2"));
-        measure2_id = c.getAsLong("measure2_id");
-        latitude = new BigDecimal(c.getAsDouble("latitude"));
-        longitude = new BigDecimal(c.getAsDouble("longitude"));
-        altitude = new BigDecimal(c.getAsDouble("altitude"));
-        amount_at = c.getAsString("amount_at");
+        setDescription(c.getAsString("description"));
+        setTranstype(c.getAsInteger("transtype"));
+        setCostcenter_id(c.getAsLong("costcenter_id"));
+        setAccount_id(c.getAsLong("account_id"));
+        setAccount_target_id(c.getAsLong("account_target_id"));
+        setDebtor_id(c.getAsLong("debtor_id"));
+        setAmount(c.getAsDouble("amount"));
+        setAmountbase(c.getAsDouble("amountbase"));
+        setMeasure1(c.getAsDouble("measure1"));
+        setMeasure1_id(c.getAsLong("measure1_id"));
+        setMeasure2(c.getAsDouble("measure2"));
+        setMeasure2_id(c.getAsLong("measure2_id"));
+        setLatitude(c.getAsDouble("latitude"));
+        setLongitude(c.getAsDouble("longitude"));
+        setAltitude(c.getAsDouble("altitude"));
+        setAmount_at(c.getAsString("amount_at"));
     }
 
     @Override
     public void setValues(Cursor c) {
         if (c!=null) {
-            setId(c.getLong(0));
-            setDescription(c.getString(1));
-            setTranstype(c.getInt(2));
-            setCostcenter_id(c.getLong(3));
-            setAccount_id(c.getLong(4));
-            setAccount_target_id(c.getLong(5));
-            setDebtor_id(c.getLong(6));
-            setAmount(new BigDecimal(c.getDouble(7)));
-            setMeasure1(new BigDecimal(c.getDouble(8)));
-            setMeasure1_id(c.getLong(9));
-            setMeasure2(new BigDecimal(c.getDouble(10)));
-            setMeasure2_id(c.getLong(11));
-            setLatitude(new BigDecimal(c.getDouble(12)));
-            setLongitude(new BigDecimal(c.getDouble(13)));
-            setAltitude(new BigDecimal(c.getDouble(14)));
-            setAmount_at(c.getString(15));
-            setCreated_at(c.getString(16));
-            setUpdated_at(c.getString(17));
+            id = c.getLong(c.getColumnIndex(_ID));
+            ContentValues co = new ContentValues();
+            DatabaseUtils.cursorRowToContentValues(c,co);
+            setValues(co);
         }
     }
+
+    /*******************************************************************************************************************
+     * Getters & setters
+     *******************************************************************************************************************/
 
     public String getDescription() {
         return description;
@@ -208,8 +204,8 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         return costcenter_id;
     }
 
-    public void setCostcenter_id(long costcenter_id) {
-        this.costcenter_id = costcenter_id;
+    public void setCostcenter_id(Long costcenter_id) {
+        this.costcenter_id= longTolong(costcenter_id);
     }
 
     public long getAccount_id() {
@@ -224,77 +220,99 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         return account_target_id;
     }
 
-    public void setAccount_target_id(long account_target_id) {
-        this.account_target_id = account_target_id;
+    public void setAccount_target_id(Long account_target_id) {
+        this.account_target_id = longTolong(account_target_id);
     }
 
     public long getDebtor_id() {
         return debtor_id;
     }
 
-    public void setDebtor_id(long debtor_id) {
-        this.debtor_id = debtor_id;
+    public void setDebtor_id(Long debtor_id) {
+        this.debtor_id = longTolong(debtor_id);
     }
 
     public BigDecimal getAmount() {
-        if (amount==null) return BigDecimal.ZERO;
         return amount;
     }
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+    public void setAmount(Double amount) {
+        this.amount = doubleToBigDecimal(amount);
+    }
+
+    public BigDecimal getAmountbase() {
+        return amountbase;
+    }
+
+    public void setAmountbase(BigDecimal amountbase) {
+        this.amountbase = amountbase;
+    }
+    public void setAmountbase(Double amountbase) {
+        this.amountbase = doubleToBigDecimal(amountbase);
+    }
 
     public BigDecimal getMeasure2() {
-        if (measure2==null) return BigDecimal.ZERO;
         return measure2;
     }
 
     public void setMeasure2(BigDecimal measure) {
         this.measure2 = measure;
     }
+    public void setMeasure2(Double measure) {
+        this.measure2 = doubleToBigDecimal(measure);
+    }
 
     public long getMeasure2_id() {
         return measure2_id;
     }
 
-    public void setMeasure2_id(long measure_id) {
-        this.measure2_id = measure_id;
+    public void setMeasure2_id(Long measure_id) {
+        this.measure2_id = longTolong(measure_id);
     }
 
     public BigDecimal getMeasure1() {
-        if (measure1==null) return BigDecimal.ZERO;
         return measure1;
     }
 
     public void setMeasure1(BigDecimal measure) {
         this.measure1 = measure;
     }
+    public void setMeasure1(Double measure) {
+        this.measure1 = doubleToBigDecimal(measure);
+    }
 
     public long getMeasure1_id() {
         return measure1_id;
     }
 
-    public void setMeasure1_id(long measure_id) {
-        this.measure1_id = measure_id;
+    public void setMeasure1_id(Long measure_id) {
+        this.measure1_id = longTolong(measure_id);
     }
 
+
     public BigDecimal getLatitude() {
-        if (latitude==null) return BigDecimal.ZERO;
         return latitude;
     }
 
     public void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
     }
+    public void setLatitude(Double latitude) {
+        this.latitude = doubleToBigDecimal(latitude);
+    }
 
     public BigDecimal getLongitude() {
-        if (longitude==null) return BigDecimal.ZERO;
         return longitude;
     }
 
     public void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
+    }
+    public void setLongitude(Double longitude) {
+        this.longitude = doubleToBigDecimal(longitude);
     }
 
     public String getAmount_at() {
@@ -327,7 +345,22 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         amount_at = s;
     }
 
+    public BigDecimal getAltitude() {
+        return altitude;
+    }
 
+    public void setAltitude(BigDecimal altitude) {
+        this.altitude = altitude;
+    }
+    public void setAltitude(Double altitude) {
+        this.altitude = doubleToBigDecimal(altitude);
+    }
+
+
+
+    /*******************************************************************************************************************
+     * Overrides
+     *******************************************************************************************************************/
 
     @Override
     public String toString() {
@@ -364,12 +397,5 @@ public class Transaction extends BaseModel implements BaseModelInterface {
         return true;
     }
 
-    public BigDecimal getAltitude() {
-        if (altitude==null) return BigDecimal.ZERO;
-        return altitude;
-    }
 
-    public void setAltitude(BigDecimal altitude) {
-        this.altitude = altitude;
-    }
 }

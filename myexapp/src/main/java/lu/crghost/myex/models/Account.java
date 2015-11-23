@@ -2,13 +2,14 @@ package lu.crghost.myex.models;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import net.sqlcipher.database.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
 
 import java.math.BigDecimal;
 
-import lu.crghost.cralib.tools.HashCodeUtil;
+import lu.crghost.cralib3.tools.HashCodeUtil;
 
 import static android.provider.BaseColumns._ID;
 
@@ -31,6 +32,8 @@ public class Account extends BaseModel implements BaseModelInterface {
             "  initbalance NUMERIC, " +
             "  limitamount NUMERIC," +
             "  measure_id INTEGER," +
+            "  currencyrate NUMERIC," +
+            "  currencyname TEXT NULL," +
             "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
             "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );"
             ;
@@ -43,6 +46,8 @@ public class Account extends BaseModel implements BaseModelInterface {
             "initbalance",
             "limitamount",
             "measure_id",
+            "currencyrate",
+            "currencyname",
             "created_at",
             "updated_at"
     };
@@ -60,6 +65,8 @@ public class Account extends BaseModel implements BaseModelInterface {
     private BigDecimal initbalance;
     private BigDecimal limitamount;
     private long measure_id;
+    private BigDecimal currencyrate;
+    private String currencyname;
     /**
      * Initiate empty model
      */
@@ -92,8 +99,8 @@ public class Account extends BaseModel implements BaseModelInterface {
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        //onCreate(db);
     }
 
     public String getTableName() { return TABLE_NAME; }
@@ -110,6 +117,8 @@ public class Account extends BaseModel implements BaseModelInterface {
         c.put("initbalance", getInitbalance().doubleValue());
         c.put("limitamount", getLimitamount().doubleValue());
         c.put("measure_id", getMeasure_id());
+        c.put("currencyrate", getCurrencyrate().doubleValue());
+        c.put("currencyname", getCurrencyname());
         c.put("created_at", getCreated_at());
         c.put("updated_at", getUpdated_at());
         return c;
@@ -117,30 +126,30 @@ public class Account extends BaseModel implements BaseModelInterface {
 
     @Override
     public void setValues(ContentValues c) {
-        acname =  c.getAsString("acname");
-        acnumber = c.getAsString("acnumber");
-        actype   = c.getAsInteger("actype");
-        iconpath =  c.getAsString("iconpath");
-        measure_id = c.getAsLong("measure_id");
-        initbalance = new BigDecimal(c.getAsDouble("initbalance"));
-        limitamount = new BigDecimal(c.getAsDouble("limitamount"));
+        setAcname(c.getAsString("acname"));
+        setAcnumber(c.getAsString("acnumber"));
+        setActype(c.getAsInteger("actype"));
+        setIconpath(c.getAsString("iconpath"));
+        setMeasure_id(c.getAsLong("measure_id"));
+        setInitbalance(c.getAsDouble("initbalance"));
+        setLimitamount(c.getAsDouble("limitamount"));
+        setCurrencyrate(c.getAsDouble("currencyrate"));
+        setCurrencyname(c.getAsString("currencyname"));
     }
 
     @Override
     public void setValues(Cursor c) {
         if (c!=null) {
-            setId(c.getLong(0));
-            setAcname(c.getString(1));
-            setAcnumber(c.getString(2));
-            setActype(c.getInt(3));
-            setIconpath(c.getString(4));
-            setInitbalance(new BigDecimal(c.getDouble(5)));
-            setLimitamount(new BigDecimal(c.getDouble(6)));
-            setMeasure_id(c.getLong(7));
-            setCreated_at(c.getString(8));
-            setUpdated_at(c.getString(9));
+            id = c.getLong(c.getColumnIndex(_ID));
+            ContentValues co = new ContentValues();
+            DatabaseUtils.cursorRowToContentValues(c,co);
+            setValues(co);
         }
     }
+
+    /*******************************************************************************************************************
+     * Getters & setters
+     *******************************************************************************************************************/
 
     public String getAcname() {
         return acname;
@@ -182,6 +191,11 @@ public class Account extends BaseModel implements BaseModelInterface {
         this.initbalance = initbalance;
     }
 
+    public void setInitbalance(Double initbalance) {
+        if (initbalance==null) this.initbalance = BigDecimal.ZERO;
+        else this.initbalance = new BigDecimal(initbalance.doubleValue());
+    }
+
     public BigDecimal getLimitamount() {
         return limitamount;
     }
@@ -189,15 +203,49 @@ public class Account extends BaseModel implements BaseModelInterface {
     public void setLimitamount(BigDecimal limitamount) {
         this.limitamount = limitamount;
     }
+    public void setLimitamount(Double limitamount) {
+        if (limitamount==null) this.limitamount = BigDecimal.ZERO;
+        else this.limitamount = new BigDecimal(limitamount.doubleValue());
+    }
 
     public long getMeasure_id() {
         return measure_id;
     }
 
-    public void setMeasure_id(long measure_id) {
-        this.measure_id = measure_id;
+    public void setMeasure_id(Long measure_id) {
+        if (measure_id==null) this.measure_id=0;
+        else this.measure_id = measure_id;
     }
 
+    public BigDecimal getCurrencyrate() {
+        return currencyrate;
+    }
+
+    public void setCurrencyrate(BigDecimal currencyrate) {
+        this.currencyrate = currencyrate;
+    }
+    public void setCurrencyrate(Double currencyrate) {
+        if (currencyrate==null) this.currencyrate = BigDecimal.ZERO;
+        else this.currencyrate = new BigDecimal(currencyrate.doubleValue());
+    }
+
+    public String getCurrencyname() {
+        return currencyname;
+    }
+
+    public void setCurrencyname(String currencyname) {
+        this.currencyname = currencyname;
+    }
+
+    public boolean isOtherCurrency()  {
+        if (this.getCurrencyname()!=null && this.getCurrencyname().length() > 0 && this.getCurrencyrate().compareTo(BigDecimal.ZERO) > 0){
+            return true;
+        }
+        return false;
+    }
+    /*******************************************************************************************************************
+     * Overrides
+     *******************************************************************************************************************/
 
     @Override
     public String toString() {
@@ -233,6 +281,7 @@ public class Account extends BaseModel implements BaseModelInterface {
         }
         return true;
     }
+
 
 
 }

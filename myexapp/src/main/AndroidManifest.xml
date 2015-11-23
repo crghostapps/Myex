@@ -18,31 +18,34 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name=".MainActivity" >
+        <activity
+                android:name=".LoginActivity"
+                android:label="@string/title_activity_login" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.MainFragment" >
+        </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/action_settings" />
         <activity
-            android:name=".DebtorsEditActivity"
+            android:name=".activities.DebtorsEditActivity"
             android:label="@string/debtors_title" >
         </activity>
         <activity
-            android:name=".AccountsEditActivity"
+            android:name=".activities.AccountsEditActivity"
             android:label="@string/accounts_title" >
         </activity>
         <activity
-            android:name=".CostcentersEditActivity"
+            android:name=".activities.CostcentersEditActivity"
             android:label="@string/costcenters_title_edit" >
         </activity>
 
         <provider
-            android:name=".TransactionsProvider"
+            android:name=".activities.TransactionsProvider"
             android:authorities="lu.crghost.myex.trans"
             android:exported="false" />
         <provider
@@ -56,25 +59,26 @@
         </provider>
 
         <activity
-            android:name=".TransactionsEditActivity"
+            android:name=".activities.TransactionsEditActivity"
             android:label="@string/transactions_title" >
         </activity>
         <activity
-            android:name=".ExportActivity"
+            android:name=".activities.ExportActivity"
             android:label="@string/export_title" >
         </activity>
         <activity
-            android:name=".MeasuresActivity"
+            android:name=".activities.MeasuresActivity"
             android:label="@string/measures_title" >
         </activity>
         <activity
-            android:name=".MeasuresEditActivity"
+            android:name=".activities.MeasuresEditActivity"
             android:label="@string/measures_edit" >
         </activity>
         <activity
-            android:name=".ImportActivity"
+            android:name=".activities.ImportActivity"
             android:label="@string/import_title" >
         </activity>
+
     </application>
 
 </manifest>

@@ -4,7 +4,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
-        tools:context="lu.crghost.myex.AccountsEditActivity">
+        tools:context="lu.crghost.myex.activities.AccountsEditActivity">
 
     <LinearLayout
                     android:layout_width="match_parent"
@@ -98,6 +98,37 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
         </Spinner>
+
+        <TextView
+                android:id="@+id/account_currencybase"
+                android:text="@string/account_currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+        />
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <EditText
+                    android:id="@+id/account_currencyrate"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:gravity="right"
+                    android:layout_toLeftOf="@+id/account_currencyname"
+                    android:layout_toStartOf="@+id/account_currencyname"
+            />
+
+            <EditText
+                    android:id="@+id/account_currencyname"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 </ScrollView>

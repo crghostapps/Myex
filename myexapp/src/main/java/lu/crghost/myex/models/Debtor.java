@@ -2,13 +2,14 @@ package lu.crghost.myex.models;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import net.sqlcipher.database.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
 
 import java.math.BigDecimal;
 
-import lu.crghost.cralib.tools.HashCodeUtil;
+import lu.crghost.cralib3.tools.HashCodeUtil;
 
 import static android.provider.BaseColumns._ID;
 
@@ -58,8 +59,8 @@ public class Debtor extends BaseModel implements BaseModelInterface {
     }
 
     public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        //onCreate(db);
     }
 
     public String getTableName() { return TABLE_NAME; }
@@ -81,25 +82,25 @@ public class Debtor extends BaseModel implements BaseModelInterface {
 
     @Override
     public void setValues(ContentValues c) {
-        name = c.getAsString("name");
-        latitude = new BigDecimal(c.getAsDouble("latitude"));
-        longitude = new BigDecimal(c.getAsDouble("longitude"));
-        altitude = new BigDecimal(c.getAsDouble("altitude"));
+        setName(c.getAsString("name"));
+        setLatitude(c.getAsDouble("latitude"));
+        setLongitude(c.getAsDouble("longitude"));
+        setAltitude(c.getAsDouble("altitude"));
     }
 
     @Override
     public void setValues(Cursor c) {
         if (c!=null) {
-            setId(c.getLong(0));
-            setName(c.getString(1));
-            setLatitude(new BigDecimal(c.getDouble(2)));
-            setLongitude(new BigDecimal(c.getDouble(3)));
-            setAltitude(new BigDecimal(c.getDouble(4)));
-            setCreated_at(c.getString(5));
-            setUpdated_at(c.getString(6));
+            id = c.getLong(c.getColumnIndex(_ID));
+            ContentValues co = new ContentValues();
+            DatabaseUtils.cursorRowToContentValues(c,co);
+            setValues(co);
         }
     }
 
+    /*******************************************************************************************************************
+     * Getters & setters
+     *******************************************************************************************************************/
 
     public String getName() {
         return name;
@@ -116,6 +117,10 @@ public class Debtor extends BaseModel implements BaseModelInterface {
     public void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
     }
+    public void setLatitude(Double latitude) {
+        if (latitude==null) this.latitude = BigDecimal.ZERO;
+        else this.latitude = new BigDecimal(latitude.doubleValue());
+    }
 
     public BigDecimal getLongitude() {
         return longitude;
@@ -123,6 +128,10 @@ public class Debtor extends BaseModel implements BaseModelInterface {
 
     public void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
+    }
+    public void setLongitude(Double longitude) {
+        if (longitude==null) this.longitude = BigDecimal.ZERO;
+        else this.longitude = new BigDecimal(longitude.doubleValue());
     }
 
     public BigDecimal getAltitude() {
@@ -132,6 +141,14 @@ public class Debtor extends BaseModel implements BaseModelInterface {
     public void setAltitude(BigDecimal altitude) {
         this.altitude = altitude;
     }
+    public void setAltitude(Double altitude) {
+        if (altitude==null) this.altitude = BigDecimal.ZERO;
+        else this.altitude = new BigDecimal(altitude.doubleValue());
+    }
+
+    /*******************************************************************************************************************
+     * Overrides
+     *******************************************************************************************************************/
 
     @Override
     public String toString() {

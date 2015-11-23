@@ -1,4 +1,4 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,14 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 import lu.crghost.myex.models.*;
 import lu.crghost.myex.tools.SimpleMeasureAdapter;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -41,6 +38,9 @@ public class AccountsEditActivity extends Activity {
         public EditText alimitamount;
         public Spinner ameasure;
         public long ameasure_selected_id;
+        public TextView currencybase;
+        public EditText currencyrate;
+        public EditText currencyname;
     }
     ViewHolder holder;
 
@@ -58,6 +58,9 @@ public class AccountsEditActivity extends Activity {
         holder.alimitamount = (EditText) findViewById(R.id.account_limitamount);
         holder.ameasure = (Spinner) findViewById(R.id.account_measure);
         holder.ameasure_selected_id = 1;
+        holder.currencybase = (TextView) findViewById(R.id.account_currencybase);
+        holder.currencyname = (EditText) findViewById(R.id.account_currencyname);
+        holder.currencyrate = (EditText) findViewById(R.id.account_currencyrate);
 
         app = (MyExApp) getApplication();
 
@@ -74,11 +77,15 @@ public class AccountsEditActivity extends Activity {
                 holder.aname.setText(account.getAcname());
                 holder.anumber.setText(account.getAcnumber());
                 holder.atype_selected_id = account.getActype();
-                holder.ainitbalance.setText(lu.crghost.cralib.tools.Formats.formatDecimal(account.getInitbalance(),2));
-                holder.alimitamount.setText(lu.crghost.cralib.tools.Formats.formatDecimal(account.getLimitamount(),2));
+                holder.ainitbalance.setText(lu.crghost.cralib3.tools.Formats.formatDecimal(account.getInitbalance(),2));
+                holder.alimitamount.setText(lu.crghost.cralib3.tools.Formats.formatDecimal(account.getLimitamount(),2));
                 holder.ameasure_selected_id = account.getMeasure_id();
+                holder.currencyname.setText(account.getCurrencyname());
+                holder.currencyrate.setText(lu.crghost.cralib3.tools.Formats.formatDecimal(account.getCurrencyrate(),5));
             }
+
         }
+        holder.currencybase.setText(getResources().getString(R.string.account_currency) + " 1" + app.getCurrencySymbol() + " =");
 
         if (isupdate) {
             setTitle(getResources().getString(R.string.accounts_title_edit));
@@ -158,10 +165,12 @@ public class AccountsEditActivity extends Activity {
                 }
                 account.setAcnumber(holder.anumber.getText().toString());
                 account.setActype((int) holder.atype_selected_id);
-                account.setInitbalance(lu.crghost.cralib.tools.Formats.parseDecimal(holder.ainitbalance.getText().toString(),2));
-                account.setLimitamount(lu.crghost.cralib.tools.Formats.parseDecimal(holder.alimitamount.getText().toString(),2));
+                account.setInitbalance(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.ainitbalance.getText().toString(),2));
+                account.setLimitamount(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.alimitamount.getText().toString(),2));
                 if (account.getActype() < Account.TYPE_COUNTER) holder.ameasure_selected_id = 1;
                 account.setMeasure_id(holder.ameasure_selected_id);
+                account.setCurrencyrate(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.currencyrate.getText().toString(),5));
+                account.setCurrencyname(holder.currencyname.getText().toString());
 
                 if (isupdate)   app.getDataManager().updateAccount(account);
                 else            app.getDataManager().insertAccount(account);

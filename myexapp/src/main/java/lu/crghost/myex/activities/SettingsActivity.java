@@ -1,10 +1,12 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 
 import java.util.Locale;
 

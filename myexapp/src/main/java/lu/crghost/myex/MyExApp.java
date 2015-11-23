@@ -3,6 +3,8 @@ package lu.crghost.myex;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,7 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import lu.crghost.myex.dao.DataManager;
-import lu.crghost.cralib.security.StringEncoder;
+import lu.crghost.cralib3.security.StringEncoder;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.File;
@@ -24,10 +26,18 @@ public class MyExApp extends Application {
 
     private static final String TAG = "MyExApp";
     public static final String PREFS_FILENAME = "myexprefs";
+    public static final String APP_PACKAGE_NAME = "lu.crghost.myex";
     private ConnectivityManager cMgr;
     private DataManager dataManager;
     private SharedPreferences prefs;
     private static Context myContext;
+
+    public static final String DATABASE_NAME = "pl.db";
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_PATH = Environment.getDataDirectory() + "/data/" + APP_PACKAGE_NAME + "/databases/" + DATABASE_NAME;
+    public static final String DOCUMENT_PATH =  Environment.getExternalStorageDirectory()+"/Documents/myex/";
+    public static final String IMAGE_PATH    = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/myex";
+
 
     private long costcentersEdit_last_parent_id = 0;
     private boolean transactionEdit_last_sign_negatif = true;
@@ -43,6 +53,7 @@ public class MyExApp extends Application {
     }
 
     public DataManager getDataManager() {
+        if (dataManager==null) reloadDataManager();
         return this.dataManager;
     }
 
@@ -51,41 +62,39 @@ public class MyExApp extends Application {
     }
 
 
-    //
-    // lifecycle
-    //
+    /**
+     * Only called once, the first who initiate MyExApp (f.ex. TransactionsProvider)
+     */
     @Override
     public void onCreate() {
         super.onCreate();
         cMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         prefs = getSharedPreferences(PREFS_FILENAME,Context.MODE_MULTI_PROCESS);
-
-        boolean firstlogin = prefs.getBoolean("firstlogin",true);
-        String  dbpassword = null;
-        if (firstlogin) {
-            // @TODO: Add ask dbpass dialog here for first start
-            dbpassword = "gruntz4711";
-        } else {
-            //dbpassword = StringEncoder.decode(this,prefs.getString("dxpassword","gruntz4711"));
-            dbpassword = "gruntz4711";
-        }
-
-        // Must call this function before calling any SQLCipher functions
-        SQLiteDatabase.loadLibs(getApplicationContext());
-        dataManager = new DataManager(this,dbpassword);
+        reloadDataManager();
         myContext = this;
-        if (firstlogin) {
-            Log.i(TAG, "First start --> init basic data");
-            initData();
-
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("firstlogin", false);
-            editor.putString("dbpassword", StringEncoder.encode(this, dbpassword));
-            editor.apply();
-        }
-
         // Localisation
         localisationRunning = false;
+    }
+
+    /**
+     * Open database
+     */
+    public void reloadDataManager() {
+        if (dataManager != null) {
+            dataManager.closeDb();
+        }
+        boolean firstlogin = prefs.getBoolean("firstlogin", true);
+        String  dbpassword = prefs.getString("dbpassword","?");
+        if (dbpassword.equals("?")) {
+            dataManager = null;
+            Log.w(TAG,"First login, db not initialized");
+        } else {
+            dbpassword = StringEncoder.decode(this, dbpassword);
+            SQLiteDatabase.loadLibs(getApplicationContext());   // Must call this function before calling any SQLCipher functions
+            dataManager = new DataManager(this, dbpassword);    // <-- database can be blocked here
+            Log.i(TAG,"Database connected");
+        }
+
     }
 
     public Location getLastKnownLocation() {
@@ -187,10 +196,25 @@ public class MyExApp extends Application {
         return file;
     }
 
+    /**
+     * Get actuel version name
+     * @param c
+     * @return
+     */
+    public static String getVersionName(Context c) {
+        String versionName = "Unknown version";
+        try {
+            PackageInfo pinfo = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
+            versionName = pinfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        return versionName;
+    }
+
     /***********************************************************************************************
      * Initital Data
      ***********************************************************************************************/
-    private void initData() {
+    public void initData() {
         SQLiteDatabase db = dataManager.getDb();
 
         // Measures
@@ -208,23 +232,23 @@ public class MyExApp extends Application {
                 + getResources().getString(R.string.data_measures4_short) + "');");
 
         // Accounts
-        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,measure_id) values(1,'"
-                + getResources().getString(R.string.data_account1) + "',null,0,0,0,1);");
-        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,measure_id) values(2,'"
-                + getResources().getString(R.string.data_account2) + "',null,1,0,0,1);");
+        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,measure_id, currencyrate, currencyname) values(1,'"
+                + getResources().getString(R.string.data_account1) + "',null,0,0,0,1,0,null);");
+        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,measure_id, currencyrate, currencyname) values(2,'"
+                + getResources().getString(R.string.data_account2) + "',null,1,0,0,1,0,null);");
 
         // Costcenters
         // income
-        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id, isdefaultcct, ccttype) values(1,'"
-                + getResources().getString(R.string.data_costcenter_income) + "',0,30,null,0,0);");
-        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id, isdefaultcct, ccttype) values(3,'"
-                + getResources().getString(R.string.data_costcenter_income_misc) + "',1,40,1,1,0);");
+        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id, isdefaultcct, ccttype, hassons) values(1,'"
+                + getResources().getString(R.string.data_costcenter_income) + "',0,30,null,0,0,1);");
+        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id, isdefaultcct, ccttype, hassons) values(3,'"
+                + getResources().getString(R.string.data_costcenter_income_misc) + "',1,40,1,1,0,0);");
 
         // expense
-        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id, isdefaultcct, ccttype) values(2,'"
-                + getResources().getString(R.string.data_costcenter_expence) + "',0,10,null,0,1);");
-        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id,isdefaultcct,ccttype) values(4,'"
-                + getResources().getString(R.string.data_costcenter_expence_misc) + "',1,20,2,1,1);");
+        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id, isdefaultcct, ccttype, hassons) values(2,'"
+                + getResources().getString(R.string.data_costcenter_expence) + "',0,10,null,0,1,1);");
+        db.execSQL("insert into costcenters (_id, name, clevel, sort, parent_id,isdefaultcct,ccttype, hassons) values(4,'"
+                + getResources().getString(R.string.data_costcenter_expence_misc) + "',1,20,2,1,1,0);");
     }
 
     /***********************************************************************************************

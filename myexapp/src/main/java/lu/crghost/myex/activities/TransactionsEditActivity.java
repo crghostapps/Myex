@@ -1,13 +1,14 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,7 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter.CursorToStringConverter;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 import lu.crghost.myex.dao.DataManager;
 import lu.crghost.myex.models.*;
 import lu.crghost.myex.tools.MyFormats;
@@ -24,8 +26,6 @@ import lu.crghost.myex.tools.SimpleMeasureAdapter;
 import net.sqlcipher.Cursor;
 
 import java.math.BigDecimal;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -43,8 +43,13 @@ public class TransactionsEditActivity extends Activity {
     private List<Costcenter> costcenterList;
     private boolean usegps;
 
+    private boolean calccurrency;
+    private BigDecimal calccurrencyrate;
+
     static class ViewHolder {
         public EditText vamount;
+        public TextView vcurrency;
+        public TextView vcurrency_symbol;
         public EditText vamountDate;
         public ToggleButton vpm;          // on = - off = +
         public AutoCompleteTextView vdescription;
@@ -70,6 +75,8 @@ public class TransactionsEditActivity extends Activity {
 
         holder = new ViewHolder();
         holder.vamount = (EditText) findViewById(R.id.transactions_amount);
+        holder.vcurrency = (TextView) findViewById(R.id.transactions_currency);
+        holder.vcurrency_symbol = (TextView) findViewById(R.id.transactions_currencysymbol);
         holder.vamountDate = (EditText) findViewById(R.id.transactions_datetime);
         holder.vpm = (ToggleButton) findViewById(R.id.transactions_pm);
         holder.vdescription = (AutoCompleteTextView) findViewById(R.id.transactions_description);
@@ -127,6 +134,25 @@ public class TransactionsEditActivity extends Activity {
                     holder.vamountDate.setText(MyFormats.formatDateTime.format(transaction.getDateAmount_at()));
             }
         }
+
+        // TextWatcher on amount to calculate currencies if needed
+        holder.vamount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                calcCurrencyConversion(s.toString());
+            }
+        });
+
 
         // Autocomplete desciption
         Cursor descs = app.getDataManager().getDescriptionCursor(null,null);
@@ -239,7 +265,9 @@ public class TransactionsEditActivity extends Activity {
         holder.vaccountsel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                holder.vaccountsel_id = ((Account) holder.vaccountsel.getItemAtPosition(position)).getId();
+                Account account = (Account) holder.vaccountsel.getItemAtPosition(position);
+                holder.vaccountsel_id = account.getId();
+                toggle_account(account);
             }
 
             @Override
@@ -283,6 +311,13 @@ public class TransactionsEditActivity extends Activity {
             }
         });
 
+        // Currency conversion ?
+        Account account = null;
+        if (holder.vaccountsel_id > 0) {
+            account = app.getDataManager().getAccountById(holder.vaccountsel_id);
+        }
+        toggle_account(account);
+        calcCurrencyConversion(holder.vamount.getText().toString());
 
         if (isupdate) {
             setTitle(getResources().getString(R.string.transactions_title_edit));
@@ -292,6 +327,53 @@ public class TransactionsEditActivity extends Activity {
 
         holder.vamount.requestFocus();
 
+    }
+
+    /**
+     * Reset when account has changed
+     * @param account
+     */
+    private void toggle_account(Account account) {
+        String symbol = app.getCurrencySymbol();
+        calccurrency = false;
+        calccurrencyrate = BigDecimal.ONE;
+        if (account==null) {
+            holder.vcurrency.setVisibility(View.GONE);
+        } else {
+            if (account.isOtherCurrency()) {
+                holder.vcurrency.setVisibility(View.VISIBLE);
+                calccurrency = true;
+                calccurrencyrate = account.getCurrencyrate();
+                symbol = account.getCurrencyname();
+            } else {
+                holder.vcurrency.setVisibility(View.GONE);
+            }
+        }
+        holder.vcurrency_symbol.setText(symbol);
+    }
+
+    /**
+     * Convert amount to local currency
+     * @param scamount
+     */
+    private void calcCurrencyConversion(String scamount) {
+        if (!calccurrency) {
+            holder.vcurrency.setText("");
+        } else {
+            BigDecimal amount = BigDecimal.ZERO;
+            if (scamount!=null) {
+                boolean negatif = holder.vpm.isChecked();
+                amount = lu.crghost.cralib3.tools.Formats.parseDecimal(holder.vamount.getText().toString(),2);
+                if (negatif && amount.compareTo(BigDecimal.ZERO) > 0) {
+                    amount = amount.negate();
+                }
+                if (!negatif && amount.compareTo(BigDecimal.ZERO) < 0) {
+                    amount = amount.negate();
+                }
+                amount = amount.divide(calccurrencyrate, 2, BigDecimal.ROUND_HALF_UP);
+            }
+            holder.vcurrency.setText("= " + MyFormats.formatDecimal(amount,2) + app.getPrefs().getString("currency","?"));
+        }
     }
 
     /**
@@ -346,14 +428,14 @@ public class TransactionsEditActivity extends Activity {
     public void action_addcostcenter(View v) {
         Intent costcenteredit = new Intent(this,CostcentersEditActivity.class);
         costcenteredit.putExtra("id", 0L);
-        startActivityForResult(costcenteredit, MainActivity.TABITEM_COSTCENTERS);
+        startActivityForResult(costcenteredit, MainFragment.TABITEM_COSTCENTERS);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode==RESULT_OK) {
             switch (requestCode) {
-                case MainActivity.TABITEM_COSTCENTERS:
+                case MainFragment.TABITEM_COSTCENTERS:
                     long costcenter_id = data.getLongExtra("costcenter_id",0);
                     if (costcenter_id > 0) {
                         holder.vcostcenter_id = costcenter_id;
@@ -386,7 +468,7 @@ public class TransactionsEditActivity extends Activity {
                     return false;
                 }
                 boolean negatif = holder.vpm.isChecked();
-                BigDecimal amount = lu.crghost.cralib.tools.Formats.parseDecimal(holder.vamount.getText().toString(),2);
+                BigDecimal amount = lu.crghost.cralib3.tools.Formats.parseDecimal(holder.vamount.getText().toString(),2);
                 if (negatif && amount.compareTo(BigDecimal.ZERO) > 0) {
                     amount = amount.negate();
                 }
@@ -394,6 +476,11 @@ public class TransactionsEditActivity extends Activity {
                     amount = amount.negate();
                 }
                 transaction.setAmount(amount);
+                transaction.setAmountbase(BigDecimal.ZERO);
+                if (calccurrency) {
+                    transaction.setAmountbase(amount.divide(calccurrencyrate, 2, BigDecimal.ROUND_HALF_UP));
+                }
+
                 Date amount_at = null;
                 try {
                     amount_at = MyFormats.formatDateTime.parse(holder.vamountDate.getText().toString());
@@ -429,9 +516,9 @@ public class TransactionsEditActivity extends Activity {
                 transaction.setCostcenter_id(holder.vcostcenter_id);
                 transaction.setAccount_id(holder.vaccountsel_id);
                 transaction.setMeasure1_id(holder.vmeasure1sel_id);
-                transaction.setMeasure1(lu.crghost.cralib.tools.Formats.parseDecimal(holder.vmeasure1.getText().toString(),2));
+                transaction.setMeasure1(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.vmeasure1.getText().toString(),2));
                 transaction.setMeasure2_id(holder.vmeasure2sel_id);
-                transaction.setMeasure2(lu.crghost.cralib.tools.Formats.parseDecimal(holder.vmeasure2.getText().toString(),2));
+                transaction.setMeasure2(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.vmeasure2.getText().toString(),2));
                 transaction.setLongitude(longitude);
                 transaction.setLatitude(latitude);
                 transaction.setAltitude(altitude);

@@ -1,4 +1,4 @@
-package lu.crghost.myex;
+package lu.crghost.myex.activities;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
+import lu.crghost.myex.MyExApp;
+import lu.crghost.myex.R;
 import lu.crghost.myex.models.Costcenter;
 import lu.crghost.myex.tools.IconTreeItemHolder;
 import lu.crghost.myex.tools.MyOnFragmentInteractionListener;

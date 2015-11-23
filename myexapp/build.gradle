@@ -1,11 +1,11 @@
-buildscript {
+/*buildscript {
     repositories {
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.0.0'
     }
-}
+}*/
 apply plugin: 'com.android.application'
 
 repositories {
@@ -37,12 +37,10 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile project(':lib')
     compile 'com.android.support:support-v4:22.0.0'
     compile 'com.github.bmelnychuk:atv:1.2.+'
     compile files('libs/sqlcipher.jar')
     compile files('libs/guava-r09.jar')
-    compile files('libs/cralib.jar')
     compile files('libs/jsch-0.1.50.jar')
-
 }

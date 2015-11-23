@@ -1,5 +1,6 @@
 package lu.crghost.myex.models;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -51,6 +52,16 @@ public class BaseModel {
     protected int boolean_to_int(boolean b) {
         if (b) return 1;
         return 0;
+    }
+
+    public BigDecimal doubleToBigDecimal(Double d) {
+        if (d==null) return BigDecimal.ZERO;
+        else return new BigDecimal(d.doubleValue());
+    }
+
+    public long longTolong(Long l) {
+        if (l==null) return 0;
+        else return l;
     }
 
     @Override
