@@ -302,6 +302,10 @@ public class DataManager {
         return daoTransaction.getAll(selection, selectionArgs);
     }
 
+    public List<Transaction> getTransactions(String selection, String[] selectionArgs, String sort) {
+        return daoTransaction.getAll(selection, selectionArgs, sort);
+    }
+
     public long insertTransaction(Transaction type) {
         return daoTransaction.save(type);
     }

@@ -93,7 +93,7 @@ public class DebtorsFragment extends Fragment implements AbsListView.OnItemClick
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (null != mListener) {
             Debtor debtor = (Debtor) mAdapter.getItem(position);
-            mListener.onFragmentInteractionNewTransaction(null,null,debtor.getIdAsString());
+            mListener.onFragmentInteractionNewTransaction(null,null,debtor.getIdAsString(), debtor.getName());
         }
     }
 

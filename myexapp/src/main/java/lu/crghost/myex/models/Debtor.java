@@ -3,6 +3,8 @@ package lu.crghost.myex.models;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.location.Location;
+import com.google.android.gms.maps.model.LatLng;
 import net.sqlcipher.database.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.util.Log;
@@ -144,6 +146,30 @@ public class Debtor extends BaseModel implements BaseModelInterface {
     public void setAltitude(Double altitude) {
         if (altitude==null) this.altitude = BigDecimal.ZERO;
         else this.altitude = new BigDecimal(altitude.doubleValue());
+    }
+
+
+    public Location getLocation() {
+        Location l = new Location("debtor");
+        l.setLatitude(getLatitude().doubleValue());
+        l.setLongitude(getLongitude().doubleValue());
+        l.setAltitude(getAltitude().doubleValue());
+        return l;
+    }
+
+    public void setLocation(Location location) {
+        setLongitude(location.getLongitude());
+        setLatitude(location.getLatitude());
+        setAltitude(location.getAltitude());
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng(getLatitude().doubleValue(), getLongitude().doubleValue());
+    }
+
+    public void setLatLng(LatLng latLng) {
+        setLatitude(latLng.latitude);
+        setLongitude(latLng.longitude);
     }
 
     /*******************************************************************************************************************

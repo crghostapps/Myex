@@ -60,7 +60,7 @@ public class AccountsAdapter extends ArrayAdapter<Account> {
         holder.progressBar.setMax(maxcre);
         String symbol = "";
         if (account.getActype() >= Account.TYPE_COUNTER) {
-            Measure measure = app.getDataManager().getMeasureById(account.getId());
+            Measure measure = app.getDataManager().getMeasureById(account.getMeasure_id());
             if (measure != null) symbol = measure.getNameshort();
         } else if (account.isOtherCurrency()) {
             symbol = account.getCurrencyname();

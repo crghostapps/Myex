@@ -271,12 +271,13 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
     }
 
     @Override
-    public void onFragmentInteractionNewTransaction(String account_id, String costcenter_id, String debtor_id) {
+    public void onFragmentInteractionNewTransaction(String account_id, String costcenter_id, String debtor_id, String description) {
         Intent newtrans = new Intent(this,TransactionsEditActivity.class);
         newtrans.putExtra("id",0L);
         if (account_id!=null)    newtrans.putExtra("account_id", Long.parseLong(account_id));
         if (debtor_id!=null)     newtrans.putExtra("debtor_id",Long.parseLong(debtor_id));
         if (costcenter_id!=null) newtrans.putExtra("costcenter_id",Long.parseLong(costcenter_id));
+        if (description!=null)   newtrans.putExtra("description", description);
         startActivityForResult(newtrans,NEW_TRANSACTION);
     }
 

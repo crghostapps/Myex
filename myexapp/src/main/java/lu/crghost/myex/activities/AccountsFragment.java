@@ -1,6 +1,9 @@
 package lu.crghost.myex.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,10 +12,17 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
+import lu.crghost.cralib3.tools.Formats;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
 import lu.crghost.myex.models.Account;
+import lu.crghost.myex.models.Costcenter;
+import lu.crghost.myex.models.Debtor;
+import lu.crghost.myex.models.Transaction;
 import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
+
+import java.io.StringBufferInputStream;
+import java.util.List;
 
 /**
  * Accounts list
@@ -21,6 +31,12 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
 
     MyExApp app;
     private MyOnFragmentInteractionListener mListener;
+    boolean usegps;
+
+    Account selected_account;
+    String  selected_debtorid;
+    String  selected_costcenterid;
+    String  selected_description;
 
     /**
      * The fragment's ListView/GridView.
@@ -50,6 +66,9 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
         super.onCreate(savedInstanceState);
         app = (MyExApp) getActivity().getApplication();
         mAdapter = new AccountsAdapter(app,getActivity(),app.getDataManager().getAccounts(null,null));
+
+        usegps = app.getPrefs().getBoolean("localisation",false);
+        if (usegps) app.refreshLocation();
     }
 
     @Override
@@ -88,8 +107,32 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (null != mListener) {
-            Account account = (Account) mAdapter.getItem(position);
-            mListener.onFragmentInteractionNewTransaction(account.getIdAsString(), null ,null);
+            selected_account = (Account) mAdapter.getItem(position);
+            selected_costcenterid = null;
+            selected_debtorid     = null;
+            selected_description  = null;
+            String message        = findNearBy(selected_account);
+            if (message==null) {
+                mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), null, null, null);
+            } else {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(R.string.transactions_nearby_title);
+                builder.setMessage(message);
+                builder.setPositiveButton(R.string.btn_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), selected_costcenterid, selected_debtorid, selected_description);
+                    }
+                });
+                builder.setNegativeButton(R.string.btn_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), null, null, null);
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
         }
     }
 
@@ -97,10 +140,57 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         if (null != mListener) {
-            Account account = (Account) mAdapter.getItem(position);
-            mListener.onFragmentInteractionEdit(account.getIdAsString(), MyOnFragmentInteractionListener.ACTION_EDIT_ACCOUNT);
+            selected_account = (Account) mAdapter.getItem(position);
+            mListener.onFragmentInteractionEdit(selected_account.getIdAsString(), MyOnFragmentInteractionListener.ACTION_EDIT_ACCOUNT);
         }
         return false;
+    }
+
+    /**
+     * Find near by locations
+     * @param account
+     */
+    private String findNearBy(Account account) {
+        String dlgmessage = null;
+        Location lastlocation = app.getLastKnownLocation();
+        Transaction near_transaction = null;
+        float distance_transaction = Float.MAX_VALUE;
+        List<Transaction> transactions = app.getDataManager().getTransactions("latitude <> 0 and longitude <> 0 and account_id=?",new String[] {account.getIdAsString()});
+        for (Transaction t : transactions) {
+            float distance = lastlocation.distanceTo(t.getLocation());
+            if (distance < distance_transaction) {
+                distance_transaction = distance;
+                near_transaction = t;
+            }
+        }
+
+        Debtor near_debtor = null;
+        float distance_debtor = Float.MAX_VALUE;
+        List<Debtor> debtors = app.getDataManager().getDebtors("latitude <> 0 and longitude <> 0",null);
+        for (Debtor d : debtors) {
+            float distance = lastlocation.distanceTo(d.getLocation());
+            if (distance < distance_debtor) {
+                distance_debtor = distance;
+                near_debtor = d;
+            }
+        }
+
+        float maxdistence = 100;
+        if (distance_transaction < maxdistence && distance_transaction < distance_debtor) {
+            dlgmessage = getResources().getString(R.string.transactions_nearby_msg_t) + "\n"
+                    + Formats.frDateFormat.format(near_transaction.getDateAmount_at()) + " "
+                    + near_transaction.getDescription();
+            selected_debtorid     = String.valueOf(near_transaction.getDebtor_id());
+            selected_costcenterid = String.valueOf(near_transaction.getCostcenter_id());
+            selected_description  = near_transaction.getDescription();
+        } else if (distance_debtor < maxdistence) {
+            dlgmessage = getResources().getString(R.string.transactions_nearby_msg_d) + "\n"
+                    + near_debtor.getName();
+            selected_debtorid = near_debtor.getIdAsString();
+        }
+
+        return dlgmessage;
+
     }
 
     /**

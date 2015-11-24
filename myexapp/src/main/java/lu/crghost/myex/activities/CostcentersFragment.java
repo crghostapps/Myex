@@ -114,7 +114,7 @@ public class CostcentersFragment extends Fragment implements IconTreeItemHolder.
     @Override
     public void onIconItemClick(long costcenter_id) {
         if (null != mListener) {
-            mListener.onFragmentInteractionNewTransaction(null,Long.toString(costcenter_id),null);
+            mListener.onFragmentInteractionNewTransaction(null,Long.toString(costcenter_id),null, null);
         }
     }
 

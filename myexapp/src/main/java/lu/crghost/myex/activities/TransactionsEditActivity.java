@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import android.support.v4.widget.SimpleCursorAdapter;
+import lu.crghost.cralib3.tools.Formats;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
 import lu.crghost.myex.dao.DataManager;
@@ -41,7 +43,7 @@ public class TransactionsEditActivity extends Activity {
     private List<Measure> measureList;
     private List<Account> accountList;
     private List<Costcenter> costcenterList;
-    private boolean usegps;
+    boolean usegps;
 
     private boolean calccurrency;
     private BigDecimal calccurrencyrate;
@@ -107,6 +109,7 @@ public class TransactionsEditActivity extends Activity {
             holder.vaccountsel_id = getIntent().getLongExtra("account_id",0);
             holder.vdebtor_id = getIntent().getLongExtra("debtor_id",0);
             holder.vcostcenter_id = getIntent().getLongExtra("costcenter_id",0);
+            holder.vdescription.setText(getIntent().getStringExtra("description"));
             holder.vpm.setChecked(app.isTransactionEdit_last_sign_negatif());
             holder.vamountDate.setText(MyFormats.formatDateTime.format(new Date(System.currentTimeMillis())));
         } else {

@@ -12,31 +12,37 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import lu.crghost.cralib3.tools.Formats;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
 import lu.crghost.myex.models.Debtor;
 import lu.crghost.myex.tools.MyFormats;
 
-import java.math.BigDecimal;
-
 /**
  * CUD a debtor
  */
-public class DebtorsEditActivity extends Activity {
+public class DebtorsEditActivity extends Activity implements OnMapReadyCallback {
 
     private static final String TAG = "DebtorsEditActivity";
 
     private MyExApp app;
     private boolean isupdate;
     private Debtor debtor;
+    String debtor_amount;
+    Marker debtor_marker;
+
+
 
     static class ViewHolder {
         public EditText name;
-        public EditText latitude;
-        public EditText longitude;
-        public EditText altitude;
-        public ImageButton btngps;
+        public MapFragment map;
     }
     ViewHolder holder;
 
@@ -47,14 +53,13 @@ public class DebtorsEditActivity extends Activity {
 
         holder = new ViewHolder();
         holder.name = (EditText) findViewById(R.id.debtors_name);
-        holder.latitude = (EditText) findViewById(R.id.debtors_latitude);
-        holder.longitude = (EditText) findViewById(R.id.debtors_longitude);
-        holder.altitude = (EditText) findViewById(R.id.debtors_altitude);
-        holder.btngps = (ImageButton) findViewById(R.id.debtors_btngps);
+        holder.map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map));
+        holder.map.getMapAsync(this);
 
         app = (MyExApp) getApplication();
 
         long id = this.getIntent().getLongExtra("id",0);
+        debtor_amount = "";
         if (id==0) {
             isupdate = false;
             debtor = new Debtor();
@@ -65,9 +70,7 @@ public class DebtorsEditActivity extends Activity {
                 isupdate = false;
             } else {
                 holder.name.setText(debtor.getName());
-                holder.longitude.setText(MyFormats.formatDecimal(debtor.getLongitude(),MyFormats.DECIMALS_LOCATIONS));
-                holder.latitude.setText(MyFormats.formatDecimal(debtor.getLatitude(),MyFormats.DECIMALS_LOCATIONS));
-                holder.altitude.setText(MyFormats.formatDecimal(debtor.getAltitude(),MyFormats.DECIMALS_ALTITUDE));
+                debtor_amount = MyFormats.formatDecimal(app.getDataManager().getDebtorTotalAmount(debtor.getId()),2)+app.getCurrencySymbol();
             }
         }
 
@@ -75,12 +78,6 @@ public class DebtorsEditActivity extends Activity {
             setTitle(getResources().getString(R.string.debtors_title_edit));
         } else {
             setTitle(getResources().getString(R.string.debtors_title_new));
-        }
-
-        if (app.getPrefs().getBoolean("localisation",false)) {
-            holder.btngps.setVisibility(View.VISIBLE);
-        } else {
-            holder.btngps.setVisibility(View.GONE);
         }
 
     }
@@ -112,9 +109,6 @@ public class DebtorsEditActivity extends Activity {
                     holder.name.setError(getResources().getString(R.string.debtors_name_error));
                     return false;
                 }
-                debtor.setLongitude(MyFormats.parseDecimal(holder.longitude.getText().toString(), MyFormats.DECIMALS_LOCATIONS));
-                debtor.setLatitude(MyFormats.parseDecimal(holder.latitude.getText().toString(), MyFormats.DECIMALS_LOCATIONS));
-                debtor.setAltitude(MyFormats.parseDecimal(holder.altitude.getText().toString(), MyFormats.DECIMALS_ALTITUDE));
                 if (isupdate)   app.getDataManager().updateDebtor(debtor);
                 else            app.getDataManager().insertDebtor(debtor);
                 setResult(RESULT_OK);
@@ -151,18 +145,38 @@ public class DebtorsEditActivity extends Activity {
     }
 
     /**
-     * GPS button clicked
-     * @param v
+     * Google map is loaded
+     * @param googleMap
      */
-    public void btnGps_click(View v) {
-        Location location = app.getLastKnownLocation();
-        Log.i(TAG, "------location=" + location);
-        BigDecimal longitude = new BigDecimal(Double.toString(location.getLongitude()));
-        BigDecimal latitude  = new BigDecimal(Double.toString(location.getLatitude()));
-        BigDecimal altitude  = new BigDecimal(Double.toString(location.getAltitude()));
-        holder.longitude.setText(MyFormats.formatDecimal(longitude, MyFormats.DECIMALS_LOCATIONS));
-        holder.latitude.setText(MyFormats.formatDecimal(latitude, MyFormats.DECIMALS_LOCATIONS));
-        holder.altitude.setText(MyFormats.formatDecimal(altitude,MyFormats.DECIMALS_ALTITUDE));
+    @Override
+    public void onMapReady(final GoogleMap googleMap) {
+
+        // configuration of map
+        googleMap.setMyLocationEnabled(true);
+        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                debtor.setLatLng(latLng);
+                moveMarker(latLng);
+            }
+        });
+
+        debtor_marker = holder.map.getMap().addMarker(new MarkerOptions()
+                .position(debtor.getLatLng())
+                .title(debtor.getName())
+                .snippet(debtor_amount)
+        );
+
+        // Move the camera instantly to debtor with a zoom of 15.
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(debtor.getLatLng(), 15));
+
+        // Zoom in, animating the camera.
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+    }
+
+    private void moveMarker(LatLng latLng) {
+        debtor.setLatLng(latLng);
+        debtor_marker.setPosition(latLng);
     }
 
 }

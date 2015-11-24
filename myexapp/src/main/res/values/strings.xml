@@ -7,7 +7,7 @@
 
 
     <!-- login -->
-    <string name="title_activity_login">Welcome to Myex</string>
+    <string name="title_activity_login">Myex</string>
     <string name="login_1_message">First login, please provide a password.\nThe password will be used to encrypt the data and cannot be changed afterwards</string>
     <string name="login_passwd">Password:</string>
     <string name="login_passwd_err">Please enter a valid password</string>
@@ -66,6 +66,8 @@
     <!-- dialogs -->
     <string name="btn_ok">Ok</string>
     <string name="btn_cancel">Cancel</string>
+    <string name="btn_yes">Yes</string>
+    <string name="btn_no">No</string>
     <string name="prompt_datetime_title">Date and time</string>
 
     <!-- Accounts -->
@@ -127,6 +129,9 @@
 
 
     <!-- Transactions -->
+    <string name="transactions_nearby_title">Near by indicator</string>
+    <string name="transactions_nearby_msg_t">Pick near by transaction?</string>
+    <string name="transactions_nearby_msg_d">Pick near by debtor?</string>
     <string name="transactions_title">Transactions</string>
     <string name="transactions_title_new">New transaction</string>
     <string name="transactions_title_edit">Edit transaction</string>
