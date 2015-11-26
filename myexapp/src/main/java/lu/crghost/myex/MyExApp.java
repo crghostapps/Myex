@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import com.google.android.gms.maps.model.LatLng;
 import lu.crghost.myex.dao.DataManager;
 import lu.crghost.cralib3.security.StringEncoder;
 import net.sqlcipher.database.SQLiteDatabase;
@@ -60,6 +61,9 @@ public class MyExApp extends Application {
     public String getCurrencySymbol() {
         return prefs.getString("currency","");
     }
+    public long getCurrencySymbolId() {
+        return prefs.getLong("currency_id",1);
+    }
 
 
     /**
@@ -95,6 +99,15 @@ public class MyExApp extends Application {
             Log.i(TAG,"Database connected");
         }
 
+    }
+
+    public LatLng getLastKnownLatLng() {
+        LatLng latLng = new LatLng(0,0);
+        Location location = getLastKnownLocation();
+        if (location!=null) {
+            latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        }
+        return latLng;
     }
 
     public Location getLastKnownLocation() {
@@ -211,6 +224,10 @@ public class MyExApp extends Application {
         return versionName;
     }
 
+
+
+
+
     /***********************************************************************************************
      * Initital Data
      ***********************************************************************************************/
@@ -218,24 +235,24 @@ public class MyExApp extends Application {
         SQLiteDatabase db = dataManager.getDb();
 
         // Measures
-        db.execSQL("insert into measures (_id,name,nameshort) values(1,'"
+        db.execSQL("insert into measures (_id,name,nameshort,mtype) values(1,'"
                 + getResources().getString(R.string.data_measures1_name) + "','"
-                + getResources().getString(R.string.data_measures1_short) + "');");
-        db.execSQL("insert into measures (_id,name,nameshort) values(2,'"
+                + getResources().getString(R.string.data_measures1_short) + "',0);");
+        db.execSQL("insert into measures (_id,name,nameshort,mtype) values(2,'"
                 + getResources().getString(R.string.data_measures2_name) + "','"
-                + getResources().getString(R.string.data_measures2_short) + "');");
-        db.execSQL("insert into measures (_id,name,nameshort) values(3,'"
+                + getResources().getString(R.string.data_measures2_short) + "',2);");
+        db.execSQL("insert into measures (_id,name,nameshort,mtype) values(3,'"
                 + getResources().getString(R.string.data_measures3_name) + "','"
-                + getResources().getString(R.string.data_measures3_short) + "');");
-        db.execSQL("insert into measures (_id,name,nameshort) values(4,'"
+                + getResources().getString(R.string.data_measures3_short) + "',2);");
+        db.execSQL("insert into measures (_id,name,nameshort,mtype) values(4,'"
                 + getResources().getString(R.string.data_measures4_name) + "','"
-                + getResources().getString(R.string.data_measures4_short) + "');");
+                + getResources().getString(R.string.data_measures4_short) + "',2);");
 
         // Accounts
-        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,measure_id, currencyrate, currencyname) values(1,'"
-                + getResources().getString(R.string.data_account1) + "',null,0,0,0,1,0,null);");
-        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,measure_id, currencyrate, currencyname) values(2,'"
-                + getResources().getString(R.string.data_account2) + "',null,1,0,0,1,0,null);");
+        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,measure_id, costcenter_id) values(1,'"
+                + getResources().getString(R.string.data_account1) + "',null,0,0,0,1,3);");
+        db.execSQL("insert into accounts (_id,acname,acnumber,actype,initbalance,limitamount,measure_id, costcenter_id) values(2,'"
+                + getResources().getString(R.string.data_account2) + "',null,1,0,0,1,0);");
 
         // Costcenters
         // income

@@ -113,7 +113,7 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
             selected_description  = null;
             String message        = findNearBy(selected_account);
             if (message==null) {
-                mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), null, null, null);
+                mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), String.valueOf(selected_account.getCostcenter_id()), null, null);
             } else {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.transactions_nearby_title);
@@ -127,7 +127,7 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
                 builder.setNegativeButton(R.string.btn_no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), null, null, null);
+                        mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), String.valueOf(selected_account.getCostcenter_id()), null, null);
                     }
                 });
                 AlertDialog dialog = builder.create();

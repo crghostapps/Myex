@@ -91,7 +91,15 @@ public class Transaction extends BaseModel implements BaseModelInterface {
     /**
      * Initiate empty model
      */
-    public Transaction() {}
+    public Transaction() {
+        setAmount(0d);
+        setAmountbase(0d);
+        setMeasure1(0d);
+        setMeasure2(0d);
+        setLatitude(0d);
+        setLongitude(0d);
+        setAltitude(0d);
+    }
 
     /**
      * Initiate from content values

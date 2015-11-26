@@ -5,18 +5,25 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.*;
 import android.support.v4.widget.SimpleCursorAdapter;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import lu.crghost.cralib3.tools.Formats;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
@@ -33,13 +40,14 @@ import java.util.Date;
 import java.util.List;
 
 
-public class TransactionsEditActivity extends Activity {
+public class TransactionsEditActivity extends Activity implements OnMapReadyCallback {
 
     private static final String TAG = "TransEditActivity";
 
     private MyExApp app;
     private boolean isupdate;
     private Transaction transaction;
+    private Marker trans_marker;
     private List<Measure> measureList;
     private List<Account> accountList;
     private List<Costcenter> costcenterList;
@@ -61,12 +69,14 @@ public class TransactionsEditActivity extends Activity {
         public long vaccountsel_id;
         public Spinner vcostcentersel;
         public long vcostcenter_id;
+        public TextView vmeasureTitle;
         public EditText vmeasure1;
         public Spinner  vmeasure1sel;
         public long vmeasure1sel_id;
         public EditText vmeasure2;
         public Spinner  vmeasure2sel;
         public long vmeasure2sel_id;
+        public MapFragment map;
     }
     ViewHolder holder;
 
@@ -89,6 +99,7 @@ public class TransactionsEditActivity extends Activity {
         holder.vcostcentersel = (Spinner) findViewById(R.id.transactions_costcentersel);
         holder.vcostcenter_id = 0;
 
+        holder.vmeasureTitle = (TextView) findViewById(R.id.transactions_measure_title);
         holder.vmeasure1 = (EditText) findViewById(R.id.transactions_measure1);
         holder.vmeasure1sel = (Spinner) findViewById(R.id.transactions_sel_measure1);
         holder.vmeasure1sel_id = 0;
@@ -96,11 +107,12 @@ public class TransactionsEditActivity extends Activity {
         holder.vmeasure2sel = (Spinner) findViewById(R.id.transactions_sel_measure2);
         holder.vmeasure2sel_id = 0;
 
+        holder.map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map));
+        ViewGroup.LayoutParams maplp = holder.map.getView().getLayoutParams();
+        maplp.height = getScreenWidth();
+        holder.map.getView().setLayoutParams(maplp);
 
         app = (MyExApp) getApplication();
-
-        usegps = app.getPrefs().getBoolean("localisation",false);
-        if (usegps) app.refreshLocation();
 
         long id = this.getIntent().getLongExtra("id",0);
         if (id==0) {
@@ -112,6 +124,7 @@ public class TransactionsEditActivity extends Activity {
             holder.vdescription.setText(getIntent().getStringExtra("description"));
             holder.vpm.setChecked(app.isTransactionEdit_last_sign_negatif());
             holder.vamountDate.setText(MyFormats.formatDateTime.format(new Date(System.currentTimeMillis())));
+            Log.d(TAG,"new transaction: account="+ holder.vaccountsel_id + " cctr=" + holder.vcostcenter_id);
         } else {
             isupdate = true;
             transaction = app.getDataManager().getTransactionById(id);
@@ -138,21 +151,26 @@ public class TransactionsEditActivity extends Activity {
             }
         }
 
+        // Load map
+        usegps = app.getPrefs().getBoolean("localisation",false);
+        if (usegps){
+            app.refreshLocation();
+            holder.map.getView().setVisibility(View.VISIBLE);
+            holder.map.getMapAsync(this);
+        } else {
+            holder.map.getView().setVisibility(View.GONE);
+        }
+
+
         // TextWatcher on amount to calculate currencies if needed
         holder.vamount.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
-                calcCurrencyConversion(s.toString());
+                calcCurrencyConversion();
             }
         });
 
@@ -240,14 +258,26 @@ public class TransactionsEditActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Costcenter cc = (Costcenter) holder.vcostcentersel.getItemAtPosition(position);
+                Log.d(TAG,"--- costcenter changed --- m1=" + cc.getMeasure1_id());
                 holder.vcostcenter_id = cc.getId();
+                holder.vmeasureTitle.setVisibility(View.GONE);
+                holder.vmeasure1.setVisibility(View.GONE);
+                holder.vmeasure1sel.setVisibility(View.GONE);
+                holder.vmeasure2.setVisibility(View.GONE);
+                holder.vmeasure2sel.setVisibility(View.GONE);
                 if (cc.getMeasure1_id() > 0) {
                     holder.vmeasure1sel_id = cc.getMeasure1_id();
                     holder.vmeasure1sel.setSelection(app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList,holder.vmeasure1sel_id ));
+                    holder.vmeasureTitle.setVisibility(View.VISIBLE);
+                    holder.vmeasure1.setVisibility(View.VISIBLE);
+                    holder.vmeasure1sel.setVisibility(View.VISIBLE);
                 }
                 if (cc.getMeasure2_id() > 0) {
                     holder.vmeasure2sel_id = cc.getMeasure2_id();
                     holder.vmeasure2sel.setSelection(app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList,holder.vmeasure2sel_id ));
+                    holder.vmeasureTitle.setVisibility(View.VISIBLE);
+                    holder.vmeasure2.setVisibility(View.VISIBLE);
+                    holder.vmeasure2sel.setVisibility(View.VISIBLE);
                 }
                 ((TextView) parent.getChildAt(0)).setText(app.getDataManager().getCostenterDescription(cc.getId()));
             }
@@ -268,6 +298,7 @@ public class TransactionsEditActivity extends Activity {
         holder.vaccountsel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG,"--- account changed ---");
                 Account account = (Account) holder.vaccountsel.getItemAtPosition(position);
                 holder.vaccountsel_id = account.getId();
                 toggle_account(account);
@@ -314,13 +345,7 @@ public class TransactionsEditActivity extends Activity {
             }
         });
 
-        // Currency conversion ?
-        Account account = null;
-        if (holder.vaccountsel_id > 0) {
-            account = app.getDataManager().getAccountById(holder.vaccountsel_id);
-        }
-        toggle_account(account);
-        calcCurrencyConversion(holder.vamount.getText().toString());
+
 
         if (isupdate) {
             setTitle(getResources().getString(R.string.transactions_title_edit));
@@ -337,45 +362,66 @@ public class TransactionsEditActivity extends Activity {
      * @param account
      */
     private void toggle_account(Account account) {
-        String symbol = app.getCurrencySymbol();
         calccurrency = false;
         calccurrencyrate = BigDecimal.ONE;
+        Log.d(TAG,"->" + account);
         if (account==null) {
             holder.vcurrency.setVisibility(View.GONE);
+            holder.vcurrency_symbol.setText(app.getCurrencySymbol());
         } else {
-            if (account.isOtherCurrency()) {
-                holder.vcurrency.setVisibility(View.VISIBLE);
+            Measure measure = app.getDataManager().getMeasureById(account.getMeasure_id());
+            holder.vcurrency_symbol.setText(measure.getNameshort());
+            if (account.getActype() != Account.TYPE_COUNTER && account.getMeasure_id() != app.getCurrencySymbolId()) {
                 calccurrency = true;
-                calccurrencyrate = account.getCurrencyrate();
-                symbol = account.getCurrencyname();
+                calccurrencyrate = measure.getCost_per_measure();
+            }
+            if (calccurrency) {
+                holder.vcurrency.setVisibility(View.VISIBLE);
             } else {
                 holder.vcurrency.setVisibility(View.GONE);
             }
+
+            // Default costcenter on account
+            Log.d(TAG,"holder=" + holder.vcostcenter_id + " account=" + account.getCostcenter_id());
+            if (holder.vcostcenter_id==0 && account.getCostcenter_id() > 0) {
+                holder.vcostcenter_id = account.getCostcenter_id();
+                holder.vcostcentersel.setSelection(app.getDataManager().getPositionInList((List<BaseModel>) (List) costcenterList, holder.vcostcenter_id));
+            }
+
         }
-        holder.vcurrency_symbol.setText(symbol);
+        calcCurrencyConversion();
+    }
+
+    /**
+     * Reset when costcenter changed
+     * @param costcenter
+     */
+    private void toggle_costcenter(Costcenter costcenter) {
+
     }
 
     /**
      * Convert amount to local currency
-     * @param scamount
      */
-    private void calcCurrencyConversion(String scamount) {
+    private void calcCurrencyConversion() {
+
+        BigDecimal amount = BigDecimal.ZERO;
+        if (holder.vamount.getText().length()>0) {
+            boolean negatif = holder.vpm.isChecked();
+            amount = lu.crghost.cralib3.tools.Formats.parseDecimal(holder.vamount.getText().toString(),2);
+            if (negatif && amount.compareTo(BigDecimal.ZERO) > 0) {
+                amount = amount.negate();
+            }
+            if (!negatif && amount.compareTo(BigDecimal.ZERO) < 0) {
+                amount = amount.negate();
+            }
+        }
+
         if (!calccurrency) {
             holder.vcurrency.setText("");
         } else {
-            BigDecimal amount = BigDecimal.ZERO;
-            if (scamount!=null) {
-                boolean negatif = holder.vpm.isChecked();
-                amount = lu.crghost.cralib3.tools.Formats.parseDecimal(holder.vamount.getText().toString(),2);
-                if (negatif && amount.compareTo(BigDecimal.ZERO) > 0) {
-                    amount = amount.negate();
-                }
-                if (!negatif && amount.compareTo(BigDecimal.ZERO) < 0) {
-                    amount = amount.negate();
-                }
-                amount = amount.divide(calccurrencyrate, 2, BigDecimal.ROUND_HALF_UP);
-            }
-            holder.vcurrency.setText("= " + MyFormats.formatDecimal(amount,2) + app.getPrefs().getString("currency","?"));
+            amount = amount.divide(calccurrencyrate, 2, BigDecimal.ROUND_HALF_UP);
+            holder.vcurrency.setText("= " + MyFormats.formatDecimal(amount,2) + app.getCurrencySymbol());
         }
     }
 
@@ -456,7 +502,7 @@ public class TransactionsEditActivity extends Activity {
         if (!isupdate) {
             MenuItem mnudel = menu.findItem(R.id.action_delete);
             mnudel.setVisible(false);
-            invalidateOptionsMenu();
+            //invalidateOptionsMenu(); STACKOVERFLOW because it calls onCreateOptionsMenu again
         }
         return true;
     }
@@ -479,7 +525,7 @@ public class TransactionsEditActivity extends Activity {
                     amount = amount.negate();
                 }
                 transaction.setAmount(amount);
-                transaction.setAmountbase(BigDecimal.ZERO);
+                transaction.setAmountbase(amount);
                 if (calccurrency) {
                     transaction.setAmountbase(amount.divide(calccurrencyrate, 2, BigDecimal.ROUND_HALF_UP));
                 }
@@ -493,27 +539,18 @@ public class TransactionsEditActivity extends Activity {
                 }
                 transaction.setDateAmount_at(amount_at);
 
-                // Localisation
-                BigDecimal longitude = BigDecimal.ZERO;
-                BigDecimal latitude  = BigDecimal.ZERO;
-                BigDecimal altitude  = BigDecimal.ZERO;
-                if (usegps) {
-                    Location location = app.getLastKnownLocation();
-                    longitude = new BigDecimal(Double.toString(location.getLongitude()));
-                    latitude = new BigDecimal(Double.toString(location.getLatitude()));
-                    altitude = new BigDecimal(Double.toString(location.getAltitude()));
-                }
+                // Localisation is set in moveMarker()
 
                 // create or update debtor ?
                 if (holder.vdebtor_id > 0) {
                     if (holder.vdebtor.getText().toString().length() > 0) {
                         Debtor debtor = app.getDataManager().getDebtortById(holder.vdebtor_id);
                         if (debtor!=null && !debtor.getName().equals(holder.vdebtor.getText().toString())) {
-                            holder.vdebtor_id = createDebtor(holder.vdebtor.getText().toString(), longitude, latitude, altitude);
+                            holder.vdebtor_id = createDebtor(holder.vdebtor.getText().toString(), transaction.getLongitude(), transaction.getLatitude(), transaction.getAltitude());
                         }
                     }
                 } else if (holder.vdebtor.getText().toString().length() > 0) {
-                    holder.vdebtor_id = createDebtor(holder.vdebtor.getText().toString(), longitude, latitude, altitude);
+                    holder.vdebtor_id = createDebtor(holder.vdebtor.getText().toString(), transaction.getLongitude(), transaction.getLatitude(), transaction.getAltitude());
                 }
                 transaction.setDebtor_id(holder.vdebtor_id);
                 transaction.setCostcenter_id(holder.vcostcenter_id);
@@ -522,9 +559,6 @@ public class TransactionsEditActivity extends Activity {
                 transaction.setMeasure1(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.vmeasure1.getText().toString(),2));
                 transaction.setMeasure2_id(holder.vmeasure2sel_id);
                 transaction.setMeasure2(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.vmeasure2.getText().toString(),2));
-                transaction.setLongitude(longitude);
-                transaction.setLatitude(latitude);
-                transaction.setAltitude(altitude);
 
                 if (isupdate)   app.getDataManager().updateTransaction(transaction);
                 else            app.getDataManager().insertTransaction(transaction);
@@ -579,6 +613,71 @@ public class TransactionsEditActivity extends Activity {
         debtor.setLatitude(latitude);
         debtor.setAltitude(altitude);
         return app.getDataManager().insertDebtor(debtor);
+    }
+
+    /**
+     * Google map is loaded
+     * @param googleMap
+     */
+    @Override
+    public void onMapReady(final GoogleMap googleMap) {
+
+        // configuration of map
+        googleMap.setMyLocationEnabled(true);
+        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                moveMarker(latLng);
+            }
+        });
+
+        if (transaction.getLatLng()==null) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(app.getLastKnownLatLng(), 15));
+        } else {
+            // Move the camera instantly to debtor with a zoom of 15.
+            moveMarker(transaction.getLatLng());
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(transaction.getLatLng(), 15));
+        }
+
+        // Zoom in, animating the camera.
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+    }
+
+    /**
+     * Set location and move marker
+     * @param latLng
+     */
+    private void moveMarker(LatLng latLng) {
+        Log.d(TAG,"--marker moved to " + latLng);
+        transaction.setLatLng(latLng);
+        if (trans_marker==null) {
+            trans_marker = holder.map.getMap().addMarker(new MarkerOptions()
+                    .position(transaction.getLatLng())
+                    .title(transaction.getDescription())
+                    .snippet(holder.vamount.getText() + holder.vcurrency_symbol.getText().toString())
+            );
+        } else {
+            trans_marker.setPosition(latLng);
+        }
+    }
+
+
+    /**
+     * @return screen size int[width, height]
+     *
+     * */
+    public int getScreenWidth(){
+        Point size = new Point();
+        WindowManager w = getWindowManager();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
+            w.getDefaultDisplay().getSize(size);
+            return size.x;
+        }else{
+            Display d = w.getDefaultDisplay();
+            //noinspection deprecation
+            return d.getWidth();
+        }
     }
 
 }

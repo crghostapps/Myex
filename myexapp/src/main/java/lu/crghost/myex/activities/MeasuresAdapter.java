@@ -48,7 +48,7 @@ public class MeasuresAdapter extends ArrayAdapter<Measure> {
         if (measure.getCost_per_measure()==null || measure.getCost_per_measure().compareTo(BigDecimal.ZERO)==0) {
             holder.measure_nameshort.setText(measure.getNameshort());
         } else {
-            holder.measure_nameshort.setText(lu.crghost.cralib3.tools.Formats.formatDecimal(measure.getCost_per_measure(),2) + "/" + measure.getNameshort() );
+            holder.measure_nameshort.setText(lu.crghost.cralib3.tools.Formats.formatDecimal(measure.getCost_per_measure(),Measure.DECIMALS) + "/" + measure.getNameshort() );
         }
         return listItem;
     }

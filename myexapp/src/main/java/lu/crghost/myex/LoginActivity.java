@@ -68,6 +68,8 @@ public class LoginActivity extends Activity {
             editor.putBoolean("firstlogin", false);
             editor.putBoolean("checkpass", chkBoxpass.isChecked());
             editor.putString("dbpassword", StringEncoder.encode(this, txtpass.getText().toString()));
+            editor.putString("currency","€");
+            editor.putLong("currency_id",1);
             editor.commit();
 
             MyExApp app = (MyExApp) getApplication();

@@ -47,7 +47,11 @@ public class Debtor extends BaseModel implements BaseModelInterface {
     private BigDecimal longitude;
     private BigDecimal altitude;
 
-    public Debtor() {};
+    public Debtor() {
+        setLatitude(0d);
+        setLongitude(0d);
+        setAltitude(0d);
+    };
     public Debtor(ContentValues c) { setValues(c); }
     public Debtor(Cursor c) { setValues(c); }
 
@@ -164,12 +168,19 @@ public class Debtor extends BaseModel implements BaseModelInterface {
     }
 
     public LatLng getLatLng() {
+        if (getLatitude()==null || getLongitude()==null) {
+            return null;
+        }
+        if (getLatitude().doubleValue()==0 || getLongitude().doubleValue()==0) {
+            return null;
+        }
         return new LatLng(getLatitude().doubleValue(), getLongitude().doubleValue());
     }
 
     public void setLatLng(LatLng latLng) {
         setLatitude(latLng.latitude);
         setLongitude(latLng.longitude);
+        setAltitude(0d);
     }
 
     /*******************************************************************************************************************

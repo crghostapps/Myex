@@ -95,7 +95,7 @@ public class TransactionsAdapter extends SimpleCursorAdapter {
                     if (measure != null) {
                         if (measure.isCurrency()) {
                             last_symbol = app.getCurrencySymbol();
-                            if (account.isOtherCurrency()) last_symbol = account.getCurrencyname();
+                            //if (account.isOtherCurrency()) last_symbol = account.getCurrencyname();
                         } else {
                             last_symbol = measure.getNameshort();
                         }

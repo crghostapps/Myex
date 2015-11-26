@@ -100,7 +100,7 @@ public class DaoDebtor implements DbDao<Debtor> {
      */
     public BigDecimal getTotalAmount(long id) {
         BigDecimal sum = BigDecimal.ZERO;
-        Cursor c = db.rawQuery("select sum(amount) as sumamount from transactions where debtor_id=?",new String[]{Long.toString(id)});
+        Cursor c = db.rawQuery("select sum(amountbase) as sumamount from transactions where debtor_id=?",new String[]{Long.toString(id)});
         if (c.moveToFirst()) {
             sum = new BigDecimal(Double.toString(c.getDouble(0)));
         }

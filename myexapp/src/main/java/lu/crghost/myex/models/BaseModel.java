@@ -95,5 +95,20 @@ public class BaseModel {
         return true;
     }
 
+    /**
+     *
+     * @param i
+     * @return
+     */
+    public static boolean toBoolean(int i) {
+        if (i==1) return true;
+        return false;
+    }
+
+    public static int toInt(boolean b) {
+        if (b) return 1;
+        else return 0;
+    }
+
 
 }

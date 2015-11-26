@@ -141,7 +141,7 @@ public class CostcentersEditActivity extends Activity {
 
         // fill measure spinner
         measureList = app.getDataManager().getMeasuresForSpinner(true,null);
-        SimpleMeasureAdapter measureArrayAdapter = new SimpleMeasureAdapter(this,measureList);
+        SimpleMeasureAdapter measureArrayAdapter = new SimpleMeasureAdapter(this,measureList, SimpleMeasureAdapter.SHOW_NAME_LONG);
         measureArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.cmeasure1.setAdapter(measureArrayAdapter);
         int mpos1 = app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList, holder.cmeasure1_selected_id );
@@ -184,7 +184,7 @@ public class CostcentersEditActivity extends Activity {
         if (!isupdate) {
             MenuItem mnudel = menu.findItem(R.id.action_delete);
             mnudel.setVisible(false);
-            invalidateOptionsMenu();
+            //invalidateOptionsMenu(); STACKOVERFLOW because it calls onCreateOptionsMenu again
         }
         return true;
     }

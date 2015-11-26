@@ -22,11 +22,17 @@ public class Measure extends BaseModel implements BaseModelInterface {
 
     public static final String TABLE_NAME = "measures";
 
+    public static final int TYPE_DEFAULT_CURRENCY = 0;
+    public static final int TYPE_FOREIGN_CURRENCY = 1;
+    public static final int TYPE_COUNTER = 3;
+    public static final int DECIMALS = 6;
+
     public static final String TABLE_SQLCRE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" (" +
             _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             " name TEXT NULL ,"+
             " nameshort TEXT," +
-            " cost_per_measure NUMERIC," +
+            " cost_per_measure DECIMAL(10,6)," +
+            " mtype INT," +
             " created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
             " updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );";
 
@@ -35,19 +41,24 @@ public class Measure extends BaseModel implements BaseModelInterface {
             "name",
             "nameshort",
             "cost_per_measure",
+            "mtype",
             "created_at",
             "updated_at"
     };
-    public static final String SORT_ORDER = "name";
+    public static final String SORT_ORDER = "mtype, name";
 
     private String name;
     private String nameshort;
     private BigDecimal cost_per_measure;
+    private int mctype;
 
     /**
      * Initiate empty model
      */
-    public Measure() {}
+    public Measure() {
+        setCost_per_measure(0d);
+        setMctype(0);
+    }
 
     /**
      * Initiate from content values
@@ -91,6 +102,7 @@ public class Measure extends BaseModel implements BaseModelInterface {
         c.put("name",getName());
         c.put("nameshort",getNameshort());
         c.put("cost_per_measure", getCost_per_measure().doubleValue());
+        c.put("mtype", getMctype());
         c.put("created_at",getCreated_at());
         c.put("updated_at",getUpdated_at());
         return c;
@@ -101,6 +113,7 @@ public class Measure extends BaseModel implements BaseModelInterface {
         setName(c.getAsString("name"));
         setNameshort(c.getAsString("nameshort"));
         setCost_per_measure(c.getAsDouble("cost_per_measure"));
+        setMctype(c.getAsInteger("mtype"));
     }
 
     @Override
@@ -151,18 +164,16 @@ public class Measure extends BaseModel implements BaseModelInterface {
         this.cost_per_measure = cost_per_measure;
     }
 
-
-    /**
-     * Used in dropdown lists
-     * @return
-     */
-    @Override
-    //public String toString() {
-    //    return "Measure [id="+this.getId()+ " " + getName() +"]";
-    //}
-    public String toString() {
-        return getName();
+    public int getMctype() {
+        return mctype;
     }
+
+    public void setMctype(int mctype) {
+        this.mctype = mctype;
+    }
+
+
+
 
     /*******************************************************************************************************************
      * Overrides
@@ -198,5 +209,16 @@ public class Measure extends BaseModel implements BaseModelInterface {
         return true;
     }
 
+    /**
+     * Used in dropdown lists
+     * @return
+     */
+    @Override
+    //public String toString() {
+    //    return "Measure [id="+this.getId()+ " " + getName() +"]";
+    //}
+    public String toString() {
+        return getName();
+    }
 
 }

@@ -38,8 +38,6 @@ public class DebtorsEditActivity extends Activity implements OnMapReadyCallback 
     String debtor_amount;
     Marker debtor_marker;
 
-
-
     static class ViewHolder {
         public EditText name;
         public MapFragment map;
@@ -54,7 +52,6 @@ public class DebtorsEditActivity extends Activity implements OnMapReadyCallback 
         holder = new ViewHolder();
         holder.name = (EditText) findViewById(R.id.debtors_name);
         holder.map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map));
-        holder.map.getMapAsync(this);
 
         app = (MyExApp) getApplication();
 
@@ -80,6 +77,8 @@ public class DebtorsEditActivity extends Activity implements OnMapReadyCallback 
             setTitle(getResources().getString(R.string.debtors_title_new));
         }
 
+        holder.map.getMapAsync(this);
+
     }
 
 
@@ -92,7 +91,7 @@ public class DebtorsEditActivity extends Activity implements OnMapReadyCallback 
         if (!isupdate) {
             MenuItem mnudel = menu.findItem(R.id.action_delete);
             mnudel.setVisible(false);
-            invalidateOptionsMenu();
+            //invalidateOptionsMenu(); STACKOVERFLOW because it calls onCreateOptionsMenu again
         }
 
         return true;
@@ -156,27 +155,38 @@ public class DebtorsEditActivity extends Activity implements OnMapReadyCallback 
         googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                debtor.setLatLng(latLng);
                 moveMarker(latLng);
             }
         });
 
-        debtor_marker = holder.map.getMap().addMarker(new MarkerOptions()
-                .position(debtor.getLatLng())
-                .title(debtor.getName())
-                .snippet(debtor_amount)
-        );
-
-        // Move the camera instantly to debtor with a zoom of 15.
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(debtor.getLatLng(), 15));
+        if (debtor.getLatLng()==null) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(app.getLastKnownLatLng(), 15));
+        } else {
+            // Move the camera instantly to debtor with a zoom of 15.
+            moveMarker(debtor.getLatLng());
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(debtor.getLatLng(), 15));
+        }
 
         // Zoom in, animating the camera.
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
     }
 
+    /**
+     * Set location and move marker
+     * @param latLng
+     */
     private void moveMarker(LatLng latLng) {
+        Log.d(TAG,"--marker moved to " + latLng);
         debtor.setLatLng(latLng);
-        debtor_marker.setPosition(latLng);
+        if (debtor_marker==null) {
+            debtor_marker = holder.map.getMap().addMarker(new MarkerOptions()
+                    .position(debtor.getLatLng())
+                    .title(debtor.getName())
+                    .snippet(debtor_amount)
+            );
+        } else {
+            debtor_marker.setPosition(latLng);
+        }
     }
 
 }

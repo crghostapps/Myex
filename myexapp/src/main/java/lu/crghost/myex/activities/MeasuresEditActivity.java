@@ -3,14 +3,18 @@ package lu.crghost.myex.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.*;
+import lu.crghost.cralib3.security.StringEncoder;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
 import lu.crghost.myex.models.Measure;
+import lu.crghost.myex.models.MeasureTypes;
 import lu.crghost.myex.tools.MyFormats;
 
 /**
@@ -27,6 +31,8 @@ public class MeasuresEditActivity extends Activity {
     static class ViewHolder {
         public EditText name;
         public EditText nameShort;
+        public Spinner mtype;
+        public long mtype_selected_id;
         public EditText cost;
     }
     ViewHolder holder;
@@ -39,6 +45,8 @@ public class MeasuresEditActivity extends Activity {
         holder = new ViewHolder();
         holder.name = (EditText) findViewById(R.id.measures_name);
         holder.nameShort = (EditText) findViewById(R.id.measures_nameshort);
+        holder.mtype = (Spinner) findViewById(R.id.measures_type);
+        holder.mtype_selected_id = 0;
         holder.cost = (EditText) findViewById(R.id.measures_cost);
 
         app = (MyExApp) getApplication();
@@ -55,7 +63,8 @@ public class MeasuresEditActivity extends Activity {
             } else {
                 holder.name.setText(measure.getName());
                 holder.nameShort.setText(measure.getNameshort());
-                holder.cost.setText(MyFormats.formatDecimal(measure.getCost_per_measure(), 2));
+                holder.mtype_selected_id = measure.getMctype();
+                holder.cost.setText(MyFormats.formatDecimal(measure.getCost_per_measure(), Measure.DECIMALS));
             }
         }
 
@@ -64,6 +73,33 @@ public class MeasuresEditActivity extends Activity {
         } else {
             setTitle(getResources().getString(R.string.measures_new));
         }
+
+        //Log.d(TAG,"---->" + measure.getCost_per_measure());
+
+        // fill mtype spinner
+        ArrayAdapter<MeasureTypes.MeasureType> measureTypeArrayAdapter = new ArrayAdapter<MeasureTypes.MeasureType>(this,android.R.layout.simple_spinner_item, MeasureTypes.MTYPES);
+        measureTypeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        holder.mtype.setAdapter(measureTypeArrayAdapter);
+        holder.mtype.setSelection((int) holder.mtype_selected_id);
+        holder.mtype.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String sid = MeasureTypes.MTYPES.get(position).id;
+                holder.mtype_selected_id = 0;
+                if (sid != null) {
+                    try {
+                        holder.mtype_selected_id = Long.parseLong(sid);
+                    } catch (NumberFormatException e) {
+                        Log.e(TAG, "Invalid number " + sid);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
 
@@ -74,7 +110,7 @@ public class MeasuresEditActivity extends Activity {
         if (!isupdate) {
             MenuItem mnudel = menu.findItem(R.id.action_delete);
             mnudel.setVisible(false);
-            invalidateOptionsMenu();
+            //invalidateOptionsMenu(); STACKOVERFLOW because it calls onCreateOptionsMenu again
         }
         return true;
     }
@@ -93,10 +129,23 @@ public class MeasuresEditActivity extends Activity {
                     holder.nameShort.setError(getResources().getString(R.string.measures_name_error));
                     return false;
                 }
-                measure.setCost_per_measure(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.cost.getText().toString(),2));
 
+                // @TODO verivy unicity of default currency
+
+                measure.setMctype((int) holder.mtype_selected_id);
+                measure.setCost_per_measure(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.cost.getText().toString(),Measure.DECIMALS));
+                //Log.d(TAG,"update---->" + measure.getCost_per_measure() + "double=" + measure.getCost_per_measure().doubleValue());
                 if (isupdate) app.getDataManager().updateMeasure(measure);
                 else app.getDataManager().insertMeasure(measure);
+
+                // Update preferences for default currency symbol
+                if (measure.getMctype()==Measure.TYPE_DEFAULT_CURRENCY) {
+                    SharedPreferences.Editor editor = app.getPrefs().edit();
+                    editor.putString("currency", measure.getNameshort());
+                    editor.putLong("currency_id", measure.getId());
+                    editor.commit();
+                }
+
                 setResult(RESULT_OK);
                 finish();
                 return true;

@@ -54,20 +54,10 @@ public class AccountsAdapter extends ArrayAdapter<Account> {
         holder.account_name.setText(account.getAcname());
         holder.account_name.setTextColor(Color.BLACK);
 
-        int maxcre = (int) app.getDataManager().getAccountMaxBalance(account);
+        //int maxcre = (int) app.getDataManager().getAccountMaxBalance(account);
         double balance = app.getDataManager().getAccountBalance(account);
-
-        holder.progressBar.setMax(maxcre);
-        String symbol = "";
-        if (account.getActype() >= Account.TYPE_COUNTER) {
-            Measure measure = app.getDataManager().getMeasureById(account.getMeasure_id());
-            if (measure != null) symbol = measure.getNameshort();
-        } else if (account.isOtherCurrency()) {
-            symbol = account.getCurrencyname();
-        } else {
-            symbol = app.getCurrencySymbol();
-        }
-        holder.account_amount.setText(MyFormats.formatDouble(balance,2) + symbol);
+        Measure measure = app.getDataManager().getMeasureById(account.getMeasure_id());
+        holder.account_amount.setText(MyFormats.formatDouble(balance,2) + measure.getNameshort());
 
         boolean isred = false;
         if (balance<0) {

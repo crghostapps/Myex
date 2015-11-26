@@ -5,6 +5,8 @@
      Hidden preferences
      firstlogin         true/false
      dbpassword         encoded string
+     currency           default currency symbol
+     currency_id        default currencies measure_id
      -->
 
     <EditTextPreference
@@ -17,12 +19,6 @@
             android:title="@string/pref_email"
             android:summary="@string/pref_email_long"
             android:inputType="textEmailAddress"
-            />
-    <EditTextPreference
-            android:key="currency"
-            android:title="@string/pref_currency"
-            android:inputType="text"
-            android:defaultValue="@string/currencydefault"
             />
     <CheckBoxPreference
             android:key="localisation"

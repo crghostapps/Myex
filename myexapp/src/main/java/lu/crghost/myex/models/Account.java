@@ -32,8 +32,7 @@ public class Account extends BaseModel implements BaseModelInterface {
             "  initbalance NUMERIC, " +
             "  limitamount NUMERIC," +
             "  measure_id INTEGER," +
-            "  currencyrate NUMERIC," +
-            "  currencyname TEXT NULL," +
+            "  costcenter_id INTEGER," +
             "  created_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) ,"+
             "  updated_at TEXT DEFAULT (datetime(current_timestamp,'localtime')) );"
             ;
@@ -46,8 +45,7 @@ public class Account extends BaseModel implements BaseModelInterface {
             "initbalance",
             "limitamount",
             "measure_id",
-            "currencyrate",
-            "currencyname",
+            "costcenter_id",
             "created_at",
             "updated_at"
     };
@@ -65,12 +63,14 @@ public class Account extends BaseModel implements BaseModelInterface {
     private BigDecimal initbalance;
     private BigDecimal limitamount;
     private long measure_id;
-    private BigDecimal currencyrate;
-    private String currencyname;
+    private long costcenter_id;
     /**
      * Initiate empty model
      */
-    public Account() {}
+    public Account() {
+        setInitbalance(0d);
+        setLimitamount(0d);
+    }
 
     /**
      * Initiate from content values
@@ -117,8 +117,7 @@ public class Account extends BaseModel implements BaseModelInterface {
         c.put("initbalance", getInitbalance().doubleValue());
         c.put("limitamount", getLimitamount().doubleValue());
         c.put("measure_id", getMeasure_id());
-        c.put("currencyrate", getCurrencyrate().doubleValue());
-        c.put("currencyname", getCurrencyname());
+        c.put("costcenter_id", getCostcenter_id());
         c.put("created_at", getCreated_at());
         c.put("updated_at", getUpdated_at());
         return c;
@@ -131,10 +130,9 @@ public class Account extends BaseModel implements BaseModelInterface {
         setActype(c.getAsInteger("actype"));
         setIconpath(c.getAsString("iconpath"));
         setMeasure_id(c.getAsLong("measure_id"));
+        setCostcenter_id(c.getAsLong("costcenter_id"));
         setInitbalance(c.getAsDouble("initbalance"));
         setLimitamount(c.getAsDouble("limitamount"));
-        setCurrencyrate(c.getAsDouble("currencyrate"));
-        setCurrencyname(c.getAsString("currencyname"));
     }
 
     @Override
@@ -217,32 +215,15 @@ public class Account extends BaseModel implements BaseModelInterface {
         else this.measure_id = measure_id;
     }
 
-    public BigDecimal getCurrencyrate() {
-        return currencyrate;
+    public long getCostcenter_id() {
+        return costcenter_id;
     }
 
-    public void setCurrencyrate(BigDecimal currencyrate) {
-        this.currencyrate = currencyrate;
-    }
-    public void setCurrencyrate(Double currencyrate) {
-        if (currencyrate==null) this.currencyrate = BigDecimal.ZERO;
-        else this.currencyrate = new BigDecimal(currencyrate.doubleValue());
+    public void setCostcenter_id(long costcenter_id) {
+        this.costcenter_id = costcenter_id;
     }
 
-    public String getCurrencyname() {
-        return currencyname;
-    }
 
-    public void setCurrencyname(String currencyname) {
-        this.currencyname = currencyname;
-    }
-
-    public boolean isOtherCurrency()  {
-        if (this.getCurrencyname()!=null && this.getCurrencyname().length() > 0 && this.getCurrencyrate().compareTo(BigDecimal.ZERO) > 0){
-            return true;
-        }
-        return false;
-    }
     /*******************************************************************************************************************
      * Overrides
      *******************************************************************************************************************/

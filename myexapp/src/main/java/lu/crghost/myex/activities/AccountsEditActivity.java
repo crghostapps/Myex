@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.*;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
+import lu.crghost.myex.dao.DataManager;
 import lu.crghost.myex.models.*;
 import lu.crghost.myex.tools.SimpleMeasureAdapter;
 
@@ -28,6 +29,7 @@ public class AccountsEditActivity extends Activity {
     private boolean isupdate;
     private Account account;
     private List<Measure> measures;
+    private List<Costcenter> costcenterList;
 
     static class ViewHolder {
         public EditText aname;
@@ -38,9 +40,8 @@ public class AccountsEditActivity extends Activity {
         public EditText alimitamount;
         public Spinner ameasure;
         public long ameasure_selected_id;
-        public TextView currencybase;
-        public EditText currencyrate;
-        public EditText currencyname;
+        public Spinner acostcentersel;
+        public long acostcenter_id;
     }
     ViewHolder holder;
 
@@ -48,6 +49,7 @@ public class AccountsEditActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accounts_edit);
+        Log.d(TAG,"- on create");
 
         holder = new ViewHolder();
         holder.aname = (EditText) findViewById(R.id.account_name);
@@ -58,9 +60,8 @@ public class AccountsEditActivity extends Activity {
         holder.alimitamount = (EditText) findViewById(R.id.account_limitamount);
         holder.ameasure = (Spinner) findViewById(R.id.account_measure);
         holder.ameasure_selected_id = 1;
-        holder.currencybase = (TextView) findViewById(R.id.account_currencybase);
-        holder.currencyname = (EditText) findViewById(R.id.account_currencyname);
-        holder.currencyrate = (EditText) findViewById(R.id.account_currencyrate);
+        holder.acostcentersel = (Spinner) findViewById(R.id.account_costcenter);
+        holder.acostcenter_id = 0;
 
         app = (MyExApp) getApplication();
 
@@ -80,12 +81,10 @@ public class AccountsEditActivity extends Activity {
                 holder.ainitbalance.setText(lu.crghost.cralib3.tools.Formats.formatDecimal(account.getInitbalance(),2));
                 holder.alimitamount.setText(lu.crghost.cralib3.tools.Formats.formatDecimal(account.getLimitamount(),2));
                 holder.ameasure_selected_id = account.getMeasure_id();
-                holder.currencyname.setText(account.getCurrencyname());
-                holder.currencyrate.setText(lu.crghost.cralib3.tools.Formats.formatDecimal(account.getCurrencyrate(),5));
+                holder.acostcenter_id = account.getCostcenter_id();
             }
 
         }
-        holder.currencybase.setText(getResources().getString(R.string.account_currency) + " 1" + app.getCurrencySymbol() + " =");
 
         if (isupdate) {
             setTitle(getResources().getString(R.string.accounts_title_edit));
@@ -120,7 +119,7 @@ public class AccountsEditActivity extends Activity {
 
         // fill measure spinner
         List<Measure> measureList = app.getDataManager().getMeasuresForSpinner(false,null);
-        SimpleMeasureAdapter measureArrayAdapter = new SimpleMeasureAdapter(this,measureList);
+        SimpleMeasureAdapter measureArrayAdapter = new SimpleMeasureAdapter(this,measureList, SimpleMeasureAdapter.SHOW_NAME_LONG);
         measureArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.ameasure.setAdapter(measureArrayAdapter);
         int mpos1 = app.getDataManager().getPositionInList((List<BaseModel>) (List) measureList, holder.ameasure_selected_id );
@@ -137,18 +136,40 @@ public class AccountsEditActivity extends Activity {
             }
         });
 
+        // Costcenter spinner
+        costcenterList = app.getDataManager().getCostcentersForSpinner(null,DataManager.COSTCENTERTYPE_ALL);
+        CostcenterAdapter costcenterAdapter = new CostcenterAdapter(this,costcenterList);
+        costcenterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        holder.acostcentersel.setAdapter(costcenterAdapter);
+        int cpos = app.getDataManager().getPositionInList( (List<BaseModel>) (List) costcenterList,holder.acostcenter_id);
+        holder.acostcentersel.setSelection(cpos);
+        holder.acostcentersel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Costcenter cc = (Costcenter) holder.acostcentersel.getItemAtPosition(position);
+                holder.acostcenter_id = cc.getId();
+                ((TextView) parent.getChildAt(0)).setText(app.getDataManager().getCostenterDescription(cc.getId()));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG,"- onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.menu_accounts_edit, menu);
 
         // Hide delete
         if (!isupdate) {
             MenuItem mnudel = menu.findItem(R.id.action_delete);
             mnudel.setVisible(false);
-            invalidateOptionsMenu();
+            //invalidateOptionsMenu(); STACKOVERFLOW because it calls onCreateOptionsMenu again
         }
 
         return true;
@@ -167,10 +188,8 @@ public class AccountsEditActivity extends Activity {
                 account.setActype((int) holder.atype_selected_id);
                 account.setInitbalance(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.ainitbalance.getText().toString(),2));
                 account.setLimitamount(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.alimitamount.getText().toString(),2));
-                if (account.getActype() < Account.TYPE_COUNTER) holder.ameasure_selected_id = 1;
                 account.setMeasure_id(holder.ameasure_selected_id);
-                account.setCurrencyrate(lu.crghost.cralib3.tools.Formats.parseDecimal(holder.currencyrate.getText().toString(),5));
-                account.setCurrencyname(holder.currencyname.getText().toString());
+                account.setCostcenter_id(holder.acostcenter_id);
 
                 if (isupdate)   app.getDataManager().updateAccount(account);
                 else            app.getDataManager().insertAccount(account);
