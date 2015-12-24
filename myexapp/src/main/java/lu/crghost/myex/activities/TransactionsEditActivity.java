@@ -154,7 +154,7 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
         // Load map
         usegps = app.getPrefs().getBoolean("localisation",false);
         if (usegps){
-            app.refreshLocation();
+            //app.refreshLocation();
             holder.map.getView().setVisibility(View.VISIBLE);
             holder.map.getMapAsync(this);
         } else {
@@ -371,9 +371,10 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
         } else {
             Measure measure = app.getDataManager().getMeasureById(account.getMeasure_id());
             holder.vcurrency_symbol.setText(measure.getNameshort());
-            if (account.getActype() != Account.TYPE_COUNTER && account.getMeasure_id() != app.getCurrencySymbolId()) {
+            if (measure.getMctype()==Measure.TYPE_FOREIGN_CURRENCY ) {
                 calccurrency = true;
                 calccurrencyrate = measure.getCost_per_measure();
+                if (calccurrencyrate.doubleValue()==0) calccurrencyrate = BigDecimal.ONE;
             }
             if (calccurrency) {
                 holder.vcurrency.setVisibility(View.VISIBLE);

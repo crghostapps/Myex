@@ -111,7 +111,8 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
             selected_costcenterid = null;
             selected_debtorid     = null;
             selected_description  = null;
-            String message        = findNearBy(selected_account);
+            String message        = null;
+            if (usegps) message        = findNearBy(selected_account);
             if (message==null) {
                 mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), String.valueOf(selected_account.getCostcenter_id()), null, null);
             } else {

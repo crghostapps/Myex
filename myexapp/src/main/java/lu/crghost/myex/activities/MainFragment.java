@@ -90,7 +90,7 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
     @Override
     protected void onResume() {
         super.onResume();
-        if (app!=null) app.refreshLocation();
+        //if (app!=null) app.refreshLocation();
     }
 
     @Override
