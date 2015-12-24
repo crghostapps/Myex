@@ -1,10 +1,14 @@
 package lu.crghost.myex.activities;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
@@ -12,6 +16,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.*;
 import android.widget.SearchView;
+import android.widget.TextView;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
 import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
@@ -152,6 +157,9 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
             case R.id.action_exit:
                 finish();
                 return true;
+            case R.id.action_about:
+                action_about();
+                return true;
             case R.id.action_settings:
                 Intent settings = new Intent(this,SettingsActivity.class);
                 startActivity(settings);
@@ -207,6 +215,33 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
         }
     }
 
+    /**
+     * Show about dialog
+     */
+    private void action_about() {
+        LayoutInflater li = LayoutInflater.from(this);
+        View prompt = li.inflate(R.layout.prompt_about, null);
+        TextView txtversion = (TextView) prompt.findViewById(R.id.txtVersion);
+        PackageInfo pinfo;
+        try {
+            pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            //int versionNumber = pinfo.versionCode;
+            txtversion.setText(pinfo.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            txtversion.setText("???");
+        }
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setView(prompt);
+        dialog.setTitle(getResources().getString(R.string.export_backup));
+        dialog.setIcon(android.R.drawable.ic_dialog_info);
+        dialog.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
