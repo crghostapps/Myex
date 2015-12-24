@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Myex.iml" filepath="$PROJECT_DIR$/Myex.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../CRalib3/lib/lib.iml" filepath="$PROJECT_DIR$/../CRalib3/lib/lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/myexapp/myexapp.iml" filepath="$PROJECT_DIR$/myexapp/myexapp.iml" />
     </modules>
   </component>
