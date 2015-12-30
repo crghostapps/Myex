@@ -111,6 +111,7 @@ public class MyExApp extends Application {
     }
 
     public Location getLastKnownLocation() {
+        Log.d(TAG,"------------------------------------ getLastKnownLocation");
         Location location = null;
         if (locationManager == null) locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {

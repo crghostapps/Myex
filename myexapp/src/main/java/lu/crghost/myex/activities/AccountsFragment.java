@@ -68,7 +68,7 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
         mAdapter = new AccountsAdapter(app,getActivity(),app.getDataManager().getAccounts(null,null));
 
         usegps = app.getPrefs().getBoolean("localisation",false);
-        if (usegps) app.refreshLocation();
+        //if (usegps) app.refreshLocation();
     }
 
     @Override
@@ -112,7 +112,7 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
             selected_debtorid     = null;
             selected_description  = null;
             String message        = null;
-            if (usegps) message        = findNearBy(selected_account);
+            //if (usegps) message   = findNearBy(selected_account);
             if (message==null) {
                 mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), String.valueOf(selected_account.getCostcenter_id()), null, null);
             } else {

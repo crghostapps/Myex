@@ -76,6 +76,7 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
         public EditText vmeasure2;
         public Spinner  vmeasure2sel;
         public long vmeasure2sel_id;
+        public ImageButton vbtnShowMap;
         public MapFragment map;
     }
     ViewHolder holder;
@@ -106,11 +107,14 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
         holder.vmeasure2 = (EditText) findViewById(R.id.transactions_measure2);
         holder.vmeasure2sel = (Spinner) findViewById(R.id.transactions_sel_measure2);
         holder.vmeasure2sel_id = 0;
+        holder.vbtnShowMap = (ImageButton) findViewById(R.id.btnShowMap);
 
+        // Prepare map
         holder.map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map));
         ViewGroup.LayoutParams maplp = holder.map.getView().getLayoutParams();
         maplp.height = getScreenWidth();
         holder.map.getView().setLayoutParams(maplp);
+        holder.map.getView().setVisibility(View.GONE);
 
         app = (MyExApp) getApplication();
 
@@ -148,19 +152,14 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
                 holder.vmeasure2sel_id = transaction.getMeasure2_id();
                 if (transaction.getDateAmount_at()!=null)
                     holder.vamountDate.setText(MyFormats.formatDateTime.format(transaction.getDateAmount_at()));
+                if (transaction.getLatLng() != null) {
+                    holder.map.getView().setVisibility(View.VISIBLE);
+                    holder.map.getMapAsync(this);
+                    holder.vbtnShowMap.setEnabled(false);
+                }
+
             }
         }
-
-        // Load map
-        usegps = app.getPrefs().getBoolean("localisation",false);
-        if (usegps){
-            //app.refreshLocation();
-            holder.map.getView().setVisibility(View.VISIBLE);
-            holder.map.getMapAsync(this);
-        } else {
-            holder.map.getView().setVisibility(View.GONE);
-        }
-
 
         // TextWatcher on amount to calculate currencies if needed
         holder.vamount.addTextChangedListener(new TextWatcher() {
@@ -481,6 +480,28 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
         startActivityForResult(costcenteredit, MainFragment.TABITEM_COSTCENTERS);
     }
 
+    /**
+     * Show map for localisation
+     * @param v
+     */
+    public void action_showmap(View v) {
+        holder.map.getView().setVisibility(View.VISIBLE);
+        holder.map.getMapAsync(this);
+        holder.vbtnShowMap.setEnabled(false);
+    }
+
+    /**
+     * Attach a new picture
+     * @param v
+     */
+    public void action_attachpicture(View v) {}
+
+    /**
+     * Attach a existing file
+     * @param v
+     */
+    public void action_attachfile(View v) {}
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode==RESULT_OK) {
@@ -638,10 +659,11 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
             // Move the camera instantly to debtor with a zoom of 15.
             moveMarker(transaction.getLatLng());
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(transaction.getLatLng(), 15));
+            // Zoom in, animating the camera.
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
         }
 
-        // Zoom in, animating the camera.
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+
     }
 
     /**

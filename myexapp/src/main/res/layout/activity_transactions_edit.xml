@@ -222,6 +222,31 @@
 
                 </RelativeLayout>
 
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+
+                        <ImageButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/btnShowMap"
+                                android:onClick="action_showmap"
+                                android:layout_centerVertical="true" android:src="@drawable/ic_action_location_2"/>
+                        <ImageButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/btnAttachPicture"
+                                android:onClick="action_attachpicture"
+                                android:layout_centerVertical="true" android:src="@drawable/ic_action_camera"/>
+                        <ImageButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/btnAttachFile"
+                                android:onClick="action_attachfile"
+                                android:layout_centerVertical="true" android:src="@drawable/ic_action_attachment_2"/>
+                </LinearLayout>
 
                 <fragment
                         android:layout_marginTop="10dp"
