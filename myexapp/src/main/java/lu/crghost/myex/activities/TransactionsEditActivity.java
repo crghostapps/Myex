@@ -51,10 +51,13 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
     private List<Measure> measureList;
     private List<Account> accountList;
     private List<Costcenter> costcenterList;
-    boolean usegps;
 
     private boolean calccurrency;
     private BigDecimal calccurrencyrate;
+
+    long nearby_debtorid;
+    long nearby_costcenterid;
+    String nearby_description;
 
     static class ViewHolder {
         public EditText vamount;
@@ -485,9 +488,82 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
      * @param v
      */
     public void action_showmap(View v) {
+
+        boolean usegrps = app.getPrefs().getBoolean("localisation", true);
+        if (!isupdate && usegrps) {
+            findNearBy();
+        }
         holder.map.getView().setVisibility(View.VISIBLE);
         holder.map.getMapAsync(this);
         holder.vbtnShowMap.setEnabled(false);
+    }
+
+    /**
+     * Find near by locations
+     */
+    private void findNearBy() {
+        String dlgmessage = null;
+        nearby_debtorid     = 0;
+        nearby_costcenterid = 0;
+        nearby_description  = null;
+        Location lastlocation = app.getLastKnownLocation();
+        Transaction near_transaction = null;
+        float distance_transaction = Float.MAX_VALUE;
+        List<Transaction> transactions = app.getDataManager().getTransactions("latitude <> 0 and longitude <> 0 and account_id=?",new String[] {String.valueOf(holder.vaccountsel_id)});
+        for (Transaction t : transactions) {
+            float distance = lastlocation.distanceTo(t.getLocation());
+            if (distance < distance_transaction) {
+                distance_transaction = distance;
+                near_transaction = t;
+            }
+        }
+
+        Debtor near_debtor = null;
+        float distance_debtor = Float.MAX_VALUE;
+        List<Debtor> debtors = app.getDataManager().getDebtors("latitude <> 0 and longitude <> 0",null);
+        for (Debtor d : debtors) {
+            float distance = lastlocation.distanceTo(d.getLocation());
+            if (distance < distance_debtor) {
+                distance_debtor = distance;
+                near_debtor = d;
+            }
+        }
+
+        float maxdistence = 100;
+        if (distance_transaction < maxdistence && distance_transaction < distance_debtor) {
+            dlgmessage = getResources().getString(R.string.transactions_nearby_msg_t) + "\n"
+                    + Formats.frDateFormat.format(near_transaction.getDateAmount_at()) + " "
+                    + near_transaction.getDescription();
+            nearby_debtorid     = near_transaction.getDebtor_id();
+            nearby_costcenterid = near_transaction.getCostcenter_id();
+            nearby_description  = near_transaction.getDescription();
+        } else if (distance_debtor < maxdistence) {
+            dlgmessage = getResources().getString(R.string.transactions_nearby_msg_d) + "\n"
+                    + near_debtor.getName();
+            nearby_debtorid = near_debtor.getId();
+        }
+
+        if (dlgmessage != null) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.transactions_nearby_title);
+            builder.setMessage(dlgmessage);
+            builder.setPositiveButton(R.string.btn_yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (nearby_debtorid > 0) holder.vdebtor_id = nearby_debtorid;
+                    if (nearby_costcenterid > 0) holder.vcostcenter_id = nearby_costcenterid;
+                    if (nearby_description != null) holder.vdescription.setText(nearby_description);
+                }
+            });
+            builder.setNegativeButton(R.string.btn_no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+
     }
 
     /**

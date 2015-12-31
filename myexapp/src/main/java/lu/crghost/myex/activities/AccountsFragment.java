@@ -112,27 +112,11 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
             selected_debtorid     = null;
             selected_description  = null;
             String message        = null;
-            //if (usegps) message   = findNearBy(selected_account);
+            mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), String.valueOf(selected_account.getCostcenter_id()), null, null);
             if (message==null) {
-                mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), String.valueOf(selected_account.getCostcenter_id()), null, null);
+
             } else {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle(R.string.transactions_nearby_title);
-                builder.setMessage(message);
-                builder.setPositiveButton(R.string.btn_yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), selected_costcenterid, selected_debtorid, selected_description);
-                    }
-                });
-                builder.setNegativeButton(R.string.btn_no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mListener.onFragmentInteractionNewTransaction(selected_account.getIdAsString(), String.valueOf(selected_account.getCostcenter_id()), null, null);
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+
             }
         }
     }
@@ -147,52 +131,7 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
         return false;
     }
 
-    /**
-     * Find near by locations
-     * @param account
-     */
-    private String findNearBy(Account account) {
-        String dlgmessage = null;
-        Location lastlocation = app.getLastKnownLocation();
-        Transaction near_transaction = null;
-        float distance_transaction = Float.MAX_VALUE;
-        List<Transaction> transactions = app.getDataManager().getTransactions("latitude <> 0 and longitude <> 0 and account_id=?",new String[] {account.getIdAsString()});
-        for (Transaction t : transactions) {
-            float distance = lastlocation.distanceTo(t.getLocation());
-            if (distance < distance_transaction) {
-                distance_transaction = distance;
-                near_transaction = t;
-            }
-        }
 
-        Debtor near_debtor = null;
-        float distance_debtor = Float.MAX_VALUE;
-        List<Debtor> debtors = app.getDataManager().getDebtors("latitude <> 0 and longitude <> 0",null);
-        for (Debtor d : debtors) {
-            float distance = lastlocation.distanceTo(d.getLocation());
-            if (distance < distance_debtor) {
-                distance_debtor = distance;
-                near_debtor = d;
-            }
-        }
-
-        float maxdistence = 100;
-        if (distance_transaction < maxdistence && distance_transaction < distance_debtor) {
-            dlgmessage = getResources().getString(R.string.transactions_nearby_msg_t) + "\n"
-                    + Formats.frDateFormat.format(near_transaction.getDateAmount_at()) + " "
-                    + near_transaction.getDescription();
-            selected_debtorid     = String.valueOf(near_transaction.getDebtor_id());
-            selected_costcenterid = String.valueOf(near_transaction.getCostcenter_id());
-            selected_description  = near_transaction.getDescription();
-        } else if (distance_debtor < maxdistence) {
-            dlgmessage = getResources().getString(R.string.transactions_nearby_msg_d) + "\n"
-                    + near_debtor.getName();
-            selected_debtorid = near_debtor.getIdAsString();
-        }
-
-        return dlgmessage;
-
-    }
 
     /**
      * This interface must be implemented by activities that contain this

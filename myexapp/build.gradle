@@ -42,6 +42,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:7.5.0'
     compile files('libs/sqlcipher.jar')
     compile files('libs/guava-r09.jar')
-    compile files('libs/jsch-0.1.50.jar')
+
     compile files('libs/cralib3.jar')
 }

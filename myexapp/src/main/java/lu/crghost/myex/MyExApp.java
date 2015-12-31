@@ -107,6 +107,7 @@ public class MyExApp extends Application {
         if (location!=null) {
             latLng = new LatLng(location.getLatitude(), location.getLongitude());
         }
+        Log.d(TAG,"------------------------------------ LastKnownLocation = " + latLng);
         return latLng;
     }
 

@@ -84,12 +84,31 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" android:layout_marginTop="5dp"/>
 
-                <AutoCompleteTextView
-                        android:id="@+id/transactions_debtor"
-                        android:inputType="textCapSentences"
-                        android:completionThreshold="1"
+                <!-- Debtor -->
+                <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <AutoCompleteTextView
+                                android:id="@+id/transactions_debtor"
+                                android:inputType="textCapSentences"
+                                android:completionThreshold="1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toLeftOf="@+id/btnShowMap"
+                                android:layout_toStartOf="@+id/btnShowMap"/>
+
+                        <ImageButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/btnShowMap"
+                                android:onClick="action_showmap"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true" android:src="@drawable/ic_action_location_2_small"/>
+
+
+                </RelativeLayout>
 
                 <!-- Costcenter -->
                 <TextView
@@ -146,7 +165,8 @@
                         <ImageButton
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_action_calendar_day" android:layout_alignParentRight="true"
+                                android:src="@drawable/ic_action_calendar_day"
+                                android:layout_alignParentRight="true"
                                 android:id="@+id/transactions_btnCalendar"
                                 android:onClick="action_calendar"/>
 
@@ -228,12 +248,7 @@
                         android:orientation="horizontal">
 
 
-                        <ImageButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/btnShowMap"
-                                android:onClick="action_showmap"
-                                android:layout_centerVertical="true" android:src="@drawable/ic_action_location_2"/>
+
                         <ImageButton
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
