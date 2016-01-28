@@ -15,6 +15,7 @@ import lu.crghost.myex.dao.DataManager;
 import lu.crghost.myex.models.*;
 import lu.crghost.myex.tools.SimpleMeasureAdapter;
 
+import java.util.Formatter;
 import java.util.List;
 
 /**
@@ -202,12 +203,19 @@ public class AccountsEditActivity extends Activity {
                 return true;
             case R.id.action_delete:
                 if (isupdate) {
-                    // @TODO: check RI on Transactions
+                    String msg = getResources().getString(R.string.account_delete_confirmation);
+                    List<Transaction> transactions = app.getDataManager().getTransactions("account_id=?", new String[] {account.getIdAsString()});
+                    if (transactions.size() >0 ) {
+                        msg = String.format(getResources().getString(R.string.account_delete_confirmation_ri),transactions.size(), account.getAcname());
+                    }
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage(R.string.account_delete_confirmation);
+                    builder.setMessage(msg);
                     builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+                            app.getDataManager().beginTransaction();
+                            app.getDataManager().deleteTransactions("account_id=?", new String[] {account.getIdAsString()});
                             app.getDataManager().deleteAccount(account);
+                            app.getDataManager().commit();
                             Toast.makeText(AccountsEditActivity.this, R.string.account_deleted, Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);
                             finish();

@@ -14,12 +14,17 @@ import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.*;
 import android.widget.SearchView;
 import android.widget.TextView;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
+import lu.crghost.myex.tools.MyOnFragmentFilterListener;
 import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
+
+import java.util.List;
+import java.util.Map;
 
 
 public class MainFragment extends FragmentActivity implements ActionBar.TabListener,
@@ -34,10 +39,14 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
     public static final int NEW_TRANSACTION = 10;
 
     MyExApp app;
+    static Menu menu;
+    Map<String, String> accountsmap = null;
     SearchManager searchManager = null;
     SearchView searchView = null;
     String mSearchFilter;
+    String mSelectedFilter;
 
+    int actuelFragmentPosition = 0;
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
 
@@ -57,6 +66,7 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
         //actionBar.setDisplayShowTitleEnabled(false);
 
         // Set up the ViewPager, attaching the adapter and setting up a listener for when the user swipes between sections.
+        actuelFragmentPosition = 0;
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -65,6 +75,12 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
                 // When swiping between different app sections, select the corresponding tab.
                 actionBar.setSelectedNavigationItem(position);
                 actionBar.setTitle(mAppSectionsPagerAdapter.getPageTitle(position));
+                actuelFragmentPosition = position;
+                if (position==TABITEM_TRANSACTIONS) {
+                    showFilter();
+                } else {
+                    hideFilter();
+                }
             }
         });
 
@@ -102,12 +118,15 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_mainfragment, menu);
+        this.menu = menu;
+        hideFilter();
 
         // Get the SearchView and set the searchable configuration
         searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             public boolean onQueryTextSubmit(String query) {
@@ -128,7 +147,14 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
                     return true;
                 }
                 mSearchFilter = newFilter;
-                //getLoaderManager().restartLoader(0, null, PricesActivity.this);
+                if (actuelFragmentPosition==TABITEM_ACCOUNTS
+                        || actuelFragmentPosition==TABITEM_DEBTORS
+                        || actuelFragmentPosition==TABITEM_TRANSACTIONS) {
+                    MyOnFragmentFilterListener filter = (MyOnFragmentFilterListener) mAppSectionsPagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
+                    if (filter != null) filter.onSearch(mSearchFilter);
+                    else Log.d(TAG,"Filter is null !!!!!!!!!");
+                }
+
                 return true;
             }
         });
@@ -143,6 +169,20 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
         });
 
         return true;
+    }
+
+    public static void showFilter() {
+        if (menu!=null) {
+            MenuItem mi = menu.getItem(0);
+            mi.setVisible(true);
+        }
+    }
+
+    public static void hideFilter() {
+        if (menu!=null) {
+            MenuItem mi = menu.getItem(0);
+            mi.setVisible(false);
+        }
     }
 
     /**
@@ -198,6 +238,32 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
                     default:
                 }
                 return true;
+            case R.id.action_filter:
+                switch (current_item) {
+                    case TABITEM_ACCOUNTS:
+                    case TABITEM_COSTCENTERS:
+                    case TABITEM_DEBTORS:
+                    case TABITEM_TRANSACTIONS:
+                        if (accountsmap==null) accountsmap = app.getDataManager().getAccountsNamesMap(null,null);
+                        String[] items = accountsmap.values().toArray(new String[0]);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        String title = getResources().getString(R.string.filter_accounts);
+                        builder.setTitle(title);
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String[] ids = accountsmap.keySet().toArray(new String[0]);
+                                String id = ids[which];
+                                mSelectedFilter = id;
+                                MyOnFragmentFilterListener filter = (MyOnFragmentFilterListener) mAppSectionsPagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
+                                if (filter != null) filter.onFilter(mSelectedFilter);
+                                else Log.d(TAG,"Filter is null !!!!!!!!!");
+                            }
+                        });
+                        builder.show();
+                    default:
+                }
+                return true;
             case R.id.action_export:
                 Intent iexport = new Intent(this,ExportActivity.class);
                 startActivity(iexport);
@@ -232,7 +298,7 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
         }
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setView(prompt);
-        dialog.setTitle(getResources().getString(R.string.export_backup));
+        dialog.setTitle(getResources().getString(R.string.menu_about));
         dialog.setIcon(android.R.drawable.ic_dialog_info);
         dialog.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
             @Override
@@ -322,6 +388,7 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
      */
     public static class AppSectionsPagerAdapter extends FragmentStatePagerAdapter {
 
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
         public AppSectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -375,6 +442,22 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
             return cs;
         }
 
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
+        }
 
     } // class AppSectionsPagerAdapter
 

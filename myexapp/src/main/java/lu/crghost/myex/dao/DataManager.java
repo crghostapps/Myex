@@ -12,6 +12,8 @@ import android.util.Log;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import lu.crghost.myex.conf.MyExProperties;
 
@@ -99,6 +101,20 @@ public class DataManager {
         return position;
     }
 
+    /*******************************************************************************************************************
+     * DB-Transactions
+     *******************************************************************************************************************/
+    public void beginTransaction() {
+        db.beginTransaction();
+    }
+    public void commit() {
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+    public void rollback() {
+        db.endTransaction();
+    }
+
     /***********************************************************************************************
      * Account
      ***********************************************************************************************/
@@ -108,6 +124,15 @@ public class DataManager {
 
     public List<Account> getAccounts(String selection, String[] selectionArgs) {
         return daoAccount.getAll(selection, selectionArgs);
+    }
+
+    public Map<String,String> getAccountsNamesMap(String selection, String[] selectionArgs) {
+        List<Account> accounts = getAccounts(selection, selectionArgs);
+        Map<String, String> accountmap = new TreeMap<String, String>();
+        for (Account account: accounts) {
+            accountmap.put(account.getIdAsString(), account.getAcname());
+        }
+        return accountmap;
     }
 
     public long insertAccount(Account type) {
@@ -315,6 +340,10 @@ public class DataManager {
     }
 
     public void deleteTransaction(Transaction type) { daoTransaction.delete(type);}
+
+    public void deleteTransactions(String selection, String[] selectionAgrs) {
+        daoTransaction.deleteAll(selection, selectionAgrs);
+    }
 
     public Cursor getTransactionsCursor(String selection, String[] selectionArgs, String order) {
         return daoTransaction.getCursorAll(selection,selectionArgs,order);

@@ -1,33 +1,25 @@
 package lu.crghost.myex.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import lu.crghost.cralib3.tools.Formats;
+import android.widget.*;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
 import lu.crghost.myex.models.Account;
-import lu.crghost.myex.models.Costcenter;
-import lu.crghost.myex.models.Debtor;
-import lu.crghost.myex.models.Transaction;
+import lu.crghost.myex.tools.MyOnFragmentFilterListener;
 import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
-
-import java.io.StringBufferInputStream;
-import java.util.List;
 
 /**
  * Accounts list
  */
-public class AccountsFragment extends Fragment implements AbsListView.OnItemClickListener, AbsListView.OnItemLongClickListener {
+public class AccountsFragment extends Fragment implements AbsListView.OnItemClickListener, AbsListView.OnItemLongClickListener, MyOnFragmentFilterListener {
+
+    private static final String TAG = "AccountsFragment";
 
     MyExApp app;
     private MyOnFragmentInteractionListener mListener;
@@ -47,7 +39,7 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    private ArrayAdapter mAdapter;
 
     public static AccountsFragment newInstance() {
         AccountsFragment fragment = new AccountsFragment();
@@ -66,7 +58,6 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
         super.onCreate(savedInstanceState);
         app = (MyExApp) getActivity().getApplication();
         mAdapter = new AccountsAdapter(app,getActivity(),app.getDataManager().getAccounts(null,null));
-
         usegps = app.getPrefs().getBoolean("localisation",false);
         //if (usegps) app.refreshLocation();
     }
@@ -131,7 +122,14 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
         return false;
     }
 
+    @Override
+    public void onSearch(String search) {
+        mAdapter.getFilter().filter(search);
+    }
 
+    @Override
+    public void onFilter(String filter) {
+    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -147,5 +145,7 @@ public class AccountsFragment extends Fragment implements AbsListView.OnItemClic
         // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
     }
+
+
 
 }

@@ -7,20 +7,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import android.widget.TextView;
+import android.widget.*;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
 import lu.crghost.myex.models.Debtor;
+import lu.crghost.myex.tools.MyOnFragmentFilterListener;
 import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
 
 
 /**
  * Debtors fragment
  */
-public class DebtorsFragment extends Fragment implements AbsListView.OnItemClickListener, AbsListView.OnItemLongClickListener {
+public class DebtorsFragment extends Fragment implements AbsListView.OnItemClickListener, AbsListView.OnItemLongClickListener, MyOnFragmentFilterListener {
 
     private static final String TAG = "DebtorsFragment";
     MyExApp app;
@@ -35,7 +33,7 @@ public class DebtorsFragment extends Fragment implements AbsListView.OnItemClick
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    private ArrayAdapter mAdapter;
 
     public static DebtorsFragment newInstance() {
         DebtorsFragment fragment = new DebtorsFragment();
@@ -106,6 +104,14 @@ public class DebtorsFragment extends Fragment implements AbsListView.OnItemClick
         return false;
     }
 
+    @Override
+    public void onSearch(String search) {
+        mAdapter.getFilter().filter(search);
+    }
+
+    @Override
+    public void onFilter(String filter) {
+    }
 
     /**
      * The default content for this Fragment has a TextView that is shown when

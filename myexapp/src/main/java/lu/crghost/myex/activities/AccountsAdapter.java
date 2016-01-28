@@ -2,36 +2,53 @@ package lu.crghost.myex.activities;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import lu.crghost.cralib3.tools.Formats;
+import android.widget.*;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
 import lu.crghost.myex.models.Account;
 import lu.crghost.myex.models.Measure;
 import lu.crghost.myex.tools.MyFormats;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * ArrayAdapter for Accounts list
  */
-public class AccountsAdapter extends ArrayAdapter<Account> {
+public class AccountsAdapter extends ArrayAdapter<Account> implements Filterable {
 
     private static final String TAG = "AccountsAdapter";
     Context context;
     MyExApp app;
+    List<Account> initialAccountList;
+    List<Account> filteredAccountList;
 
     public AccountsAdapter(MyExApp application,Context context, List<Account> accounts) {
         super(context, R.layout.fragment_accounts_item, R.id.item_account_name , accounts);
         this.context = context;
         this.app = application;
+        this.initialAccountList = accounts;
+        this.filteredAccountList = accounts;
     }
 
+    @Override
+    public int getCount() {
+        return filteredAccountList.size();
+    }
+
+    @Override
+    public Account getItem(int position) {
+        return filteredAccountList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        Account account = filteredAccountList.get(position);
+        return account.getId();
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -78,6 +95,11 @@ public class AccountsAdapter extends ArrayAdapter<Account> {
         return listItem;
     }
 
+    @Override
+    public Filter getFilter() {
+        return myFilter;
+    }
+
     /**
      * Views container
      */
@@ -97,6 +119,32 @@ public class AccountsAdapter extends ArrayAdapter<Account> {
         }
 
     }
+
+    /**
+     * Filter on account name
+     */
+    Filter myFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults filterResults = new FilterResults();
+            List<Account> tempList = new ArrayList<Account>();
+            for (Account account : initialAccountList) {
+                if (account.getAcname().contains(constraint)) {
+                    tempList.add(account);
+                }
+            }
+            filterResults.values = tempList;
+            filterResults.count  = tempList.size();
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            if (constraint==null || results==null) filteredAccountList = initialAccountList;
+            else filteredAccountList = (ArrayList<Account>) results.values;
+            notifyDataSetChanged();
+        }
+    };
 
 
 }

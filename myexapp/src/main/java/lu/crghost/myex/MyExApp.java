@@ -20,6 +20,20 @@ import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.File;
 
+import org.acra.*;
+import org.acra.annotation.*;
+
+//@ReportsCrashes(formKey = "dEhQQUZ4LVhPVXdQd25sQzVXbUtxMEE6MQ")
+@ReportsCrashes(formKey = "", // will not be used
+        mailTo = "crghostapps@gmail.com",
+        customReportContent = { ReportField.ANDROID_VERSION,
+                ReportField.PHONE_MODEL,
+                ReportField.CUSTOM_DATA,
+                ReportField.STACK_TRACE,
+                ReportField.LOGCAT },
+        mode = ReportingInteractionMode.TOAST,
+        resToastText = R.string.crash_toast_text)
+
 /**
  * Created by CR on 13/04/2015.
  */
@@ -72,6 +86,9 @@ public class MyExApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // The following line triggers the initialization of ACRA
+        ACRA.init(this);
+
         cMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         prefs = getSharedPreferences(PREFS_FILENAME,Context.MODE_MULTI_PROCESS);
         reloadDataManager();

@@ -13,6 +13,7 @@ import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
 import lu.crghost.myex.models.Costcenter;
 import lu.crghost.myex.tools.IconTreeItemHolder;
+import lu.crghost.myex.tools.MyOnFragmentFilterListener;
 import lu.crghost.myex.tools.MyOnFragmentInteractionListener;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.List;
 /**
  * Costcenters treelist
  */
-public class CostcentersFragment extends Fragment implements IconTreeItemHolder.IconItemClickListener {
+public class CostcentersFragment extends Fragment implements IconTreeItemHolder.IconItemClickListener, MyOnFragmentFilterListener {
 
 
     private static final String TAG = "CostcentersFragment";
@@ -65,6 +66,7 @@ public class CostcentersFragment extends Fragment implements IconTreeItemHolder.
         tView = new AndroidTreeView(getActivity(), root);
         containerView.addView(tView.getView());
         tView.expandAll();
+
         return rootView;
     }
 
@@ -123,5 +125,15 @@ public class CostcentersFragment extends Fragment implements IconTreeItemHolder.
         if (null != mListener) {
             mListener.onFragmentInteractionEdit(Long.toString(costcenter_id), MyOnFragmentInteractionListener.ACTION_EDIT_COSTCENTER);
         }
+    }
+
+    @Override
+    public void onFilter(String filter) {
+        //mAdapter.getFilter().filter(selection);
+    }
+
+    @Override
+    public void onSearch(String selection) {
+
     }
 }
