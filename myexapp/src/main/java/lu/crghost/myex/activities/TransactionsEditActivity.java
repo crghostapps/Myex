@@ -254,6 +254,7 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
         CostcenterAdapter costcenterAdapter = new CostcenterAdapter(this,costcenterList);
         costcenterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.vcostcentersel.setAdapter(costcenterAdapter);
+
         int cpos = app.getDataManager().getPositionInList( (List<BaseModel>) (List) costcenterList,holder.vcostcenter_id);
         holder.vcostcentersel.setSelection(cpos);
         holder.vcostcentersel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -450,6 +451,13 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
         View prompt = li.inflate(R.layout.prompt_datetime, null);
         final DatePicker picDate = (DatePicker) prompt.findViewById(R.id.prompt_datePicker);
         final TimePicker picTime = (TimePicker) prompt.findViewById(R.id.prompt_timePicker);
+        if (isupdate) {
+            Calendar tdate = Calendar.getInstance();
+            tdate.setTime(transaction.getDateAmount_at());
+            picDate.updateDate(tdate.get(Calendar.YEAR), tdate.get(Calendar.MONTH), tdate.get(Calendar.DAY_OF_MONTH));
+            picTime.setCurrentHour(tdate.get(Calendar.HOUR));
+            picTime.setCurrentMinute(tdate.get(Calendar.MINUTE));
+        }
 
 
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -462,6 +470,7 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
                 calendar.set(picDate.getYear(), picDate.getMonth(), picDate.getDayOfMonth());
                 calendar.set(Calendar.HOUR, picTime.getCurrentHour());
                 calendar.set(Calendar.MINUTE, picTime.getCurrentMinute());
+                calendar.set(Calendar.SECOND,0);
                 holder.vamountDate.setText(MyFormats.formatDateTime.format(calendar.getTime()));
             }
         });
@@ -584,7 +593,15 @@ public class TransactionsEditActivity extends Activity implements OnMapReadyCall
             switch (requestCode) {
                 case MainFragment.TABITEM_COSTCENTERS:
                     long costcenter_id = data.getLongExtra("costcenter_id",0);
+                    Log.d(TAG,"New Costcenter --------------- " + costcenter_id);
                     if (costcenter_id > 0) {
+                        // Recreate adapter
+                        int cctype = DataManager.COSTCENTERTYPE_INCOME;
+                        if (holder.vpm.isChecked()) cctype = DataManager.COSTCENTERTYPE_EXPENSE;
+                        costcenterList = app.getDataManager().getCostcentersForSpinner(null,cctype);
+                        CostcenterAdapter costcenterAdapter = new CostcenterAdapter(this,costcenterList);
+                        holder.vcostcentersel.setAdapter(costcenterAdapter);
+
                         holder.vcostcenter_id = costcenter_id;
                         holder.vcostcentersel.setSelection(app.getDataManager().getPositionInList((List<BaseModel>) (List) costcenterList, holder.vcostcenter_id));
                     }

@@ -18,6 +18,7 @@ import android.util.SparseArray;
 import android.view.*;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 import lu.crghost.myex.MyExApp;
 import lu.crghost.myex.R;
 import lu.crghost.myex.tools.MyOnFragmentFilterListener;
@@ -45,6 +46,8 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
     SearchView searchView = null;
     String mSearchFilter;
     String mSelectedFilter;
+
+    int backpressed = 0;
 
     int actuelFragmentPosition = 0;
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
@@ -111,7 +114,17 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
     @Override
     protected void onResume() {
         super.onResume();
-        //if (app!=null) app.refreshLocation();
+        backpressed = 0;
+    }
+
+    @Override
+    public void onBackPressed() {
+        backpressed++;
+        if (backpressed < 2) {
+            Toast.makeText(this,R.string.backpress, Toast.LENGTH_SHORT).show();
+        } else {
+            finish();
+        }
     }
 
     @Override
@@ -193,6 +206,7 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int current_item = mViewPager.getCurrentItem();
+        backpressed = 0;
         switch (item.getItemId()) {
             case R.id.action_exit:
                 finish();
@@ -276,6 +290,10 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
                 Intent imeasures = new Intent(this,MeasuresActivity.class);
                 startActivity(imeasures);
                 return true;
+            case R.id.action_stats:
+                Intent istats = new Intent(this, StatsActivity.class);
+                startActivity(istats);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -311,6 +329,7 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+        backpressed = 0;
         // When the given tab is selected, switch to the corresponding page in the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
         setTitle(tab.getText());
@@ -343,6 +362,7 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public void onFragmentInteractionEdit(String id, int action) {
+        backpressed = 0;
         switch (action){
             case MyOnFragmentInteractionListener.ACTION_EDIT_ACCOUNT:
                 long account_id = Long.parseLong(id);
@@ -373,6 +393,7 @@ public class MainFragment extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public void onFragmentInteractionNewTransaction(String account_id, String costcenter_id, String debtor_id, String description) {
+        backpressed = 0;
         Intent newtrans = new Intent(this,TransactionsEditActivity.class);
         newtrans.putExtra("id",0L);
         if (account_id!=null)    newtrans.putExtra("account_id", Long.parseLong(account_id));

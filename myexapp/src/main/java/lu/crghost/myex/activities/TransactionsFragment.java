@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,7 +156,7 @@ public class TransactionsFragment extends Fragment implements AbsListView.OnItem
             if (selection==null) {
                 selection = "account_id=?";
             } else {
-                selection = " AND account_id=?";
+                selection = selection + " AND account_id=?";
             }
             selectionArgs.add(mSelectedFilter);
         }

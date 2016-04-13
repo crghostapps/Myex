@@ -38,10 +38,12 @@ public class DaoTransaction implements DbDao<Transaction> {
         }
     }
 
-    public void deleteAll(String selection, String[] selectionArgs) {
+    public int deleteAll(String selection, String[] selectionArgs) {
+        int i = 0;
         if (selection != null) {
-            db.delete(Transaction.TABLE_NAME, selection, selectionArgs);
+            i= db.delete(Transaction.TABLE_NAME, selection, selectionArgs);
         }
+        return i;
     }
 
     @Override

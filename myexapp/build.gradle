@@ -1,15 +1,16 @@
-/*buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
-    }
+/*
+
+External libraries used:
+
+Treeview                https://github.com/bmelnychuk/AndroidTreeView
+Charts                  https://github.com/PhilJay/MPAndroidChart
+
 }*/
 apply plugin: 'com.android.application'
 
 repositories {
     jcenter()
+    maven { url "https://jitpack.io" }
 }
 
 android {
@@ -40,6 +41,7 @@ dependencies {
     compile 'com.android.support:support-v4:22.0.0'
     compile 'com.github.bmelnychuk:atv:1.2.+'
     compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.2'
     compile files('libs/sqlcipher.jar')
     compile files('libs/guava-r09.jar')
     compile files('libs/cralib3.jar')

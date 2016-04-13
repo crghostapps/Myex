@@ -341,8 +341,8 @@ public class DataManager {
 
     public void deleteTransaction(Transaction type) { daoTransaction.delete(type);}
 
-    public void deleteTransactions(String selection, String[] selectionAgrs) {
-        daoTransaction.deleteAll(selection, selectionAgrs);
+    public int deleteTransactions(String selection, String[] selectionAgrs) {
+        return daoTransaction.deleteAll(selection, selectionAgrs);
     }
 
     public Cursor getTransactionsCursor(String selection, String[] selectionArgs, String order) {

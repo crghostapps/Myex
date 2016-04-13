@@ -170,6 +170,8 @@ public class AccountsEditActivity extends Activity {
         if (!isupdate) {
             MenuItem mnudel = menu.findItem(R.id.action_delete);
             mnudel.setVisible(false);
+            MenuItem mnuclean = menu.findItem(R.id.action_clean);
+            mnuclean.setVisible(false);
             //invalidateOptionsMenu(); STACKOVERFLOW because it calls onCreateOptionsMenu again
         }
 
@@ -209,6 +211,7 @@ public class AccountsEditActivity extends Activity {
                         msg = String.format(getResources().getString(R.string.account_delete_confirmation_ri),transactions.size(), account.getAcname());
                     }
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.account_delete);
                     builder.setMessage(msg);
                     builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -217,6 +220,32 @@ public class AccountsEditActivity extends Activity {
                             app.getDataManager().deleteAccount(account);
                             app.getDataManager().commit();
                             Toast.makeText(AccountsEditActivity.this, R.string.account_deleted, Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_OK);
+                            finish();
+                        }
+                    });
+                    builder.setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+                return true;
+            case R.id.action_clean:
+                if (isupdate) {
+                    String msg = String.format(getResources().getString(R.string.account_clean_confirmation), account.getAcname());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.account_clean);
+                    builder.setMessage(msg);
+                    builder.setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            int delcount = app.getDataManager().deleteTransactions("account_id=?", new String[] {account.getIdAsString()});
+                            Toast.makeText(AccountsEditActivity.this,
+                                    String.format(getResources().getString(R.string.account_cleaned), delcount, account.getAcname()),
+                                    Toast.LENGTH_SHORT).show();
                             setResult(RESULT_OK);
                             finish();
                         }

@@ -76,20 +76,26 @@ public class AccountsAdapter extends ArrayAdapter<Account> implements Filterable
         Measure measure = app.getDataManager().getMeasureById(account.getMeasure_id());
         holder.account_amount.setText(MyFormats.formatDouble(balance,2) + measure.getNameshort());
 
-        boolean isred = false;
-        if (balance<0) {
-            holder.progressBar.setProgress(0);
-            holder.account_name.setTextColor(Color.RED);
+        // No progressbar for counters
+        if (account.getActype()==Account.TYPE_COUNTER) {
+            holder.progressBar.setVisibility(View.INVISIBLE);
         } else {
-            holder.progressBar.setProgress((int) balance);
-            if (balance < account.getLimitamount().doubleValue()) {
-                isred = true;
+            holder.progressBar.setVisibility(View.VISIBLE);
+            boolean isred = false;
+            if (balance < 0) {
+                holder.progressBar.setProgress(0);
+                holder.account_name.setTextColor(Color.RED);
+            } else {
+                holder.progressBar.setProgress((int) balance);
+                if (balance < account.getLimitamount().doubleValue()) {
+                    isred = true;
+                }
             }
-        }
-        if (isred) {
-            holder.progressBar.setProgressDrawable(context.getResources().getDrawable(R.drawable.item_progressbar_red));
-        } else {
-            holder.progressBar.setProgressDrawable(context.getResources().getDrawable(R.drawable.item_progressbar));
+            if (isred) {
+                holder.progressBar.setProgressDrawable(context.getResources().getDrawable(R.drawable.item_progressbar_red));
+            } else {
+                holder.progressBar.setProgressDrawable(context.getResources().getDrawable(R.drawable.item_progressbar));
+            }
         }
 
         return listItem;
